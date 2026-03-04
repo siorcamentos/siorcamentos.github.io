@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.siorcamentos.twa",
+        "sha256_cert_fingerprints": ["81:6F:E3:68:DD:93:16:CB:68:1E:4F:D0:D3:52:7A:74:06:DA:C2:32:2A:90:F5:9C:FD:AB:74:FC:82:0E:AC:42"]
+      }
+    }]
