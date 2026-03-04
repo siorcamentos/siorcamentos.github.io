@@ -1,0 +1,26 @@
+{
+  "name": "Construtor PRO - Sistema Profissional",
+  "short_name": "Construtor PRO",
+  "description": "Sistema profissional para geração de orçamentos de alvenaria, pintura, revestimento e modelos prontos para impressão.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
