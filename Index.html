@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SI Orçamentos</title>
+
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="/manifest.json">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      animation: slideUp 1.2s ease forwards;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      margin: 0 auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="logo">SI Orçamentos</div>
+    <div class="subtitle">Sistema de Orçamentos Profissionais</div>
+    <div class="loader"></div>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "/orcamento/index.html";
+    }, 2500);
+  </script>
+
+</body>
+</html>
