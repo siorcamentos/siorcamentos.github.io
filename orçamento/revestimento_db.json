@@ -1,0 +1,52 @@
+{
+  "configuracoes_obra": {
+    "perda_material": 1.15,
+    "consumo_argamassa_simples_kg_m2": 5,
+    "consumo_argamassa_dupla_kg_m2": 10
+  },
+  "tipos_revestimento": {
+    "ceramica": { "nome": "Cerâmica Padrão", "base_mo": 35.00 },
+    "porcelanato": { "nome": "Porcelanato", "base_mo": 55.00 },
+    "pastilha": { "nome": "Pastilha / Mosaico", "base_mo": 80.00 },
+    "pedra_natural": { "nome": "Pedra Natural (Mármore/Granito)", "base_mo": 90.00 }
+  },
+  "tamanhos_revestimento": {
+    "pequeno": { "nome": "Até 45x45 cm (Colagem Simples)", "exige_dupla_colagem": false, "fator_mo": 1.0, "consumo_rejunte_kg_m2": 0.4 },
+    "medio": { "nome": "De 46x46 até 60x60 cm (Dupla Colagem)", "exige_dupla_colagem": true, "fator_mo": 1.1, "consumo_rejunte_kg_m2": 0.3 },
+    "grande": { "nome": "Grandes Formatos (Ex: 80x80 a 120x120)", "exige_dupla_colagem": true, "fator_mo": 1.3, "consumo_rejunte_kg_m2": 0.2 },
+    "pastilha": { "nome": "Pastilhas (Telas)", "exige_dupla_colagem": false, "fator_mo": 1.5, "consumo_rejunte_kg_m2": 1.2 }
+  },
+  "preparacao_base": {
+    "pronta": { "nome": "Base Pronta / Nivelada", "acrescimo_mo": 0, "materiais": [] },
+    "contrapiso": { "nome": "Fazer Contrapiso (Piso)", "acrescimo_mo": 25.00, "materiais": ["cimento", "areia"] },
+    "reboco": { "nome": "Fazer Emboço/Reboco (Parede)", "acrescimo_mo": 28.00, "materiais": ["cimento", "areia"] },
+    "regularizacao": { "nome": "Apenas Regularização Fina", "acrescimo_mo": 12.00, "materiais": ["argamassa_regularizacao"] }
+  },
+  "argamassas": {
+    "aci": { "nome": "Argamassa ACI (Interno/Seco)", "peso_saco_kg": 20, "preco_saco": 15.00 },
+    "acii": { "nome": "Argamassa ACII (Externo/Úmido)", "peso_saco_kg": 20, "preco_saco": 25.00 },
+    "aciii": { "nome": "Argamassa ACIII (Piso s/ Piso / Porcelanato)", "peso_saco_kg": 20, "preco_saco": 45.00 },
+    "piscina": { "nome": "Argamassa Especial Piscinas", "peso_saco_kg": 20, "preco_saco": 65.00 }
+  },
+  "rejuntes": {
+    "cimenticio": { "nome": "Rejunte Cimentício Padrão (Saco 1kg)", "preco_kg": 8.00 },
+    "acrilico": { "nome": "Rejunte Acrílico (Pote 1kg)", "preco_kg": 25.00 },
+    "epoxi": { "nome": "Rejunte Epóxi - Piscinas/Áreas Molhadas (Kit 1kg)", "preco_kg": 55.00 }
+  },
+  "juntas_espessura": {
+    "junta_seca": { "nome": "Junta Seca / Retificado (1mm a 1.5mm)", "fator_consumo": 0.7 },
+    "padrao": { "nome": "Junta Padrão (2mm a 3mm)", "fator_consumo": 1.0 },
+    "larga": { "nome": "Junta Larga (Acima de 4mm)", "fator_consumo": 1.5 }
+  },
+  "complexidade_paginacao": {
+    "esquadrejado": { "nome": "Reto / Esquadrejado (Padrão)", "fator_producao": 1.0, "acrescimo_mo": 0.00 },
+    "diagonal": { "nome": "Assentamento na Diagonal (Muitos cortes)", "fator_producao": 0.7, "acrescimo_mo": 15.00 },
+    "paginacao_projeto": { "nome": "Projeto de Paginação Específico (Desenho)", "fator_producao": 0.6, "acrescimo_mo": 25.00 }
+  },
+  "risco_logistica": {
+    "terreo": { "nome": "Térreo / Interno Livre", "multiplicador": 1.0, "taxa": 0 },
+    "andaime": { "nome": "Uso de Andaime (Fachada Baixa)", "multiplicador": 1.3, "taxa": 150.00 },
+    "balancim": { "nome": "Balancim (Fachada Alta)", "multiplicador": 1.8, "taxa": 400.00 },
+    "rapel": { "nome": "Acesso por Cordas (Rapel)", "multiplicador": 2.5, "taxa": 800.00 }
+  }
+}

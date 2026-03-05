@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>ConstrutorPro - Orçamento Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        /* Melhorias de toque */
+        button, .config-tab, .editable-cell, .material-item, .btn-primary {
+            touch-action: manipulation;
+        }
+        .config-tab {
+            flex: 1 1 0;
+            text-align: center;
+            padding: 12px 4px;
+            border-radius: 8px 8px 0 0;
+            background: #f1f5f9;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+        }
+        .config-tab i {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .config-tab.active {
+            background: white;
+            border-bottom-color: #1e40af;
+            color: #1e40af;
+            font-weight: 700;
+        }
+        .config-section {
+            display: none;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        .config-section.active { display: block; }
+        .input-field {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            background: white;
+            margin-bottom: 8px;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-weight: 600;
+            width: 100%;
+            font-size: 16px;
+        }
+        /* Cartões de resultado */
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .result-phase {
+            font-weight: 700;
+            color: #1e40af;
+            border-bottom: 2px solid #dbeafe;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 14px;
+        }
+        .result-item:last-child { border: none; }
+        .result-item .desc { flex: 2; color: #334155; }
+        .result-item .qty { 
+            flex: 1; 
+            text-align: right; 
+            font-weight: 600;
+            background: #fef9c3;
+            padding: 6px 8px;
+            border-radius: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .result-item .total { 
+            flex: 1; 
+            text-align: right; 
+            font-weight: 700; 
+            color: #0f172a;
+        }
+        .subtotal-row {
+            background: #f8fafc;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .total-row {
+            background: #1e40af;
+            color: white;
+            font-weight: 700;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+        /* Resumo materiais */
+        .material-summary {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .material-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .editable-badge {
+            background: #fef9c3;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        /* Ajustes para checkbox */
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            accent-color: #1e40af;
+        }
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            padding: 8px 0;
+        }
+        /* Tabelas internas (pilares, vigas) */
+        .inner-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .inner-table th {
+            background: #f1f5f9;
+            padding: 8px;
+            text-align: left;
+        }
+        .inner-table td, .inner-table th {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-10">
+    <div class="max-w-lg mx-auto px-4 sm:px-0">
+        <!-- Cabeçalho simplificado -->
+        <header class="bg-white border-b border-gray-200 py-4 px-2 flex justify-between items-center sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-hard-hat text-2xl text-blue-600"></i>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-900">ConstrutorPro</h1>
+                    <p class="text-xs text-gray-600">Orçamento de Alvenaria</p>
+                </div>
+            </div>
+            <button onclick="calculateProject()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow">
+                <i class="fas fa-calculator mr-1"></i> Calcular
+            </button>
+        </header>
+
+        <!-- Abas de navegação (em vez de cards laterais) -->
+        <div class="flex mt-4 gap-1">
+            <div class="config-tab active" onclick="showSection('alvenaria')" id="alvenaria-tab">
+                <i class="fas fa-cubes"></i>
+                <span>Alvenaria</span>
+            </div>
+            <div class="config-tab" onclick="showSection('estrutura')" id="estrutura-tab">
+                <i class="fas fa-grip-vertical"></i>
+                <span>Estrutura</span>
+            </div>
+            <div class="config-tab" onclick="showSection('acabamento')" id="acabamento-tab">
+                <i class="fas fa-trowel"></i>
+                <span>Acabamento</span>
+            </div>
+            <div class="config-tab" onclick="showSection('mao-de-obra')" id="mao-de-obra-tab">
+                <i class="fas fa-user-hard-hat"></i>
+                <span>Mão de Obra</span>
+            </div>
+        </div>
+
+        <!-- Seções de configuração -->
+        <div id="alvenaria-section" class="config-section active">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Alvenaria do Muro</h2>
+            <div class="space-y-4">
+                <label class="toggle-label">
+                    <input type="checkbox" id="use-auto-area" checked class="w-5 h-5">
+                    <span>Calcular automaticamente (comprimento × altura)</span>
+                </label>
+                <div id="dimension-inputs" class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-sm text-gray-600">Comprimento (m)</label>
+                        <input type="number" id="wall-length" class="input-field" value="10.0" step="0.1">
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-600">Altura (m)</label>
+                        <input type="number" id="wall-height" class="input-field" value="2.0" step="0.1">
+                    </div>
+                </div>
+                <div id="direct-area-option" style="display: none;">
+                    <label class="text-sm text-gray-600">Área direta (m²)</label>
+                    <input type="number" id="direct-wall-area" class="input-field" value="20.0">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600">Tipo de Alvenaria</label>
+                    <select id="masonry-type" class="input-field"></select>
+                </div>
+            </div>
+        </div>
+
+        <div id="estrutura-section" class="config-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Estrutura</h2>
+            <!-- Fundação -->
+            <div class="mb-6">
+                <label class="toggle-label">
+                    <input type="checkbox" id="include-foundation" class="w-5 h-5">
+                    <span>Incluir Fundação</span>
+                </label>
+                <div id="foundation-config" class="hidden mt-4 space-y-3">
+                    <select id="foundation-type" class="input-field">
+                        <option value="alvenaria">Alvenaria (Tijolo Deitado)</option>
+                        <option value="baldrame">Baldrame de Concreto</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="foundation-length" placeholder="Compr. (m)" class="input-field" value="10.0">
+                        <input type="number" id="foundation-height" placeholder="Altura (m)" class="input-field" value="0.5">
+                    </div>
+                    <div id="foundation-width-container" class="hidden">
+                        <input type="number" id="foundation-width" placeholder="Largura (m)" class="input-field" value="0.4">
+                    </div>
+                </div>
+            </div>
+            <!-- Pilares -->
+            <div class="mb-6">
+                <label class="toggle-label">
+                    <input type="checkbox" id="include-pillars" class="w-5 h-5">
+                    <span>Incluir Pilares</span>
+                </label>
+                <div id="pillars-config" class="hidden mt-4 space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="pillars-count" placeholder="Quantidade" class="input-field" value="3">
+                        <select id="pillar-type" class="input-field"></select>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <input type="number" id="pillar-width" placeholder="Larg. (cm)" class="input-field" value="15">
+                        <input type="number" id="pillar-depth" placeholder="Prof. (cm)" class="input-field" value="20">
+                        <input type="number" id="pillar-height" placeholder="Alt. (m)" class="input-field" value="2.5">
+                    </div>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="include-sapatas">
+                        <span>Incluir sapatas</span>
+                    </label>
+                    <div id="sapatas-config" class="hidden grid grid-cols-3 gap-3">
+                        <input type="number" id="sapata-width" placeholder="Larg. (cm)" class="input-field" value="50">
+                        <input type="number" id="sapata-length" placeholder="Comp. (cm)" class="input-field" value="50">
+                        <input type="number" id="sapata-height" placeholder="Alt. (cm)" class="input-field" value="60">
+                    </div>
+                    <button onclick="addPilarRow()" class="btn-primary !py-2 text-sm mt-2">
+                        <i class="fas fa-plus mr-2"></i>Adicionar Pilar
+                    </button>
+                    <div id="pillars-table" class="hidden mt-4 overflow-x-auto">
+                        <table class="inner-table">
+                            <thead><tr><th>Tipo</th><th>Dimensões</th><th>Qtd</th><th>Ações</th></tr></thead>
+                            <tbody id="pillars-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Vigas -->
+            <div class="mb-6">
+                <label class="toggle-label">
+                    <input type="checkbox" id="include-vigas" class="w-5 h-5">
+                    <span>Incluir Vigas</span>
+                </label>
+                <div id="vigas-config" class="hidden mt-4 space-y-3">
+                    <select id="beam-type" class="input-field"></select>
+                    <div class="grid grid-cols-3 gap-3">
+                        <input type="number" id="beam-width" placeholder="Larg. (cm)" class="input-field" value="15">
+                        <input type="number" id="beam-height" placeholder="Alt. (cm)" class="input-field" value="20">
+                        <input type="number" id="beam-length" placeholder="Comp. (m)" class="input-field" value="10.0">
+                    </div>
+                    <button onclick="addVigaRow()" class="btn-primary !py-2 text-sm">
+                        <i class="fas fa-plus mr-2"></i>Adicionar Viga
+                    </button>
+                    <div id="vigas-table" class="hidden mt-4 overflow-x-auto">
+                        <table class="inner-table">
+                            <thead><tr><th>Tipo</th><th>Dimensões</th><th>Comp.</th><th>Ações</th></tr></thead>
+                            <tbody id="vigas-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="acabamento-section" class="config-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Acabamento</h2>
+            <div class="space-y-4">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="chapisco-enabled">
+                    <label for="chapisco-enabled">Chapisco individual</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="reboco-enabled" checked>
+                    <label for="reboco-enabled">Reboco (inclui chapisco)</label>
+                </div>
+                <div id="finishing-details" class="space-y-3">
+                    <select id="finishing-faces" class="input-field">
+                        <option value="1">1 Face</option>
+                        <option value="2">2 Faces</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="finishing-thickness" placeholder="Espessura (cm)" class="input-field" value="2.0">
+                        <select id="finishing-type" class="input-field">
+                            <option value="reboco_interno">Massa Única com Cal</option>
+                            <option value="reboco_externo">Reboco Externo Forte</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mao-de-obra-section" class="config-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Mão de Obra</h2>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="bricklayer-count" placeholder="Pedreiros" class="input-field" value="1">
+                    <input type="number" id="daily-bricklayer" placeholder="Diária (R$)" class="input-field" value="180">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="helper-count" placeholder="Ajudantes" class="input-field" value="1">
+                    <input type="number" id="daily-helper" placeholder="Diária (R$)" class="input-field" value="110">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <input type="number" id="alvenaria-days" placeholder="Dias Alv." class="input-field" value="0">
+                    <input type="number" id="estrutura-days" placeholder="Dias Estr." class="input-field" value="0">
+                    <input type="number" id="acabamento-days" placeholder="Dias Acab." class="input-field" value="0">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="profit-margin" placeholder="Lucro (%)" class="input-field" value="30">
+                    <input type="number" id="total-days-input" placeholder="Total dias" class="input-field" readonly>
+                </div>
+                <button onclick="updateScheduleManually()" class="btn-primary !py-3 text-sm">
+                    <i class="fas fa-sync mr-2"></i>Recalcular Prazos
+                </button>
+                <div id="schedule-warning" class="schedule-warning hidden bg-red-100 text-red-800 p-3 rounded-lg text-sm">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Aumentar prazos pode gerar custos adicionais.
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados em formato de cards -->
+        <div class="mt-6">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-xl font-bold text-gray-800">Resultados</h2>
+                <button onclick="calculateProject()" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">
+                    <i class="fas fa-redo mr-1"></i>Recalcular
+                </button>
+            </div>
+
+            <!-- Cards de resultado -->
+            <div id="results-container" class="space-y-4">
+                <!-- Exemplo vazio -->
+                <div class="result-card text-center text-gray-500 py-8">
+                    <i class="fas fa-calculator text-4xl mb-3"></i>
+                    <p>Execute o cálculo para visualizar os resultados</p>
+                </div>
+            </div>
+
+            <!-- Resumo de Materiais e Financeiro -->
+            <div class="material-summary mt-4">
+                <h3 class="font-bold text-gray-800 mb-3">Materiais</h3>
+                <div class="space-y-2">
+                    <div class="material-item" onclick="editMaterialQuantity('total-cement')">
+                        <span>Cimento</span>
+                        <span class="editable-badge" id="total-cement">0 sacos</span>
+                    </div>
+                    <div class="material-item" onclick="editMaterialQuantity('total-sand')">
+                        <span>Areia</span>
+                        <span class="editable-badge" id="total-sand">0 m³</span>
+                    </div>
+                    <div class="material-item" onclick="editMaterialQuantity('total-gravel')">
+                        <span>Brita</span>
+                        <span class="editable-badge" id="total-gravel">0 m³</span>
+                    </div>
+                    <div class="material-item" onclick="editMaterialQuantity('total-lime')">
+                        <span>Cal</span>
+                        <span class="editable-badge" id="total-lime">0 sacos</span>
+                    </div>
+                    <div class="material-item" onclick="editMaterialQuantity('total-bricks')">
+                        <span>Tijolos/Blocos</span>
+                        <span class="editable-badge" id="total-bricks">0 un</span>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-gray-800 mt-6 mb-3">Mão de Obra</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="font-medium">Alvenaria</span>
+                            <p class="text-xs text-gray-500" id="masonry-days">0 dias</p>
+                        </div>
+                        <span class="font-semibold" id="labor-masonry">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="font-medium">Estrutura</span>
+                            <p class="text-xs text-gray-500" id="structure-days">0 dias</p>
+                        </div>
+                        <span class="font-semibold" id="labor-structure">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="font-medium">Acabamento</span>
+                            <p class="text-xs text-gray-500" id="finishing-days">0 dias</p>
+                        </div>
+                        <span class="font-semibold" id="labor-finishing">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between items-center font-bold text-lg border-t pt-3">
+                        <span>Subtotal</span>
+                        <span id="subtotal-labor">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div class="bg-blue-600 text-white rounded-xl p-5 mt-6">
+                    <div class="text-sm opacity-90">VALOR TOTAL DO PROJETO</div>
+                    <div class="text-2xl font-bold mb-1" id="total-project">R$ 0,00</div>
+                    <div class="text-sm opacity-80">Lucro <span id="profit-percent">30%</span>: <span id="profit-value">R$ 0,00</span></div>
+                    <div class="text-sm opacity-80 mt-2">Prazo: <span id="total-days-summary">0</span> dias</div>
+                    <button onclick="saveEstimate()" class="w-full bg-white text-blue-700 py-3 rounded-lg font-semibold mt-4">
+                        <i class="fas fa-save mr-2"></i> Salvar Orçamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="app.js"></script>
+</body>
+</html>

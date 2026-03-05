@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Construtor PRO · Revestimento</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { brand: { 500: '#2563eb', 600: '#1d4ed8' }, accent: { 500: '#10b981' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem;
+            background-color: #0f172a; border: 1px solid #334155; color: white;
+            outline: none; transition: all 0.2s; font-size: 0.875rem;
+        }
+        .input-field:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+        select.input-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 0.65em auto;
+            padding-right: 2.5rem;
+        }
+        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen flex flex-col">
+
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-4 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <i class="ph ph-arrow-left text-xl"></i>
+        </a>
+        <div class="text-center">
+            <h1 class="font-bold text-white text-base leading-tight">Orçamento Revestimento</h1>
+            <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5">Pisos e Azulejos</p>
+        </div>
+        <button onclick="limparCalculo()" class="text-slate-400 hover:text-red-400"><i class="ph ph-trash text-lg"></i></button>
+    </header>
+
+    <main class="flex-1 p-4 max-w-md mx-auto w-full pb-32 space-y-5">
+        
+        <section class="bg-indigo-900/20 border border-indigo-500/30 rounded-2xl p-4 flex justify-between items-center">
+            <div>
+                <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-widest block">Modo de Orçamento</h2>
+                <p id="modo_texto" class="text-[10px] text-indigo-200 mt-1">Quantificar Materiais + Mão de Obra</p>
+            </div>
+            <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                <input type="checkbox" name="toggle" id="modo_quantificar" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-slate-700 appearance-none cursor-pointer transition-transform duration-200 ease-in-out z-10" checked onchange="toggleModo()"/>
+                <label for="modo_quantificar" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-700 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+            </div>
+        </section>
+
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4">
+            <h2 class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
+                <i class="ph-fill ph-ruler"></i> 1. Projeto e Medidas
+            </h2>
+            <div>
+                <input type="text" id="cliente" placeholder="Nome do Cliente / Ambiente" class="input-field">
+            </div>
+
+            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                <div class="flex gap-2 mb-3">
+                    <div class="w-1/2">
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Lado A (m)</label>
+                        <input type="number" id="dim_a" placeholder="Ex: 4" class="input-field !py-1.5" oninput="calcularAreaH()">
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Lado B (m)</label>
+                        <input type="number" id="dim_b" placeholder="Ex: 5" class="input-field !py-1.5" oninput="calcularAreaH()">
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="text-[10px] text-indigo-400 uppercase font-bold ml-1">Área Total (m²)</label>
+                    <input type="number" id="area" placeholder="0.00" class="input-field !text-xl !font-black text-center text-indigo-400" oninput="calcular()">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4">
+            <h2 class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
+                <i class="ph-fill ph-squares-four"></i> 2. Detalhes do Revestimento
+            </h2>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-slate-300 mb-1 block">Tipo de Revestimento</label>
+                    <select id="tipo_revestimento" class="input-field text-sm" onchange="calcular()"></select>
+                </div>
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-slate-300 mb-1 block">Tamanho da Peça</label>
+                    <select id="tamanho_revestimento" class="input-field text-sm" onchange="calcular()"></select>
+                    <p id="aviso_dupla_colagem" class="text-[9px] text-orange-400 font-bold mt-1 hidden"><i class="ph-fill ph-warning"></i> Exige Dupla Colagem de Argamassa</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-slate-300 mb-1 block">Preparação da Base</label>
+                    <select id="preparacao_base" class="input-field text-sm" onchange="calcular()"></select>
+                </div>
+            </div>
+
+            <div id="bloco_materiais" class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="col-span-2">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Tipo de Argamassa</label>
+                        <select id="argamassa" class="input-field text-sm border-indigo-500/30" onchange="calcular()"></select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Tipo de Rejunte</label>
+                        <select id="rejunte" class="input-field text-sm border-indigo-500/30" onchange="calcular()"></select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Espessura Junta</label>
+                        <select id="junta" class="input-field text-sm border-indigo-500/30" onchange="calcular()"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-700/50">
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-emerald-400 mb-1 block">Complexidade / Paginação</label>
+                    <select id="complexidade" class="input-field text-sm border-emerald-500/30" onchange="calcular()"></select>
+                </div>
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-slate-300 mb-1 block">Risco / Logística (Altura)</label>
+                    <select id="risco" class="input-field text-sm" onchange="calcular()"></select>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -z-10"></div>
+            
+            <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
+                <i class="ph-fill ph-chart-line-up"></i> 3. Gestão de Equipe e Lucro
+            </h2>
+            
+            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50 space-y-3">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-700/50">
+                    <div>
+                        <span class="text-xs font-bold text-slate-300 block">Prazo (Dias)</span>
+                        <label class="flex items-center gap-1 cursor-pointer mt-1">
+                            <input type="checkbox" id="prazo_auto" class="w-3 h-3 accent-emerald-500" checked onchange="calcular()">
+                            <span class="text-[9px] text-emerald-400 uppercase font-bold tracking-widest">Cálculo Inteligente</span>
+                        </label>
+                    </div>
+                    <input type="number" id="prazo" class="input-field !w-20 !py-1.5 text-center font-bold text-lg text-emerald-400 border-emerald-500/30" oninput="document.getElementById('prazo_auto').checked = false; calcular()">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Qtd. Pedreiros</label>
+                        <input type="number" id="qtd_pedreiro" value="1" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Diária Pedreiro</label>
+                        <input type="number" id="diaria_pedreiro" value="180" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Qtd. Ajudantes</label>
+                        <input type="number" id="qtd_ajudante" value="1" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Diária Ajudante</label>
+                        <input type="number" id="diaria_ajudante" value="90" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center pt-2 border-t border-slate-700/50">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold">Custo Diário da Equipe</span>
+                    <span id="custo_diario_equipe" class="text-sm font-bold text-red-400">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold text-slate-300">Valor Cobrado (Mão de Obra)</label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="mo_manual" class="w-4 h-4 rounded accent-emerald-500" onchange="toggleMoManual()">
+                        <span class="text-[10px] text-emerald-400 uppercase font-bold tracking-widest">Personalizar</span>
+                    </label>
+                </div>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">R$</span>
+                    <input type="number" id="mo_cobrada" class="input-field !pl-9 !font-bold !text-lg text-emerald-400 border-emerald-500/30" disabled oninput="calcular()">
+                </div>
+                <p id="mo_sugerida_aviso" class="text-[10px] text-slate-500 hidden">
+                    Sugestão do sistema: <span id="mo_sugerida_texto" class="font-bold text-slate-400">R$ 0,00</span>
+                </p>
+            </div>
+
+            <div id="painel_lucro" class="mt-4 p-4 rounded-2xl border transition-colors flex flex-col items-center">
+                <span id="lucro_titulo" class="text-[10px] uppercase font-bold tracking-widest mb-1">Lucro Líquido Estimado</span>
+                <span id="lucro_valor" class="text-3xl font-black">R$ 0,00</span>
+                <span id="lucro_margem" class="text-xs font-bold px-2 py-0.5 rounded-full mt-2">0% de margem</span>
+                
+                <div class="w-full h-px bg-slate-700/50 my-3"></div>
+                
+                <div class="text-center">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold block">Meta de Produção Diária</span>
+                    <span id="meta_producao" class="text-sm font-bold text-slate-200">0 m² / dia</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="box-resultado" class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 hidden">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <i class="ph-fill ph-list-numbers"></i> Materiais a Comprar
+            </h2>
+            <div id="lista-materiais-previa" class="space-y-2 mb-4"></div>
+        </section>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-50">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Custo do Serviço</p>
+                <p id="valor-total-geral" class="text-2xl font-black text-white">R$ 0,00</p>
+            </div>
+            <button onclick="salvarOrcamento()" class="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-transform active:scale-95 flex items-center gap-2">
+                <i class="ph ph-check-circle text-xl"></i> Salvar
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // VARIAVEIS GLOBAIS
+        let dbRevestimento = null;
+        let calculoAtual = null;
+        let isQuantificar = true;
+
+        window.onload = async () => {
+            try {
+                const response = await fetch('revestimento_db.json');
+                if (!response.ok) throw new Error("Erro de rede");
+                dbRevestimento = await response.json();
+            } catch (error) {
+                console.warn("Usando banco de dados de fallback interno...");
+                dbRevestimento = {
+                    "configuracoes_obra": { "perda_material": 1.15, "consumo_argamassa_simples_kg_m2": 5, "consumo_argamassa_dupla_kg_m2": 10 },
+                    "tipos_revestimento": { "ceramica": { "nome": "Cerâmica Padrão", "base_mo": 35.00 }, "porcelanato": { "nome": "Porcelanato", "base_mo": 55.00 }, "pastilha": { "nome": "Pastilha / Mosaico", "base_mo": 80.00 }, "pedra_natural": { "nome": "Pedra Natural (Mármore)", "base_mo": 90.00 } },
+                    "tamanhos_revestimento": { "pequeno": { "nome": "Até 45x45 cm (Simples)", "exige_dupla_colagem": false, "fator_mo": 1.0, "consumo_rejunte_kg_m2": 0.4 }, "medio": { "nome": "De 46x46 a 60x60 (Dupla)", "exige_dupla_colagem": true, "fator_mo": 1.1, "consumo_rejunte_kg_m2": 0.3 }, "grande": { "nome": "Grandes Formatos", "exige_dupla_colagem": true, "fator_mo": 1.3, "consumo_rejunte_kg_m2": 0.2 }, "pastilha": { "nome": "Pastilhas (Telas)", "exige_dupla_colagem": false, "fator_mo": 1.5, "consumo_rejunte_kg_m2": 1.2 } },
+                    "preparacao_base": { "pronta": { "nome": "Base Pronta / Nivelada", "acrescimo_mo": 0 }, "contrapiso": { "nome": "Fazer Contrapiso", "acrescimo_mo": 25.00 }, "reboco": { "nome": "Fazer Emboço (Parede)", "acrescimo_mo": 28.00 }, "regularizacao": { "nome": "Regularização Fina", "acrescimo_mo": 12.00 } },
+                    "argamassas": { "aci": { "nome": "Argamassa ACI", "peso_saco_kg": 20 }, "acii": { "nome": "Argamassa ACII", "peso_saco_kg": 20 }, "aciii": { "nome": "Argamassa ACIII (Piso s/ Piso)", "peso_saco_kg": 20 }, "piscina": { "nome": "Argamassa Piscinas", "peso_saco_kg": 20 } },
+                    "rejuntes": { "cimenticio": { "nome": "Rejunte Cimentício" }, "acrilico": { "nome": "Rejunte Acrílico" }, "epoxi": { "nome": "Rejunte Epóxi (Piscinas)" } },
+                    "juntas_espessura": { "junta_seca": { "nome": "Retificado (1 a 1.5mm)", "fator_consumo": 0.7 }, "padrao": { "nome": "Padrão (2 a 3mm)", "fator_consumo": 1.0 }, "larga": { "nome": "Larga (Acima 4mm)", "fator_consumo": 1.5 } },
+                    "complexidade_paginacao": { "esquadrejado": { "nome": "Reto / Esquadrejado", "fator_producao": 1.0, "acrescimo_mo": 0.00 }, "diagonal": { "nome": "Assentamento Diagonal", "fator_producao": 0.7, "acrescimo_mo": 15.00 }, "paginacao_projeto": { "nome": "Projeto Paginação Específico", "fator_producao": 0.6, "acrescimo_mo": 25.00 } },
+                    "risco_logistica": { "terreo": { "nome": "Térreo / Interno Livre", "multiplicador": 1.0, "taxa": 0 }, "andaime": { "nome": "Uso de Andaime", "multiplicador": 1.3, "taxa": 150.00 }, "balancim": { "nome": "Balancim", "multiplicador": 1.8, "taxa": 400.00 }, "rapel": { "nome": "Rapel / Cordas", "multiplicador": 2.5, "taxa": 800.00 } }
+                };
+            }
+
+            popularSelects();
+
+            // Tenta carregar dados em andamento
+            const salvo = localStorage.getItem('orcamento_revestimento');
+            if (salvo) {
+                try {
+                    const dados = JSON.parse(salvo);
+                    document.getElementById('cliente').value = dados.cliente || '';
+                    if (dados.parametros) {
+                        document.getElementById('area').value = dados.parametros.area;
+                        
+                        if(dados.parametros.isQuantificar === false) {
+                            document.getElementById('modo_quantificar').checked = false;
+                            toggleModo();
+                        }
+
+                        document.getElementById('tipo_revestimento').value = dados.parametros.tipo_revestimento;
+                        document.getElementById('tamanho_revestimento').value = dados.parametros.tamanho_revestimento;
+                        document.getElementById('preparacao_base').value = dados.parametros.preparacao_base;
+                        document.getElementById('complexidade').value = dados.parametros.complexidade;
+                        document.getElementById('risco').value = dados.parametros.risco;
+                        
+                        if(dados.parametros.isQuantificar) {
+                            document.getElementById('argamassa').value = dados.parametros.argamassa;
+                            document.getElementById('rejunte').value = dados.parametros.rejunte;
+                            document.getElementById('junta').value = dados.parametros.junta;
+                        }
+
+                        if(dados.parametros.isPrazoAuto === false) {
+                            document.getElementById('prazo_auto').checked = false;
+                            document.getElementById('prazo').value = dados.schedule?.dias || 5;
+                        }
+                        calcular();
+                    }
+                } catch(e) {}
+            }
+        };
+
+        function popularSelects() {
+            if (!dbRevestimento) return;
+            const addOptions = (id, obj) => {
+                const select = document.getElementById(id);
+                select.innerHTML = ''; 
+                for (const [k, v] of Object.entries(obj)) select.innerHTML += `<option value="${k}">${v.nome}</option>`;
+            };
+            addOptions('tipo_revestimento', dbRevestimento.tipos_revestimento);
+            addOptions('tamanho_revestimento', dbRevestimento.tamanhos_revestimento);
+            addOptions('preparacao_base', dbRevestimento.preparacao_base);
+            addOptions('argamassa', dbRevestimento.argamassas);
+            addOptions('rejunte', dbRevestimento.rejuntes);
+            addOptions('junta', dbRevestimento.juntas_espessura);
+            addOptions('complexidade', dbRevestimento.complexidade_paginacao);
+            addOptions('risco', dbRevestimento.risco_logistica);
+        }
+
+        function toggleModo() {
+            isQuantificar = document.getElementById('modo_quantificar').checked;
+            const blocoMateriais = document.getElementById('bloco_materiais');
+            const modoTexto = document.getElementById('modo_texto');
+            
+            if (isQuantificar) {
+                blocoMateriais.classList.remove('hidden');
+                modoTexto.innerText = "Quantificar Materiais + Mão de Obra";
+            } else {
+                blocoMateriais.classList.add('hidden');
+                modoTexto.innerText = "Apenas Precificar Mão de Obra";
+            }
+            calcular();
+        }
+
+        function formatarValor(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+
+        function calcularAreaH() {
+            let a = parseFloat(document.getElementById('dim_a').value) || 0;
+            let b = parseFloat(document.getElementById('dim_b').value) || 0;
+            if (a > 0 && b > 0) {
+                document.getElementById('area').value = (a * b).toFixed(2);
+                calcular();
+            }
+        }
+
+        function toggleMoManual() {
+            const checkbox = document.getElementById('mo_manual');
+            const inputMo = document.getElementById('mo_cobrada');
+            const aviso = document.getElementById('mo_sugerida_aviso');
+            
+            if (checkbox.checked) {
+                inputMo.disabled = false;
+                inputMo.focus();
+                aviso.classList.remove('hidden');
+            } else {
+                inputMo.disabled = true;
+                aviso.classList.add('hidden');
+                inputMo.value = ''; 
+            }
+            calcular();
+        }
+
+        function calcular() {
+            if (!dbRevestimento) return; 
+
+            const area = parseFloat(document.getElementById('area').value) || 0;
+            const boxResultado = document.getElementById('box-resultado');
+
+            if (area <= 0) {
+                boxResultado.classList.add('hidden');
+                document.getElementById('valor-total-geral').innerText = "R$ 0,00";
+                calculoAtual = null;
+                return;
+            }
+
+            // Exibir/Ocultar caixa de materiais na base (Se não quantificar, não mostra materiais)
+            if(isQuantificar) boxResultado.classList.remove('hidden');
+            else boxResultado.classList.add('hidden');
+
+            const idTipo = document.getElementById('tipo_revestimento').value;
+            const idTamanho = document.getElementById('tamanho_revestimento').value;
+            const idPrep = document.getElementById('preparacao_base').value;
+            const idComplexidade = document.getElementById('complexidade').value;
+            const idRisco = document.getElementById('risco').value;
+            
+            const tipo = dbRevestimento.tipos_revestimento[idTipo];
+            const tamanho = dbRevestimento.tamanhos_revestimento[idTamanho];
+            const prep = dbRevestimento.preparacao_base[idPrep];
+            const complexidade = dbRevestimento.complexidade_paginacao[idComplexidade];
+            const risco = dbRevestimento.risco_logistica[idRisco];
+
+            // Aviso visual de dupla colagem
+            if(tamanho.exige_dupla_colagem) document.getElementById('aviso_dupla_colagem').classList.remove('hidden');
+            else document.getElementById('aviso_dupla_colagem').classList.add('hidden');
+
+            // Equipe
+            const qtdPedreiro = parseInt(document.getElementById('qtd_pedreiro').value) || 0;
+            const diariaPedreiro = parseFloat(document.getElementById('diaria_pedreiro').value) || 0;
+            const qtdAjudante = parseInt(document.getElementById('qtd_ajudante').value) || 0;
+            const diariaAjudante = parseFloat(document.getElementById('diaria_ajudante').value) || 0;
+            const isPrazoAuto = document.getElementById('prazo_auto').checked;
+
+            // ==== LÓGICA DE PRAZO (Revestimento) ====
+            if (isPrazoAuto) {
+                let producaoBase = 20; // Pedreiro faz 20m2 dia normal
+                if (idTipo === 'porcelanato' || idTipo === 'pedra_natural') producaoBase = 15;
+                if (idTipo === 'pastilha') producaoBase = 8;
+                if (idPrep !== 'pronta') producaoBase *= 0.6; // Preparar base atrasa 40%
+
+                producaoBase *= tamanho.fator_mo; // Formatos grandes rendem menos m2 as vezes, ou mais, depende. No DB fator alto = mais caro = menos prod
+                producaoBase *= complexidade.fator_producao; // Diagonal ou paginação reduz prod
+                if (idRisco === 'andaime') producaoBase *= 0.8; 
+                if (idRisco === 'balancim' || idRisco === 'rapel') producaoBase *= 0.5; 
+
+                let forcaTrabalho = Math.max(0.1, qtdPedreiro + (qtdAjudante * 0.4)); // Ajudante de pedreiro ajuda mais no rendimento que pintor
+                
+                let diasCalculados = Math.ceil(area / (producaoBase * forcaTrabalho));
+                document.getElementById('prazo').value = Math.max(1, diasCalculados);
+            }
+            const prazo = Math.max(1, parseInt(document.getElementById('prazo').value) || 1);
+
+            let materiaisCalculados = [];
+
+            // ==== CÁLCULO DE MATERIAIS (Só se isQuantificar = true) ====
+            if (isQuantificar) {
+                const idArg = document.getElementById('argamassa').value;
+                const idRej = document.getElementById('rejunte').value;
+                const idJunta = document.getElementById('junta').value;
+                
+                const arg = dbRevestimento.argamassas[idArg];
+                const rej = dbRevestimento.rejuntes[idRej];
+                const junta = dbRevestimento.juntas_espessura[idJunta];
+
+                const fatorPerda = dbRevestimento.configuracoes_obra.perda_material || 1.15;
+                const areaComPerda = area * fatorPerda;
+
+                // 1. Revestimento em si
+                materiaisCalculados.push({ description: `${tipo.nome} (${tamanho.nome})`, unit: 'm²', quantity: Math.ceil(areaComPerda).toString() });
+
+                // 2. Argamassa
+                let consumoArgPorM2 = tamanho.exige_dupla_colagem ? dbRevestimento.configuracoes_obra.consumo_argamassa_dupla_kg_m2 : dbRevestimento.configuracoes_obra.consumo_argamassa_simples_kg_m2;
+                let kgArgamassaTotal = areaComPerda * consumoArgPorM2;
+                let sacosArg = Math.ceil(kgArgamassaTotal / arg.peso_saco_kg);
+                materiaisCalculados.push({ description: arg.nome, unit: 'sc 20kg', quantity: sacosArg.toString() });
+
+                // 3. Rejunte
+                let consumoRejuntePorM2 = tamanho.consumo_rejunte_kg_m2 * junta.fator_consumo;
+                let kgRejunteTotal = Math.ceil(areaComPerda * consumoRejuntePorM2);
+                materiaisCalculados.push({ description: rej.nome, unit: 'kg', quantity: kgRejunteTotal.toString() });
+
+                // 4. Espaçadores / Niveladores
+                let qtdEspacadores = Math.ceil(areaComPerda * 10); // Media generica
+                materiaisCalculados.push({ description: "Espaçadores / Niveladores", unit: 'un', quantity: qtdEspacadores.toString() });
+            }
+
+            // ==== MÃO DE OBRA SUGERIDA ====
+            let baseMo = tipo.base_mo; // Ex: Cerâmica R$ 35
+            baseMo *= tamanho.fator_mo; // Ex: Grande 1.3x = R$ 45,50
+            baseMo += prep.acrescimo_mo; // Ex: Contrapiso + R$ 25,00
+            baseMo += complexidade.acrescimo_mo; // Ex: Diagonal + R$ 15,00
+
+            let moSugerida = ((area * baseMo) * risco.multiplicador) + risco.taxa;
+            document.getElementById('mo_sugerida_texto').innerText = formatarValor(moSugerida);
+
+            // ==== MÃO DE OBRA COBRADA ====
+            const inputMo = document.getElementById('mo_cobrada');
+            const isManual = document.getElementById('mo_manual').checked;
+            if (!isManual) inputMo.value = moSugerida.toFixed(2);
+            let receitaMo = parseFloat(inputMo.value) || 0;
+
+            // ==== GESTÃO DE LUCRO INTERNO ====
+            let custoDiarioEquipe = (qtdPedreiro * diariaPedreiro) + (qtdAjudante * diariaAjudante);
+            let custoTotalEquipe = custoDiarioEquipe * prazo;
+            let lucroLiquido = receitaMo - custoTotalEquipe;
+            let margemLucro = receitaMo > 0 ? (lucroLiquido / receitaMo) * 100 : 0;
+            let metaDiaria = area / prazo;
+
+            document.getElementById('custo_diario_equipe').innerText = formatarValor(custoDiarioEquipe);
+            document.getElementById('lucro_valor').innerText = formatarValor(lucroLiquido);
+            document.getElementById('lucro_margem').innerText = `${margemLucro.toFixed(1)}% de margem`;
+            document.getElementById('meta_producao').innerText = `Equipe fará ${metaDiaria.toFixed(1)} m² / dia.`;
+
+            const painelLucro = document.getElementById('painel_lucro');
+            const margemBadge = document.getElementById('lucro_margem');
+            
+            painelLucro.classList.remove('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400', 'bg-red-500/10', 'border-red-500/30', 'text-red-400');
+            margemBadge.classList.remove('bg-emerald-500/20', 'text-emerald-300', 'bg-red-500/20', 'text-red-300');
+
+            if (lucroLiquido >= 0) {
+                painelLucro.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+                margemBadge.classList.add('bg-emerald-500/20', 'text-emerald-300');
+                document.getElementById('lucro_titulo').innerText = "Lucro Líquido Estimado";
+            } else {
+                painelLucro.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+                margemBadge.classList.add('bg-red-500/20', 'text-red-300');
+                document.getElementById('lucro_titulo').innerText = "PREJUÍZO ESTIMADO!";
+            }
+
+            // ==== ATUALIZA UI PREVIA CLIENTE ====
+            const divMateriais = document.getElementById('lista-materiais-previa');
+            divMateriais.innerHTML = '';
+            materiaisCalculados.forEach(m => {
+                divMateriais.innerHTML += `
+                <div class="flex justify-between items-center bg-slate-900/50 p-2 rounded-lg border border-slate-700/50">
+                    <span class="text-xs text-slate-300 w-3/4 truncate">${m.quantity}x ${m.description}</span>
+                    <span class="text-[10px] uppercase font-bold text-indigo-400 bg-indigo-900/30 px-2 py-1 rounded">A comprar</span>
+                </div>`;
+            });
+
+            document.getElementById('valor-total-geral').innerText = formatarValor(receitaMo);
+
+            // Prepara para salvar
+            calculoAtual = {
+                parametros: { 
+                    area, isQuantificar, tipo_revestimento: idTipo, tamanho_revestimento: idTamanho, 
+                    preparacao_base: idPrep, complexidade: idComplexidade, risco: idRisco, isPrazoAuto 
+                },
+                materials: materiaisCalculados,
+                schedule: { dias: prazo },
+                total: receitaMo,
+                financial: { total: receitaMo }
+            };
+
+            // Adiciona as seleções de materiais no save só se for modo quantificar
+            if(isQuantificar) {
+                calculoAtual.parametros.argamassa = document.getElementById('argamassa').value;
+                calculoAtual.parametros.rejunte = document.getElementById('rejunte').value;
+                calculoAtual.parametros.junta = document.getElementById('junta').value;
+            }
+        }
+
+        function limparCalculo() { 
+            document.getElementById('area').value = ''; 
+            document.getElementById('dim_a').value = '';
+            document.getElementById('dim_b').value = '';
+            document.getElementById('cliente').value = ''; 
+            document.getElementById('prazo_auto').checked = true;
+            calcular(); 
+        }
+
+        function salvarOrcamento() {
+            if (!calculoAtual) { alert("Preencha a Área Total primeiro."); return; }
+            calculoAtual.cliente = document.getElementById('cliente').value.trim();
+            localStorage.setItem('orcamento_revestimento', JSON.stringify(calculoAtual));
+            window.location.href = "visualizacao.html?modulo=revestimento";
+        }
+    </script>
+</body>
+</html>
