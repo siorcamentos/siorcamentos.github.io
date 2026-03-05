@@ -3,252 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ConstrutorPro · Dashboard</title>
+    <title>Construtor PRO · Painel</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { brand: { 500: '#2563eb', 600: '#1d4ed8' } }
+                }
+            }
         }
     </script>
-
     <style>
-        body {
-            background: #f1f5f9;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-
-        a.card-service {
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-
-        a.card-service:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-        }
-
-        .badge-status {
-            font-size: 0.65rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        body { background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 1.25rem; }
+        .action-btn { transition: all 0.2s; }
+        .action-btn:active { transform: scale(0.95); }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
     </style>
 </head>
+<body class="text-slate-200 antialiased min-h-screen pb-20">
 
-<body class="bg-slate-50 min-h-screen font-sans antialiased">
-
-<div class="max-w-6xl mx-auto p-4 md:p-8">
-
-    <!-- HEADER -->
-    <header class="flex flex-wrap justify-between items-center mb-10">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center text-xl shadow-lg shadow-blue-600/20">
-                <i class="fas fa-helmet-safety text-blue-100"></i>
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-tr from-brand-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/30">
+                <i class="ph-fill ph-hard-hat text-xl text-white"></i>
             </div>
             <div>
-                <h1 class="text-2xl font-black text-slate-800 tracking-tight">
-                    ConstrutorPro<span class="text-blue-600">.</span>
-                </h1>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
-                    Painel de Resumo · Orçamentos
-                </p>
+                <h1 class="font-bold text-white leading-tight">Construtor PRO</h1>
+                <div class="flex items-center gap-2 mt-0.5">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Painel</p>
+                    <span class="text-slate-600">•</span>
+                    <span id="sync-status" class="text-[10px] font-semibold text-brand-400 flex items-center gap-1">
+                        <i class="ph ph-arrows-clockwise animate-spin"></i> Conectando...
+                    </span>
+                </div>
             </div>
         </div>
-
-        <button onclick="limparTudo()"
-            class="px-4 py-2.5 bg-white text-red-500 rounded-lg shadow-sm border border-slate-200 hover:bg-red-50 transition flex items-center gap-2 text-sm font-bold">
-            <i class="fas fa-trash-alt"></i> Resetar Dados
+        <button onclick="sair()" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i class="ph ph-sign-out text-xl"></i>
         </button>
     </header>
 
-    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">
-        Módulos Disponíveis
-    </h2>
+    <main class="p-5 max-w-md mx-auto space-y-8">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <section>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Ações Rápidas</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="orcamento-alvenaria.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800">
+                            <div class="w-14 h-14 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center"><i class="ph-fill ph-wall text-3xl"></i></div>
+                            <span class="font-semibold text-sm text-slate-200">Alvenaria</span>
+                        </a>
+                        
+                        <a href="orcamento-pintura.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800">
+                            <div class="w-14 h-14 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center"><i class="ph-fill ph-paint-roller text-3xl"></i></div>
+                            <span class="font-semibold text-sm text-slate-200">Pintura</span>
+                        </a>
+                        
+                        <a href="orcamento-revestimento.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800">
+                            <div class="w-14 h-14 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><i class="ph-fill ph-squares-four text-3xl"></i></div>
+                            <span class="font-semibold text-sm text-slate-200">Revestimento</span>
+                        </a>
+                        
+                        <a href="orcamento-modelo.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800 border-dashed border-slate-600 bg-slate-800/50">
+                            <div class="w-14 h-14 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="ph-fill ph-file-text text-3xl"></i></div>
+                            <span class="font-semibold text-sm text-emerald-400">Modelo Livre</span>
+                        </a>
+                    </div>
+                </section>
 
-        <!-- ALVENARIA -->
-        <a href="visualizacao.html?modulo=alvenaria"
-           class="card-service bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+        <section>
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Resumo Financeiro</h2>
+            <div class="card overflow-hidden">
+                
+                <div id="lista-resumo">
+                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center"><i class="ph-fill ph-wall"></i></div>
+                                <div><p class="text-sm font-semibold text-slate-200">Alvenaria</p><span id="status-alvenaria" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
+                            </div>
+                            <div class="text-right"><p id="valor-alvenaria" class="font-bold text-slate-200">R$ 0,00</p></div>
+                        </div>
+                        <div id="acoes-alvenaria" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
+                            <button onclick="excluirOrcamento('alvenaria')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
+                            <a href="visualizacao.html?modulo=alvenaria" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
+                        </div>
+                    </div>
 
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fas fa-hammer"></i>
+                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center"><i class="ph-fill ph-paint-roller"></i></div>
+                                <div><p class="text-sm font-semibold text-slate-200">Pintura</p><span id="status-pintura" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
+                            </div>
+                            <div class="text-right"><p id="valor-pintura" class="font-bold text-slate-200">R$ 0,00</p></div>
+                        </div>
+                        <div id="acoes-pintura" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
+                            <button onclick="excluirOrcamento('pintura')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
+                            <a href="visualizacao.html?modulo=pintura" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center"><i class="ph-fill ph-squares-four"></i></div>
+                                <div><p class="text-sm font-semibold text-slate-200">Revestimento</p><span id="status-revestimento" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
+                            </div>
+                            <div class="text-right"><p id="valor-revestimento" class="font-bold text-slate-200">R$ 0,00</p></div>
+                        </div>
+                        <div id="acoes-revestimento" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
+                            <button onclick="excluirOrcamento('revestimento')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
+                            <a href="visualizacao.html?modulo=revestimento" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><i class="ph-fill ph-file-text"></i></div>
+                                <div><p class="text-sm font-semibold text-slate-200">Modelo Livre</p><span id="status-modelo" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
+                            </div>
+                            <div class="text-right"><p id="valor-modelo" class="font-bold text-slate-200">R$ 0,00</p></div>
+                        </div>
+                        <div id="acoes-modelo" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
+                            <button onclick="excluirOrcamento('modelo')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
+                            <a href="visualizacao.html?modulo=modelo" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
+                        </div>
+                    </div>
                 </div>
-                <span class="badge-status bg-slate-100 text-slate-400" id="badge-alvenaria">
-                    Sem dados
-                </span>
-            </div>
 
-            <h3 class="font-black text-slate-800 text-xl mb-3">Alvenaria</h3>
-
-            <div class="mt-auto space-y-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Prazo</span>
-                    <span class="font-bold text-slate-700 bg-slate-50 px-2 py-1 rounded text-sm">
-                        <span id="prazo-alvenaria">0</span> dias
-                    </span>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Valor Total</span>
-                    <div class="font-black text-slate-800 text-2xl tracking-tight"
-                         id="valor-alvenaria">
-                        R$ 0,00
+                <div class="p-5 bg-gradient-to-r from-brand-600/20 to-transparent flex justify-between items-center">
+                    <div>
+                        <p class="text-xs font-bold text-brand-400 uppercase tracking-widest">Total Geral</p>
+                        <p class="text-xs text-slate-400 mt-1">Soma de todos os módulos</p>
+                    </div>
+                    <div class="text-right">
+                        <p id="valor-geral" class="text-2xl font-black text-white">R$ 0,00</p>
                     </div>
                 </div>
             </div>
-        </a>
+        </section>
 
-        <!-- REVESTIMENTO -->
-        <a href="visualizacao.html?modulo=revestimento"
-           class="card-service bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+    </main>
 
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fas fa-border-all"></i>
-                </div>
-                <span class="badge-status bg-slate-100 text-slate-400" id="badge-revestimento">
-                    Sem dados
-                </span>
-            </div>
-
-            <h3 class="font-black text-slate-800 text-xl mb-3">Revestimento</h3>
-
-            <div class="mt-auto space-y-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Prazo</span>
-                    <span class="font-bold text-slate-700 bg-slate-50 px-2 py-1 rounded text-sm">
-                        <span id="prazo-revestimento">0</span> dias
-                    </span>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Valor Total</span>
-                    <div class="font-black text-slate-800 text-2xl tracking-tight"
-                         id="valor-revestimento">
-                        R$ 0,00
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        <!-- PINTURA -->
-        <a href="visualizacao.html?modulo=pintura"
-           class="card-service bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fas fa-paint-roller"></i>
-                </div>
-                <span class="badge-status bg-slate-100 text-slate-400" id="badge-pintura">
-                    Sem dados
-                </span>
-            </div>
-
-            <h3 class="font-black text-slate-800 text-xl mb-3">Pintura</h3>
-
-            <div class="mt-auto space-y-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Prazo</span>
-                    <span class="font-bold text-slate-700 bg-slate-50 px-2 py-1 rounded text-sm">
-                        <span id="prazo-pintura">0</span> dias
-                    </span>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Valor Total</span>
-                    <div class="font-black text-slate-800 text-2xl tracking-tight"
-                         id="valor-pintura">
-                        R$ 0,00
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        <!-- ORÇAMENTO MODELO -->
-        <a href="orcamento-modelo.html"
-           class="card-service bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-
-            <div class="flex items-center justify-center flex-1 text-center">
-                <div>
-                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-4">
-                        <i class="fas fa-file-signature"></i>
-                    </div>
-                    <h3 class="font-black text-slate-800 text-xl mb-2">
-                        Orçamento Modelo
-                    </h3>
-                    <p class="text-sm text-slate-500">
-                        Modelo simplificado para preenchimento direto e impressão.
-                    </p>
-                </div>
-            </div>
-        </a>
-
-    </div>
-
-    <footer class="mt-12 text-center text-xs font-medium text-slate-400">
-        © 2026 ConstrutorPro · Sistema de Geração de Orçamentos
-    </footer>
-
-</div>
-
-<script>
-function carregarEMontar() {
-
-    const modulos = ['alvenaria', 'revestimento', 'pintura'];
-
-    modulos.forEach(modulo => {
-
-        const dadosRaw = localStorage.getItem('orcamento_' + modulo);
-        if (!dadosRaw) return;
-
+    <script>
+        // ==================== CONEXÃO SUPABASE ====================
+        const SUPABASE_URL = "https://jbrkmuduyaibduwopxqn.supabase.co"; 
+        const SUPABASE_ANON_KEY = "sb_publishable_TUL_4vjHuNL6O4KBUpOGrA_kh8ZmJJ4"; 
+        let supabaseClient;
+        
         try {
-            const dados = JSON.parse(dadosRaw);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) { console.error("Erro ao inicializar Supabase"); }
 
-            const badge = document.getElementById(`badge-${modulo}`);
-            if (badge) {
-                badge.innerText = "Salvo";
-                badge.classList.remove('bg-slate-100','text-slate-400');
-                badge.classList.add('bg-emerald-100','text-emerald-700');
-            }
-
-            let prazo = dados?.schedule?.total || dados?.prazo || dados?.dias || 0;
-            let total = dados?.financial?.total || dados?.total || 0;
-
-            if (document.getElementById(`prazo-${modulo}`))
-                document.getElementById(`prazo-${modulo}`).innerText = prazo;
-
-            if (document.getElementById(`valor-${modulo}`))
-                document.getElementById(`valor-${modulo}`).innerText =
-                    "R$ " + Number(total).toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-
-        } catch(e) {
-            console.error("Erro módulo:", modulo, e);
+        const userId = localStorage.getItem("user_id");
+        if (!userId) {
+            window.location.href = "../index.html"; // Força login se não tiver ID
         }
 
-    });
-}
+        // ==================== SINCRONIZAÇÃO COM A NUVEM ====================
+        async function sincronizarNuvem() {
+            if (!userId || !supabaseClient) return;
+            const modulos = ['alvenaria', 'revestimento', 'pintura', 'modelo'];
+            const syncStatus = document.getElementById('sync-status');
 
-function limparTudo() {
-    if (confirm("Deseja apagar permanentemente todos os orçamentos?")) {
-        localStorage.clear();
-        location.reload();
-    }
-}
+            try {
+                // 1. PUSH: Envia o que está no celular para o Banco de Dados
+                for (const modulo of modulos) {
+                    const dadosRaw = localStorage.getItem('orcamento_' + modulo);
+                    if (dadosRaw) {
+                        const dados = JSON.parse(dadosRaw);
+                        const titulo = dados.cliente || `Orçamento de ${modulo.toUpperCase()}`;
 
-window.onload = carregarEMontar;
-</script>
+                        // Verifica se o orçamento já existe no BD
+                        const { data: existente } = await supabaseClient
+                            .from('orcamentos')
+                            .select('id')
+                            .eq('user_id', userId)
+                            .eq('tipo', modulo)
+                            .maybeSingle();
 
+                        if (existente) {
+                            await supabaseClient.from('orcamentos').update({
+                                titulo: titulo,
+                                dados: dados,
+                                updated_at: new Date()
+                            }).eq('id', existente.id);
+                        } else {
+                            await supabaseClient.from('orcamentos').insert([{
+                                user_id: userId,
+                                tipo: modulo,
+                                titulo: titulo,
+                                dados: dados,
+                                created_at: new Date()
+                            }]);
+                        }
+                    }
+                }
+
+                // 2. PULL: Baixa orçamentos da Nuvem que podem estar faltando no celular
+                const { data: orcamentosNuvem, error } = await supabaseClient
+                    .from('orcamentos')
+                    .select('*')
+                    .eq('user_id', userId);
+
+                if (orcamentosNuvem && !error) {
+                    orcamentosNuvem.forEach(orc => {
+                        localStorage.setItem('orcamento_' + orc.tipo, JSON.stringify(orc.dados));
+                    });
+                }
+
+                // ✅ PROTEÇÃO ADICIONADA AQUI (Sucesso)
+                if (syncStatus) {
+                    syncStatus.innerHTML = '<i class="ph ph-cloud-check text-emerald-400 text-sm"></i> <span class="text-emerald-400">Sincronizado</span>';
+                }
+                
+            } catch (e) {
+                console.error("Erro na sincronização:", e);
+                // ✅ PROTEÇÃO ADICIONADA AQUI (Erro / Offline)
+                if (syncStatus) {
+                    syncStatus.innerHTML = '<i class="ph ph-cloud-warning text-orange-400 text-sm"></i> <span class="text-orange-400">Offline</span>';
+                }
+            }
+
+            // Após sincronizar, monta a tela com os dados atualizados
+            carregarEMontar();
+        }
+
+        // ==================== RENDERIZAÇÃO DA TELA ====================
+// ==================== RENDERIZAÇÃO DA TELA ====================
+        function carregarEMontar() {
+            const modulos = ['alvenaria', 'revestimento', 'pintura', 'modelo'];
+            let totalGeral = 0;
+
+            modulos.forEach(modulo => {
+                const dadosRaw = localStorage.getItem('orcamento_' + modulo);
+                if (!dadosRaw) return;
+
+                try {
+                    const dados = JSON.parse(dadosRaw);
+                    
+                    const statusBadge = document.getElementById(`status-${modulo}`);
+                    if (statusBadge) {
+                        statusBadge.innerText = "Salvo";
+                        statusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400";
+                    }
+
+                    const acoesDiv = document.getElementById(`acoes-${modulo}`);
+                    if (acoesDiv) acoesDiv.classList.remove('hidden');
+
+                    let total = dados?.financial?.total || dados?.total || 0;
+                    totalGeral += Number(total);
+
+                    const valorModulo = document.getElementById(`valor-${modulo}`);
+                    if (valorModulo) {
+                        valorModulo.innerText = 
+                            "R$ " + Number(total).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
+                } catch(e) { console.error("Erro ao carregar o módulo:", modulo, e); }
+            });
+
+            // ✅ PROTEÇÃO ADICIONADA AQUI (Evita o erro "Cannot set properties of null")
+            const textoValorGeral = document.getElementById('valor-geral');
+            if (textoValorGeral) {
+                textoValorGeral.innerText = 
+                    "R$ " + totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        }
+
+        // ==================== DELETAR ORÇAMENTO ====================
+        async function excluirOrcamento(modulo) {
+            const nomeFormatado = modulo.charAt(0).toUpperCase() + modulo.slice(1);
+            
+            if (confirm(`Tem certeza que deseja excluir o orçamento de ${nomeFormatado}?`)) {
+                
+                // 1. Apaga localmente
+                localStorage.removeItem('orcamento_' + modulo);
+                
+                // 2. Apaga do Banco de Dados Supabase
+                if (userId && supabaseClient) {
+                    await supabaseClient
+                        .from('orcamentos')
+                        .delete()
+                        .eq('user_id', userId)
+                        .eq('tipo', modulo);
+                }
+
+                location.reload(); 
+            }
+        }
+
+        // ==================== SAIR DO SISTEMA ====================
+        function sair() {
+            if (confirm("Deseja realmente sair do sistema?")) {
+                localStorage.removeItem("user_id");
+                window.location.href = "../index.html"; 
+            }
+        }
+
+        // ==================== INÍCIO AUTOMÁTICO ====================
+        // Quando a página abre, ela já inicia a sincronização e depois renderiza
+        window.onload = sincronizarNuvem;
+    </script>
 </body>
-  </html>
+</html>

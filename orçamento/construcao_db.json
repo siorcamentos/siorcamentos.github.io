@@ -1,0 +1,332 @@
+{
+  "system_info": {
+    "version": "5.2",
+    "region": "Pernambuco, BR",
+    "currency": "BRL",
+    "last_update": "2026-01-25",
+    "description": "Regras completas para Orçamento, Material e Cronograma de Obras - Versão Corrigida"
+  },
+  "global_settings": {
+    "schedule_rules": {
+      "work_days_per_week": 5,
+      "hours_per_day": 8,
+      "allow_overtime": false,
+      "safety_margin_days": {
+        "min": 0.5,
+        "max": 1.0,
+        "reason": "Margem técnica para falta de material, chuva ou quebra de equipamento."
+      },
+      "weekend_days": ["Saturday", "Sunday"]
+    },
+    "waste_margins": {
+      "bricks": 0.10,
+      "concrete": 0.10,
+      "mortar": 0.10
+    },
+    "packaging": {
+      "cement_bag_kg": 50,
+      "lime_bag_kg": 20
+    },
+    "conversions": {
+      "sand_can_18l_to_m3": 0.018,
+      "gravel_can_18l_to_m3": 0.018,
+      "note": "Use apenas para instrução no canteiro. O sistema compra em m³."
+    }
+  },
+  "phases": {
+    "masonry": {
+      "title": "Alvenaria e Fundação",
+      "productivity_rules": {
+        "bricklaying": {
+          "description": "Assentamento em vão livre",
+          "unit": "unidades_tijolo",
+          "team_daily_rate": { "min": 200, "max": 250, "avg": 225 },
+          "obs": "Considera 1 Pedreiro + 1 Ajudante"
+        }
+      },
+      "items": [
+        {
+          "id": "tijolo_09_baiano_8f",
+          "name": "Tijolo Baiano 8 Furos (9x19x19)",
+          "dimensions_cm": { "w": 9, "h": 19, "l": 19 },
+          "match_pillar_width": [14, 15, 20],
+          "obs": "Compatível com pilares de 14cm (bloco estrutural), 15cm e 20cm",
+          "modes": {
+            "standard_wall": {
+              "description": "Parede de Vedação (Em pé - 9cm)",
+              "qty_per_m2": 25,
+              "mortar_cement_factor": 0.12
+            },
+            "foundation_double": {
+              "description": "Fundação em Alvenaria (Deitado - 19cm)",
+              "qty_per_m2": 50,
+              "mortar_cement_factor": 0.30
+            }
+          }
+        },
+        {
+          "id": "tijolo_09_baiano_6f",
+          "name": "Tijolo Baiano 6 Furos (9x14x19)",
+          "dimensions_cm": { "w": 9, "h": 14, "l": 19 },
+          "match_pillar_width": [14, 15],
+          "obs": "Compatível com pilares de 14cm (bloco estrutural) e 15cm",
+          "modes": {
+            "standard_wall": {
+              "description": "Parede de 14cm (Deitado - Furo aparente)",
+              "qty_per_m2": 34,
+              "mortar_cement_factor": 0.14
+            },
+            "foundation_double": {
+              "description": "Fundação em Alvenaria (Deitado - 14cm)",
+              "qty_per_m2": 68,
+              "mortar_cement_factor": 0.28
+            }
+          }
+        },
+        {
+          "id": "tijolo_11_blocao_9f",
+          "name": "Tijolo 9 Furos / Blocão (11.5x14x24)",
+          "dimensions_cm": { "w": 11.5, "h": 14, "l": 24 },
+          "match_pillar_width": [14, 15],
+          "obs": "Compatível com pilares de 14cm (bloco estrutural) e 15cm",
+          "modes": {
+            "standard_wall": {
+              "description": "Parede de 11.5cm (Em pé)",
+              "qty_per_m2": 26,
+              "mortar_cement_factor": 0.13
+            },
+            "foundation_double": {
+              "description": "Fundação em Alvenaria (Deitado - 24cm)",
+              "qty_per_m2": 52,
+              "mortar_cement_factor": 0.32
+            }
+          }
+        },
+        {
+          "id": "tijolo_14_estrutural",
+          "name": "Bloco Cerâmico 14 (14x19x29)",
+          "dimensions_cm": { "w": 14, "h": 19, "l": 29 },
+          "match_pillar_width": [14, 15],
+          "obs": "Alinhamento perfeito com pilar 14×29 cm (padrão estrutural)",
+          "modes": {
+            "standard_wall": {
+              "description": "Parede de 14cm (Alinhada c/ Pilar 15)",
+              "qty_per_m2": 17,
+              "mortar_cement_factor": 0.11
+            }
+          }
+        },
+        {
+          "id": "tijolo_19_largo",
+          "name": "Bloco Cerâmico 19 (19x19x29)",
+          "dimensions_cm": { "w": 19, "h": 19, "l": 29 },
+          "match_pillar_width": [20],
+          "obs": "Compatível com pilares robustos (20×30 cm ou maior)",
+          "modes": {
+            "standard_wall": {
+              "description": "Parede de 19cm (Alinhada c/ Pilar 20)",
+              "qty_per_m2": 17,
+              "mortar_cement_factor": 0.14
+            }
+          }
+        },
+        {
+          "id": "bloco_concreto_09",
+          "name": "Bloco Concreto 09 (9x19x39)",
+          "dimensions_cm": { "w": 9, "h": 19, "l": 39 },
+          "match_pillar_width": [14, 15],
+          "obs": "Compatível com pilares de 14cm (bloco estrutural) e 15cm",
+          "modes": {
+            "standard": {
+              "description": "Vedação Econômica (Em pé)",
+              "qty_per_m2": 12.5,
+              "mortar_cement_factor": 0.09
+            }
+          }
+        },
+        {
+          "id": "bloco_concreto_14",
+          "name": "Bloco Concreto 14 (14x19x39)",
+          "dimensions_cm": { "w": 14, "h": 19, "l": 39 },
+          "match_pillar_width": [14, 15],
+          "obs": "Alinhamento perfeito com pilar 14×29 cm (padrão estrutural)",
+          "modes": {
+            "standard": {
+              "description": "Estrutural ou Vedação (Em pé)",
+              "qty_per_m2": 12.5,
+              "mortar_cement_factor": 0.11
+            }
+          }
+        },
+        {
+          "id": "bloco_concreto_19",
+          "name": "Bloco Concreto 19 (19x19x39)",
+          "dimensions_cm": { "w": 19, "h": 19, "l": 39 },
+          "match_pillar_width": [20],
+          "obs": "Compatível com pilares robustos (20×30 cm ou maior)",
+          "modes": {
+            "standard": {
+              "description": "Muro de Arrimo ou Pilar 20 (Em pé)",
+              "qty_per_m2": 12.5,
+              "mortar_cement_factor": 0.15
+            }
+          }
+        }
+      ],
+      "pillar_width_standards": {
+        "valid_pillar_cross_sections_cm": [
+          [14, 29],
+          [15, 20],
+          [15, 25],
+          [15, 30],
+          [20, 30]
+        ],
+        "excluded_pillar_cross_sections_cm": [
+          [9, 19]
+        ],
+        "notes": [
+          "Pilar 14×29 cm: padrão para uso com blocos estruturais (canaleta)",
+          "Pilar 15×20 cm: padrão comum para muros e divisórias",
+          "Pilar 15×25 cm: intermediário para cargas moderadas",
+          "Pilar 15×30 cm: para cargas maiores",
+          "Pilar 20×30 cm ou maior: robusto, para estruturas pesadas",
+          "Pilar 9×19 cm: EXCLUÍDO - esbelto demais, não atende normas técnicas"
+        ]
+      }
+    },
+    "structure": {
+      "title": "Pilares e Vigas",
+      "pillar_standards": {
+        "valid_dimensions_cm": [
+          { "width": 14, "depth": 29, "label": "Padrão Estrutural (Bloco/Canaleta)" },
+          { "width": 15, "depth": 20, "label": "Pilar Comum (Muro)" },
+          { "width": 15, "depth": 25, "label": "Intermediário" },
+          { "width": 15, "depth": 30, "label": "Cargas Maiores" },
+          { "width": 20, "depth": 30, "label": "Robusto" }
+        ],
+        "excluded_dimensions_cm": [
+          { "width": 9, "depth": 19, "reason": "Esbelto demais, não atende normas técnicas" }
+        ]
+      },
+      "productivity_rules": {
+        "excavation_sapata": {
+          "description": "Abertura manual de buracos",
+          "unit": "unidades_sapata",
+          "team_daily_rate": { "min": 2, "max": 3, "avg": 2.5 }
+        },
+        "concreting_sapata": {
+          "description": "Concretagem de sapatas prontas",
+          "unit": "unidades_sapata",
+          "team_daily_rate": { "min": 8, "max": 12, "avg": 10 }
+        },
+        "pillar_complete_process": {
+          "description": "Caixaria + Armação + Concretagem",
+          "unit": "unidades_pilar",
+          "team_daily_rate": { "min": 2, "max": 4, "avg": 3 },
+          "complexity_modifier": { 
+            "light_pillar": 1.0,
+            "medium_pillar": 0.8,
+            "heavy_pillar": 0.5
+          },
+          "obs": "Light: 15×20 cm, Medium: 15×25 a 15×30 cm, Heavy: 20×30 cm ou maior"
+        },
+        "beam_concreting": {
+          "description": "Execução de Vigas",
+          "unit": "metros_lineares",
+          "team_daily_rate": { "min": 10, "max": 15, "avg": 12 }
+        }
+      },
+      "materials_mix": {
+        "concrete_standard": {
+          "description": "Concreto 1:2:3 (25 MPa)",
+          "yield_per_m3_final": {
+            "cement_bags": 7.0,
+            "sand_m3": 0.72,
+            "gravel_m3": 1.0
+          },
+          "obs": "Multiplique o volume total dos pilares por estes fatores."
+        }
+      },
+      "labor_pricing": {
+        "pillar_unit": {
+          "description": "Preço por UNIDADE (Escavação + Sapata + Coluna)",
+          "base_price": 230.00,
+          "complexity_levels": [
+            {
+              "id": "light",
+              "condition_label": "Pequeno (15×20 cm) e Sapata 50×50 cm",
+              "dimension_reference": "15×20 cm",
+              "price_override": 230.00
+            },
+            {
+              "id": "medium",
+              "condition_label": "Médio (15×25 cm a 15×30 cm) e Sapata 60×60 cm",
+              "dimension_reference": "15×25 cm a 15×30 cm",
+              "price_override": 290.00
+            },
+            {
+              "id": "heavy",
+              "condition_label": "Grande (20×30 cm ou maior) e Sapata 80×80 cm",
+              "dimension_reference": "20×30 cm ou maior",
+              "price_override": 420.00
+            }
+          ],
+          "obs": "Dimensões referem-se à seção transversal do pilar (largura × profundidade)"
+        },
+        "beam_linear_meter": {
+          "description": "Preço por METRO LINEAR",
+          "methods": [
+            { "id": "canaleta_u", "name": "Viga em Canaleta U", "price_per_m": 40.00 },
+            { "id": "tabua_caixaria", "name": "Viga em Tábua", "price_per_m": 70.00 },
+            { "id": "aerea_vao", "name": "Viga Aérea (Vão Livre)", "price_per_m": 110.00 }
+          ]
+        }
+      }
+    },
+    "finishing": {
+      "title": "Revestimento (Chapisco e Reboco)",
+      "productivity_rules": {
+        "chapisco": {
+          "unit": "m2",
+          "team_daily_rate": { "min": 80, "max": 120, "avg": 100 }
+        },
+        "reboco": {
+          "unit": "m2",
+          "team_daily_rate": { "min": 15, "max": 25, "avg": 20 }
+        }
+      },
+      "layers": {
+        "chapisco_comum": {
+          "id": "chapisco",
+          "description": "Chapisco Traço 1:3",
+          "thickness_avg_m": 0.005,
+          "consumption_per_m2": { "cement_kg": 2.5, "sand_m3": 0.006, "lime_kg": 0 },
+          "labor_price_market_avg": {
+            "price_per_m2": 7.00,
+            "range": "R$ 5,00 a R$ 10,00"
+          }
+        },
+        "emboço_reboco_interno": {
+          "id": "reboco_interno",
+          "description": "Massa Única com Cal (2cm)",
+          "thickness_avg_m": 0.02,
+          "consumption_per_m2": { "cement_kg": 4.5, "sand_m3": 0.025, "lime_kg": 4.0 },
+          "labor_price_market_avg": {
+            "price_per_m2": 22.00,
+            "range": "R$ 18,00 a R$ 25,00"
+          }
+        },
+        "reboco_externo_forte": {
+          "id": "reboco_externo",
+          "description": "Reboco Externo Forte (Sem Cal)",
+          "thickness_avg_m": 0.025,
+          "consumption_per_m2": { "cement_kg": 7.0, "sand_m3": 0.03, "lime_kg": 0 },
+          "labor_price_market_avg": {
+            "price_per_m2": 25.00,
+            "range": "R$ 22,00 a R$ 30,00"
+          }
+        }
+      }
+    }
+  }
+}

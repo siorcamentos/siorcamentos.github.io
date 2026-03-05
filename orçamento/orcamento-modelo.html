@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Construtor PRO · Modelo Livre</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { brand: { 500: '#2563eb', 600: '#1d4ed8' }, accent: { 500: '#10b981' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem;
+            background-color: #0f172a; border: 1px solid #334155; color: white;
+            outline: none; transition: all 0.2s; font-size: 0.875rem;
+        }
+        .input-field:focus {
+            border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        /* Ocultar setinhas de input type number */
+        input[type="number"]::-webkit-outer-spin-button, 
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen flex flex-col">
+
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-4 flex justify-between items-center shadow-lg shadow-black/20">
+        <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white font-medium transition-colors">
+            <i class="ph ph-arrow-left text-xl"></i>
+        </a>
+        <div class="text-center">
+            <h1 class="font-bold text-white text-base leading-tight">Orçamento Livre</h1>
+            <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">Modelo Personalizado</p>
+        </div>
+        <button onclick="limparTudo()" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors">
+            <i class="ph ph-trash text-lg"></i>
+        </button>
+    </header>
+
+    <main class="flex-1 p-4 max-w-md mx-auto w-full pb-32 space-y-6">
+
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <i class="ph-fill ph-user"></i> Dados do Projeto
+            </h2>
+            <input type="text" id="cliente" placeholder="Nome do Cliente ou Obra" class="input-field">
+        </section>
+
+        <section>
+            <div class="flex justify-between items-end mb-3">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <i class="ph-fill ph-list-plus"></i> Itens do Orçamento
+                </h2>
+                <span class="text-xs text-slate-500 font-medium" id="contador-itens">0 itens</span>
+            </div>
+
+            <div id="container-itens" class="space-y-4">
+                </div>
+
+            <button onclick="adicionarItem()" class="w-full mt-4 py-4 rounded-2xl border-2 border-dashed border-slate-700 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all flex flex-col items-center justify-center gap-1">
+                <i class="ph ph-plus-circle text-2xl"></i>
+                <span class="text-sm font-semibold">Adicionar novo item</span>
+            </button>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 p-4 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-50">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Estimado</p>
+                <p id="valor-total-geral" class="text-2xl font-black text-white">R$ 0,00</p>
+            </div>
+            <button onclick="salvarOrcamento()" class="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-600/25 flex items-center gap-2 transition-transform active:scale-95">
+                <i class="ph ph-floppy-disk text-xl"></i> Salvar
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // ESTADO DO APLICATIVO
+        let itens = [];
+        let idCounter = 0;
+
+        // INICIALIZAÇÃO
+        window.onload = () => {
+            // Tenta carregar um orçamento livre já salvo anteriormente
+            const salvo = localStorage.getItem('orcamento_modelo');
+            if (salvo) {
+                try {
+                    const dados = JSON.parse(salvo);
+                    document.getElementById('cliente').value = dados.cliente || '';
+                    if (dados.itensPersonalizados) {
+                        itens = dados.itensPersonalizados;
+                        idCounter = itens.length > 0 ? Math.max(...itens.map(i => i.id)) + 1 : 0;
+                    }
+                } catch(e) { console.error("Erro ao carregar dados salvos"); }
+            }
+            
+            // Se estiver vazio, adiciona um item em branco para o usuário começar
+            if (itens.length === 0) adicionarItem();
+            else renderizarItens();
+        };
+
+        // FUNÇÃO PARA GERAR UM NOVO ITEM
+        function adicionarItem() {
+            itens.push({
+                id: idCounter++,
+                tipo: 'material', // pode ser 'material' ou 'servico'
+                descricao: '',
+                qtd: '',
+                unid: '',
+                valorUnit: ''
+            });
+            renderizarItens();
+        }
+
+        // FUNÇÃO PARA REMOVER UM ITEM
+        function removerItem(id) {
+            itens = itens.filter(item => item.id !== id);
+            renderizarItens();
+        }
+
+        // FUNÇÃO QUE ATUALIZA O VALOR NO ARRAY QUANDO O USUÁRIO DIGITA
+        function atualizarCampo(id, campo, valor) {
+            const item = itens.find(i => i.id === id);
+            if (item) {
+                item[campo] = valor;
+                atualizarCalculos(); // Atualiza os totais em tempo real
+            }
+        }
+
+        // RENDERIZA OS CARDS NA TELA
+        function renderizarItens() {
+            const container = document.getElementById('container-itens');
+            document.getElementById('contador-itens').innerText = `${itens.length} iten${itens.length !== 1 ? 's' : ''}`;
+            
+            container.innerHTML = '';
+
+            itens.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-4 relative shadow-lg";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-900 px-2 py-1 rounded-md">Item ${index + 1}</span>
+                        <button onclick="removerItem(${item.id})" class="text-slate-500 hover:text-red-400 transition-colors p-1">
+                            <i class="ph ph-trash text-lg"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <select class="input-field !w-1/3 !py-2 !px-2 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_0.5rem_center] bg-[length:0.65em_auto]" 
+                                    onchange="atualizarCampo(${item.id}, 'tipo', this.value)">
+                                <option value="material" ${item.tipo === 'material' ? 'selected' : ''}>Material</option>
+                                <option value="servico" ${item.tipo === 'servico' ? 'selected' : ''}>Serviço</option>
+                            </select>
+                            <input type="text" placeholder="Descrição do item" value="${item.descricao}" 
+                                   class="input-field !w-2/3 !py-2" oninput="atualizarCampo(${item.id}, 'descricao', this.value)">
+                        </div>
+
+                        <div class="flex gap-2">
+                            <input type="number" placeholder="Qtd." value="${item.qtd}" 
+                                   class="input-field !w-1/4 !py-2 text-center" oninput="atualizarCampo(${item.id}, 'qtd', this.value)">
+                            
+                            <input type="text" placeholder="Unid." value="${item.unid}" 
+                                   class="input-field !w-1/4 !py-2 text-center" oninput="atualizarCampo(${item.id}, 'unid', this.value)">
+                            
+                            <div class="relative w-2/4">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">R$</span>
+                                <input type="number" placeholder="Valor Unit." value="${item.valorUnit}" 
+                                       class="input-field !w-full !py-2 !pl-8" oninput="atualizarCampo(${item.id}, 'valorUnit', this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 pt-3 border-t border-slate-700/50 flex justify-between items-center">
+                        <span class="text-xs text-slate-500">Subtotal:</span>
+                        <span class="text-sm font-bold text-emerald-400" id="subtotal-${item.id}">R$ 0,00</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            atualizarCalculos();
+        }
+
+        // CALCULA TUDO EM TEMPO REAL
+        function atualizarCalculos() {
+            let totalGeral = 0;
+
+            itens.forEach(item => {
+                // Formata os números (troca vírgula por ponto, se houver)
+                let qtd = parseFloat(item.qtd.replace(',', '.')) || 0;
+                let valor = parseFloat(item.valorUnit.replace(',', '.')) || 0;
+                
+                // Se o usuário colocar valor, mas não colocar qtd, assume 1 para não zerar a conta
+                if (qtd === 0 && valor > 0) qtd = 1; 
+
+                let subtotal = qtd * valor;
+                totalGeral += subtotal;
+
+                const subElement = document.getElementById(`subtotal-${item.id}`);
+                if (subElement) {
+                    subElement.innerText = subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                }
+            });
+
+            document.getElementById('valor-total-geral').innerText = totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function limparTudo() {
+            if (confirm("Deseja apagar todos os itens e começar do zero?")) {
+                itens = [];
+                document.getElementById('cliente').value = '';
+                adicionarItem();
+            }
+        }
+
+        // SALVA OS DADOS NO FORMATO EXATO QUE O visualizacao.html ESPERA
+        function salvarOrcamento() {
+            const cliente = document.getElementById('cliente').value.trim();
+            
+            if (itens.length === 0 || (itens.length === 1 && itens[0].descricao === '')) {
+                alert("Adicione pelo menos um item com descrição antes de salvar.");
+                return;
+            }
+
+            // Filtra os materiais para irem para a tabela do meio
+            const materials = itens
+                .filter(i => i.tipo === 'material' && i.descricao !== '')
+                .map(i => ({
+                    description: i.descricao,
+                    unit: i.unid || 'un',
+                    quantity: i.qtd || '1'
+                }));
+
+            // Calcula o total geral de TODOS os itens
+            const total = itens.reduce((acc, item) => {
+                let q = parseFloat(item.qtd.toString().replace(',', '.')) || 0;
+                let v = parseFloat(item.valorUnit.toString().replace(',', '.')) || 0;
+                if (q === 0 && v > 0) q = 1;
+                return acc + (q * v);
+            }, 0);
+
+            // Monta o objeto final
+            const dados = {
+                cliente: cliente,
+                materials: materials,
+                total: total,
+                itensPersonalizados: itens // Salva o formato cru para se o usuário voltar na tela
+            };
+
+            // Salva no banco local
+            localStorage.setItem('orcamento_modelo', JSON.stringify(dados));
+            
+            // Vai direto para a tela de impressão
+            window.location.href = "visualizacao.html?modulo=modelo";
+        }
+    </script>
+</body>
+</html>

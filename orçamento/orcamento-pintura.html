@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Construtor PRO · Pintura Profissional</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { brand: { 500: '#2563eb', 600: '#1d4ed8' }, accent: { 500: '#10b981' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem;
+            background-color: #0f172a; border: 1px solid #334155; color: white;
+            outline: none; transition: all 0.2s; font-size: 0.875rem;
+        }
+        .input-field:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+        select.input-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 0.65em auto;
+            padding-right: 2.5rem;
+        }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen flex flex-col">
+
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-4 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <i class="ph ph-arrow-left text-xl"></i>
+        </a>
+        <div class="text-center">
+            <h1 class="font-bold text-white text-base leading-tight">Orçamento de Pintura</h1>
+            <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-0.5">Sistema Avançado</p>
+        </div>
+        <button onclick="limparCalculo()" class="text-slate-400 hover:text-red-400"><i class="ph ph-trash text-lg"></i></button>
+    </header>
+
+    <main class="flex-1 p-4 max-w-md mx-auto w-full pb-32 space-y-5">
+        
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4">
+            <h2 class="text-xs font-bold text-blue-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
+                <i class="ph-fill ph-ruler"></i> 1. Projeto e Medidas
+            </h2>
+            <div>
+                <input type="text" id="cliente" placeholder="Nome do Cliente / Obra" class="input-field">
+            </div>
+
+            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                <div class="flex gap-2 mb-3">
+                    <div class="w-1/2">
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Altura (m)</label>
+                        <input type="number" id="altura_parede" placeholder="Ex: 2.8" class="input-field !py-1.5" oninput="calcularAreaH()">
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Comprimento (m)</label>
+                        <input type="number" id="comprimento_parede" placeholder="Ex: 5" class="input-field !py-1.5" oninput="calcularAreaH()">
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="text-[10px] text-blue-400 uppercase font-bold ml-1">Área Total (m²)</label>
+                    <input type="number" id="area" placeholder="0.00" class="input-field !text-xl !font-black text-center text-blue-400" oninput="calcular()">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
+                <i class="ph-fill ph-paint-roller"></i> 2. Escopo Técnico
+            </h2>
+            
+            <div class="bg-blue-900/20 p-3 rounded-xl border border-blue-500/30">
+                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1 block flex items-center gap-1">
+                    <i class="ph-fill ph-lightning"></i> Preenchimento Rápido
+                </label>
+                <select id="sistema_rapido" class="input-field text-sm !border-blue-500/50 !text-blue-200" onchange="aplicarSistemaPronto()">
+                    <option value="">Personalizar manualmente...</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-slate-300 mb-1 block">Tipo de Superfície (Absorção)</label>
+                    <select id="superficie" class="input-field text-sm" onchange="calcular()"></select>
+                </div>
+                <div class="col-span-2">
+                    <label class="text-xs font-semibold text-emerald-400 mb-1 block">Nível de Recortes (Velocidade)</label>
+                    <select id="complexidade" class="input-field text-sm border-emerald-500/30" onchange="calcular()"></select>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 block">Fundo / Preparador</label>
+                <select id="fundo" class="input-field text-sm" onchange="calcular()"></select>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 block">Massa / Nivelamento</label>
+                <select id="massa" class="input-field text-sm" onchange="calcular()"></select>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 block">Tinta de Acabamento</label>
+                <select id="tinta" class="input-field text-sm" onchange="calcular()"></select>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1 block">Risco / Altura</label>
+                <select id="risco" class="input-field text-sm" onchange="calcular()"></select>
+            </div>
+        </section>
+
+        <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -z-10"></div>
+            
+            <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
+                <i class="ph-fill ph-chart-line-up"></i> 3. Gestão de Equipe e Lucro
+            </h2>
+            
+            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50 space-y-3">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-700/50">
+                    <div>
+                        <span class="text-xs font-bold text-slate-300 block">Prazo (Dias)</span>
+                        <label class="flex items-center gap-1 cursor-pointer mt-1">
+                            <input type="checkbox" id="prazo_auto" class="w-3 h-3 accent-emerald-500" checked onchange="calcular()">
+                            <span class="text-[9px] text-emerald-400 uppercase font-bold tracking-widest">Cálculo Inteligente</span>
+                        </label>
+                    </div>
+                    <input type="number" id="prazo" class="input-field !w-20 !py-1.5 text-center font-bold text-lg text-emerald-400 border-emerald-500/30" oninput="document.getElementById('prazo_auto').checked = false; calcular()">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Qtd. Pintores</label>
+                        <input type="number" id="qtd_pintor" value="1" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Diária Pintor (R$)</label>
+                        <input type="number" id="diaria_pintor" value="150" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Qtd. Ajudantes</label>
+                        <input type="number" id="qtd_ajudante" value="0" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Diária Ajudante (R$)</label>
+                        <input type="number" id="diaria_ajudante" value="80" class="input-field !py-1.5" oninput="calcular()">
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center pt-2 border-t border-slate-700/50">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold">Custo Diário da Equipe</span>
+                    <span id="custo_diario_equipe" class="text-sm font-bold text-red-400">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold text-slate-300">Valor Cobrado (Mão de Obra)</label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="mo_manual" class="w-4 h-4 rounded accent-emerald-500" onchange="toggleMoManual()">
+                        <span class="text-[10px] text-emerald-400 uppercase font-bold tracking-widest">Personalizar</span>
+                    </label>
+                </div>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">R$</span>
+                    <input type="number" id="mo_cobrada" class="input-field !pl-9 !font-bold !text-lg text-emerald-400 border-emerald-500/30" disabled oninput="calcular()">
+                </div>
+                <p id="mo_sugerida_aviso" class="text-[10px] text-slate-500 hidden">
+                    Sugestão do sistema: <span id="mo_sugerida_texto" class="font-bold text-slate-400">R$ 0,00</span>
+                </p>
+            </div>
+
+            <div id="painel_lucro" class="mt-4 p-4 rounded-2xl border transition-colors flex flex-col items-center">
+                <span id="lucro_titulo" class="text-[10px] uppercase font-bold tracking-widest mb-1">Lucro Líquido Estimado</span>
+                <span id="lucro_valor" class="text-3xl font-black">R$ 0,00</span>
+                <span id="lucro_margem" class="text-xs font-bold px-2 py-0.5 rounded-full mt-2">0% de margem</span>
+                
+                <div class="w-full h-px bg-slate-700/50 my-3"></div>
+                
+                <div class="text-center">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold block">Meta de Produção Diária</span>
+                    <span id="meta_producao" class="text-sm font-bold text-slate-200">0 m² / dia</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="box-resultado" class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 hidden">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <i class="ph-fill ph-list-numbers"></i> Lista de Materiais a Comprar
+            </h2>
+            <div id="lista-materiais-previa" class="space-y-2 mb-4"></div>
+        </section>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-50">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Custo do Serviço</p>
+                <p id="valor-total-geral" class="text-2xl font-black text-white">R$ 0,00</p>
+            </div>
+            <button onclick="salvarOrcamento()" class="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-transform active:scale-95 flex items-center gap-2">
+                <i class="ph ph-check-circle text-xl"></i> Salvar
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // VARIAVEIS GLOBAIS
+        let dbPintura = null;
+        let calculoAtual = null;
+
+        window.onload = async () => {
+            try {
+                const response = await fetch('pintura_db.json');
+                if (!response.ok) throw new Error("Erro de rede");
+                dbPintura = await response.json();
+            } catch (error) {
+                console.warn("Usando banco de dados de fallback interno...");
+                dbPintura = {
+                    "configuracoes_obra": { "perda_material": 1.1, "altura_padrao_m": 2.8 },
+                    "tipo_superficie": { "reboco_novo": { "nome": "Reboco Novo", "multiplicador_consumo": 1.3 }, "parede_regular": { "nome": "Parede Regular", "multiplicador_consumo": 1.0 }, "parede_pintada": { "nome": "Parede Já Pintada", "multiplicador_consumo": 0.85 } },
+                    "complexidade": { "vao_livre": { "nome": "Vão Livre (Muros, Fachadas Lisas)", "fator_producao": 1.0, "acrescimo_mo": 0.00 }, "padrao": { "nome": "Padrão (Algumas Portas e Janelas)", "fator_producao": 0.75, "acrescimo_mo": 3.00 }, "alto_detalhe": { "nome": "Alto Detalhe (Muitos recortes, Sancas)", "fator_producao": 0.50, "acrescimo_mo": 8.00 } },
+                    "fundos": { "nenhum": { "nome": "Sem fundo", "preco": 0, "rendimento": 9999 }, "selador": { "nome": "Selador Acrílico", "preco": 120, "rendimento": 110 }, "fundo_preparador": { "nome": "Fundo Preparador", "preco": 180, "rendimento": 90 } },
+                    "massas": { "nenhuma": { "nome": "Sem massa", "preco": 0, "rendimento": 9999, "exige_lixa": false }, "pva": { "nome": "Massa PVA", "preco": 65, "rendimento": 40, "exige_lixa": true }, "acrilica": { "nome": "Massa Acrílica", "preco": 115, "rendimento": 38, "exige_lixa": true }, "textura": { "nome": "Textura", "preco": 90, "rendimento": 15, "exige_lixa": false } },
+                    "tintas": { "nenhuma": { "nome": "Apenas Preparação", "preco": 0, "rendimento": 9999 }, "acrilica_fosca": { "nome": "Tinta Acrílica Fosca", "preco": 280, "rendimento": 100 }, "acrilica_semibrilho": { "nome": "Tinta Acrílica Acetinada", "preco": 350, "rendimento": 90 }, "borracha_liquida": { "nome": "Borracha Líquida", "preco": 450, "rendimento": 55 }, "esmalte_sintetico": { "nome": "Esmalte Sintético", "preco": 110, "rendimento": 40 } },
+                    "ferramentas": { "rolo": { "nome": "Rolo", "preco": 35 }, "trincha": { "nome": "Trincha", "preco": 12 }, "lixa": { "nome": "Lixa", "preco": 2.5 }, "fita": { "nome": "Fita Crepe", "preco": 15 } },
+                    "mao_de_obra": { "pintura_m2": 15.00, "massa_m2": 12.00, "textura_m2": 18.00 },
+                    "risco_altura": { "terreo": { "nome": "Térreo / Interno", "multiplicador": 1.0, "taxa": 0 }, "andaime": { "nome": "Andaime", "multiplicador": 1.3, "taxa": 150 }, "balancim": { "nome": "Balancim", "multiplicador": 1.8, "taxa": 400 } },
+                    "sistemas_pintura": {
+                        "pintura_reboco_novo": { "nome": "Pintura em Reboco Novo", "superficie": "reboco_novo", "complexidade": "vao_livre", "fundo": "selador", "massa": "nenhuma", "tinta": "acrilica_fosca" },
+                        "massa_corrida_pintura": { "nome": "Massa Corrida + Pintura", "superficie": "parede_regular", "complexidade": "padrao", "fundo": "selador", "massa": "pva", "tinta": "acrilica_fosca" }
+                    }
+                };
+            }
+
+            popularSelects();
+
+            // Tenta carregar dados em andamento
+            const salvo = localStorage.getItem('orcamento_pintura');
+            if (salvo) {
+                try {
+                    const dados = JSON.parse(salvo);
+                    document.getElementById('cliente').value = dados.cliente || '';
+                    if (dados.parametros) {
+                        document.getElementById('area').value = dados.parametros.area;
+                        document.getElementById('superficie').value = dados.parametros.superficie || 'parede_regular';
+                        document.getElementById('complexidade').value = dados.parametros.complexidade || 'padrao';
+                        document.getElementById('fundo').value = dados.parametros.fundo;
+                        document.getElementById('massa').value = dados.parametros.massa;
+                        document.getElementById('tinta').value = dados.parametros.tinta;
+                        document.getElementById('risco').value = dados.parametros.risco;
+                        
+                        if(dados.parametros.isPrazoAuto === false) {
+                            document.getElementById('prazo_auto').checked = false;
+                            document.getElementById('prazo').value = dados.schedule?.dias || 5;
+                        }
+                        calcular();
+                    }
+                } catch(e) {}
+            }
+        };
+
+        function popularSelects() {
+            if (!dbPintura) return;
+            const addOptions = (id, obj) => {
+                const select = document.getElementById(id);
+                if(id !== 'sistema_rapido') select.innerHTML = ''; 
+                for (const [k, v] of Object.entries(obj)) select.innerHTML += `<option value="${k}">${v.nome}</option>`;
+            };
+            addOptions('sistema_rapido', dbPintura.sistemas_pintura);
+            addOptions('superficie', dbPintura.tipo_superficie);
+            addOptions('complexidade', dbPintura.complexidade); // NOVO
+            addOptions('fundo', dbPintura.fundos);
+            addOptions('massa', dbPintura.massas);
+            addOptions('tinta', dbPintura.tintas);
+            addOptions('risco', dbPintura.risco_altura);
+        }
+
+        function aplicarSistemaPronto() {
+            const idSistema = document.getElementById('sistema_rapido').value;
+            if(!idSistema) return; 
+
+            const sys = dbPintura.sistemas_pintura[idSistema];
+            document.getElementById('superficie').value = sys.superficie;
+            if(sys.complexidade) document.getElementById('complexidade').value = sys.complexidade; // NOVO
+            document.getElementById('fundo').value = sys.fundo;
+            document.getElementById('massa').value = sys.massa;
+            document.getElementById('tinta').value = sys.tinta;
+            
+            calcular(); 
+        }
+
+        function formatarValor(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+
+        function calcularAreaH() {
+            let h = parseFloat(document.getElementById('altura_parede').value) || 0;
+            let c = parseFloat(document.getElementById('comprimento_parede').value) || 0;
+            if (h > 0 && c > 0) {
+                document.getElementById('area').value = (h * c).toFixed(2);
+                calcular();
+            }
+        }
+
+        function toggleMoManual() {
+            const checkbox = document.getElementById('mo_manual');
+            const inputMo = document.getElementById('mo_cobrada');
+            const aviso = document.getElementById('mo_sugerida_aviso');
+            
+            if (checkbox.checked) {
+                inputMo.disabled = false;
+                inputMo.focus();
+                aviso.classList.remove('hidden');
+            } else {
+                inputMo.disabled = true;
+                aviso.classList.add('hidden');
+                inputMo.value = ''; 
+            }
+            calcular();
+        }
+
+        function calcular() {
+            if (!dbPintura) return; 
+
+            const area = parseFloat(document.getElementById('area').value) || 0;
+            const boxResultado = document.getElementById('box-resultado');
+
+            if (area <= 0) {
+                boxResultado.classList.add('hidden');
+                document.getElementById('valor-total-geral').innerText = "R$ 0,00";
+                calculoAtual = null;
+                return;
+            }
+
+            boxResultado.classList.remove('hidden');
+
+            const idSuperficie = document.getElementById('superficie').value;
+            const idComplexidade = document.getElementById('complexidade').value; // NOVO
+            const idFundo = document.getElementById('fundo').value;
+            const idMassa = document.getElementById('massa').value;
+            const idTinta = document.getElementById('tinta').value;
+            const idRisco = document.getElementById('risco').value;
+            
+            const qtdPintor = parseInt(document.getElementById('qtd_pintor').value) || 0;
+            const diariaPintor = parseFloat(document.getElementById('diaria_pintor').value) || 0;
+            const qtdAjudante = parseInt(document.getElementById('qtd_ajudante').value) || 0;
+            const diariaAjudante = parseFloat(document.getElementById('diaria_ajudante').value) || 0;
+
+            const isPrazoAuto = document.getElementById('prazo_auto').checked;
+
+            const superficie = dbPintura.tipo_superficie[idSuperficie];
+            const complexidade = dbPintura.complexidade[idComplexidade]; // NOVO
+            const fundo = dbPintura.fundos[idFundo];
+            const massa = dbPintura.massas[idMassa];
+            const tinta = dbPintura.tintas[idTinta];
+            const risco = dbPintura.risco_altura[idRisco];
+
+            // ==== NOVA LÓGICA DE PRAZO COM COMPLEXIDADE ====
+            if (isPrazoAuto) {
+                let producaoBase = 50; 
+                if (idMassa === 'pva' || idMassa === 'acrilica') producaoBase = 15; 
+                else if (idMassa === 'textura') producaoBase = 25; 
+
+                // Aplica a penalidade de recortes e detalhes!
+                producaoBase *= complexidade.fator_producao;
+
+                if (idRisco === 'andaime') producaoBase *= 0.8; 
+                if (idRisco === 'balancim') producaoBase *= 0.6; 
+
+                let forcaTrabalho = Math.max(0.1, qtdPintor + (qtdAjudante * 0.3)); 
+                
+                let diasCalculados = Math.ceil(area / (producaoBase * forcaTrabalho));
+                document.getElementById('prazo').value = Math.max(1, diasCalculados);
+            }
+            
+            const prazo = Math.max(1, parseInt(document.getElementById('prazo').value) || 1);
+
+            let materiaisCalculados = [];
+            const fatorPerda = dbPintura.configuracoes_obra.perda_material || 1.1;
+            const areaParaCalculoMateriais = area * superficie.multiplicador_consumo * fatorPerda;
+
+            function addMaterial(item, tipoUnidade) {
+                if(item.rendimento === 9999) return; 
+                const qtd = Math.ceil(areaParaCalculoMateriais / item.rendimento);
+                materiaisCalculados.push({ description: item.nome, unit: tipoUnidade, quantity: qtd.toString() });
+            }
+
+            // 1. MATERIAIS E FERRAMENTAS
+            addMaterial(fundo, 'lata');
+            addMaterial(massa, 'barrica');
+            addMaterial(tinta, 'lata');
+
+            if (idTinta !== 'nenhuma' || idFundo !== 'nenhum') {
+                let qtdRolo = Math.max(1, Math.ceil(area / 100));
+                materiaisCalculados.push({ description: dbPintura.ferramentas.rolo.nome, unit: 'un', quantity: qtdRolo.toString() });
+                materiaisCalculados.push({ description: dbPintura.ferramentas.trincha.nome, unit: 'un', quantity: qtdRolo.toString() });
+                let qtdFita = Math.max(1, Math.ceil(area / 50));
+                materiaisCalculados.push({ description: dbPintura.ferramentas.fita.nome, unit: 'un', quantity: qtdFita.toString() });
+            }
+            if (massa.exige_lixa) {
+                let qtdLixa = Math.ceil(area / 5);
+                materiaisCalculados.push({ description: dbPintura.ferramentas.lixa.nome, unit: 'un', quantity: qtdLixa.toString() });
+            }
+
+            // 3. MÃO DE OBRA SUGERIDA (Atualizada com a Complexidade)
+            let baseMo = 0;
+            if (idTinta !== 'nenhuma') baseMo += dbPintura.mao_de_obra.pintura_m2;
+            if (idFundo !== 'nenhum') baseMo += 3.00; 
+            
+            if (idMassa === 'textura') baseMo += dbPintura.mao_de_obra.textura_m2;
+            else if (idMassa !== 'nenhuma') baseMo += dbPintura.mao_de_obra.massa_m2;
+
+            // Se a parede for cheia de recortes, cobra mais caro!
+            baseMo += complexidade.acrescimo_mo;
+
+            let moSugerida = ((area * baseMo) * risco.multiplicador) + risco.taxa;
+            document.getElementById('mo_sugerida_texto').innerText = formatarValor(moSugerida);
+
+            // 4. MÃO DE OBRA COBRADA
+            const inputMo = document.getElementById('mo_cobrada');
+            const isManual = document.getElementById('mo_manual').checked;
+            if (!isManual) inputMo.value = moSugerida.toFixed(2);
+            let receitaMo = parseFloat(inputMo.value) || 0;
+
+            // 5. GESTÃO DE LUCRO INTERNO
+            let custoDiarioEquipe = (qtdPintor * diariaPintor) + (qtdAjudante * diariaAjudante);
+            let custoTotalEquipe = custoDiarioEquipe * prazo;
+            let lucroLiquido = receitaMo - custoTotalEquipe;
+            let margemLucro = receitaMo > 0 ? (lucroLiquido / receitaMo) * 100 : 0;
+            let metaDiaria = area / prazo;
+
+            document.getElementById('custo_diario_equipe').innerText = formatarValor(custoDiarioEquipe);
+            document.getElementById('lucro_valor').innerText = formatarValor(lucroLiquido);
+            document.getElementById('lucro_margem').innerText = `${margemLucro.toFixed(1)}% de margem`;
+            document.getElementById('meta_producao').innerText = `Equipe fará ${metaDiaria.toFixed(1)} m² / dia.`;
+
+            const painelLucro = document.getElementById('painel_lucro');
+            const margemBadge = document.getElementById('lucro_margem');
+            
+            painelLucro.classList.remove('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400', 'bg-red-500/10', 'border-red-500/30', 'text-red-400');
+            margemBadge.classList.remove('bg-emerald-500/20', 'text-emerald-300', 'bg-red-500/20', 'text-red-300');
+
+            if (lucroLiquido >= 0) {
+                painelLucro.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400');
+                margemBadge.classList.add('bg-emerald-500/20', 'text-emerald-300');
+                document.getElementById('lucro_titulo').innerText = "Lucro Líquido Estimado";
+            } else {
+                painelLucro.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+                margemBadge.classList.add('bg-red-500/20', 'text-red-300');
+                document.getElementById('lucro_titulo').innerText = "PREJUÍZO ESTIMADO!";
+            }
+
+            // 6. ATUALIZA UI PREVIA CLIENTE
+            const divMateriais = document.getElementById('lista-materiais-previa');
+            divMateriais.innerHTML = '';
+            materiaisCalculados.forEach(m => {
+                divMateriais.innerHTML += `
+                <div class="flex justify-between items-center bg-slate-900/50 p-2 rounded-lg border border-slate-700/50">
+                    <span class="text-xs text-slate-300 w-3/4 truncate">${m.quantity}x ${m.description}</span>
+                    <span class="text-[10px] uppercase font-bold text-blue-400 bg-blue-900/30 px-2 py-1 rounded">A comprar</span>
+                </div>`;
+            });
+
+            document.getElementById('valor-total-geral').innerText = formatarValor(receitaMo);
+
+            // Prepara para salvar
+            calculoAtual = {
+                parametros: { area, superficie: idSuperficie, complexidade: idComplexidade, fundo: idFundo, massa: idMassa, tinta: idTinta, risco: idRisco, isPrazoAuto },
+                materials: materiaisCalculados,
+                schedule: { dias: prazo },
+                total: receitaMo,
+                financial: { total: receitaMo }
+            };
+        }
+
+        function limparCalculo() { 
+            document.getElementById('area').value = ''; 
+            document.getElementById('altura_parede').value = '';
+            document.getElementById('comprimento_parede').value = '';
+            document.getElementById('cliente').value = ''; 
+            document.getElementById('sistema_rapido').value = ''; 
+            document.getElementById('prazo_auto').checked = true;
+            calcular(); 
+        }
+
+        function salvarOrcamento() {
+            if (!calculoAtual) { alert("Preencha a Área Total primeiro."); return; }
+            calculoAtual.cliente = document.getElementById('cliente').value.trim();
+            localStorage.setItem('orcamento_pintura', JSON.stringify(calculoAtual));
+            window.location.href = "visualizacao.html?modulo=pintura";
+        }
+    </script>
+</body>
+</html>

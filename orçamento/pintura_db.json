@@ -1,0 +1,57 @@
+{
+  "configuracoes_obra": {
+    "perda_material": 1.1,
+    "altura_padrao_m": 2.8
+  },
+  "tipo_superficie": {
+    "reboco_novo": { "nome": "Reboco Novo / Alta Absorção", "multiplicador_consumo": 1.3 },
+    "parede_regular": { "nome": "Parede Regular", "multiplicador_consumo": 1.0 },
+    "parede_pintada": { "nome": "Parede Já Pintada", "multiplicador_consumo": 0.85 }
+  },
+  "complexidade": {
+    "vao_livre": { "nome": "Vão Livre (Muros, Fachadas Lisas)", "fator_producao": 1.0, "acrescimo_mo": 0.00 },
+    "padrao": { "nome": "Padrão (Algumas Portas e Janelas)", "fator_producao": 0.75, "acrescimo_mo": 3.00 },
+    "alto_detalhe": { "nome": "Alto Detalhe (Muitos recortes, Sancas)", "fator_producao": 0.50, "acrescimo_mo": 8.00 }
+  },
+  "fundos": {
+    "nenhum": { "nome": "Sem fundo", "preco": 0, "rendimento": 9999, "demoes": 0 },
+    "selador": { "nome": "Selador Acrílico (18L)", "preco": 120.00, "rendimento": 110, "demoes": 1 },
+    "fundo_preparador": { "nome": "Fundo Preparador (18L)", "preco": 180.00, "rendimento": 90, "demoes": 1 }
+  },
+  "massas": {
+    "nenhuma": { "nome": "Sem massa", "preco": 0, "rendimento": 9999, "demoes": 0, "exige_lixa": false },
+    "pva": { "nome": "Massa Corrida PVA (25kg)", "preco": 65.00, "rendimento": 40, "demoes": 2, "exige_lixa": true },
+    "acrilica": { "nome": "Massa Acrílica (25kg)", "preco": 115.00, "rendimento": 38, "demoes": 2, "exige_lixa": true },
+    "textura": { "nome": "Textura Rústica (25kg)", "preco": 90.00, "rendimento": 15, "demoes": 1, "exige_lixa": false }
+  },
+  "tintas": {
+    "nenhuma": { "nome": "Apenas Preparação", "preco": 0, "rendimento": 9999 },
+    "acrilica_fosca": { "nome": "Tinta Acrílica Fosca (18L)", "preco": 280.00, "rendimento": 100, "demoes": 2 },
+    "acrilica_semibrilho": { "nome": "Tinta Acrílica Acetinada (18L)", "preco": 350.00, "rendimento": 90, "demoes": 2 },
+    "borracha_liquida": { "nome": "Borracha Líquida Impermeabilizante (18L)", "preco": 450.00, "rendimento": 55, "demoes": 3 },
+    "esmalte_sintetico": { "nome": "Esmalte Sintético (3.6L)", "preco": 110.00, "rendimento": 40, "demoes": 2 }
+  },
+  "ferramentas": {
+    "rolo": { "nome": "Rolo de Lã Anti-Gota", "preco": 35.00 },
+    "trincha": { "nome": "Trincha / Pincel", "preco": 12.00 },
+    "lixa": { "nome": "Lixa de Parede", "preco": 2.50 },
+    "fita": { "nome": "Fita Crepe", "preco": 15.00 }
+  },
+  "mao_de_obra": {
+    "pintura_m2": 15.00,
+    "massa_m2": 12.00,
+    "textura_m2": 18.00
+  },
+  "risco_altura": {
+    "terreo": { "nome": "Térreo / Interno", "multiplicador": 1.0, "taxa": 0 },
+    "andaime": { "nome": "Andaime até 2 andares", "multiplicador": 1.3, "taxa": 150.00 },
+    "balancim": { "nome": "Balancim / Fachada Alta", "multiplicador": 1.8, "taxa": 400.00 }
+  },
+  "sistemas_pintura": {
+    "pintura_reboco_novo": { "nome": "Pintura em Reboco Novo", "superficie": "reboco_novo", "complexidade": "vao_livre", "fundo": "selador", "massa": "nenhuma", "tinta": "acrilica_fosca" },
+    "massa_corrida_pintura": { "nome": "Massa Corrida + Pintura", "superficie": "parede_regular", "complexidade": "padrao", "fundo": "selador", "massa": "pva", "tinta": "acrilica_fosca" },
+    "repintura_simples": { "nome": "Repintura Simples", "superficie": "parede_pintada", "complexidade": "padrao", "fundo": "nenhum", "massa": "nenhuma", "tinta": "acrilica_fosca" },
+    "textura_fachada": { "nome": "Textura em Fachada", "superficie": "reboco_novo", "complexidade": "vao_livre", "fundo": "fundo_preparador", "massa": "textura", "tinta": "acrilica_fosca" },
+    "impermeabilizacao_laje": { "nome": "Impermeabilização c/ Borracha", "superficie": "reboco_novo", "complexidade": "vao_livre", "fundo": "fundo_preparador", "massa": "nenhuma", "tinta": "borracha_liquida" }
+  }
+}
