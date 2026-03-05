@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Construtor PRO · Proposta Técnica</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        assinatura: ['Great Vibes', 'cursive']
+                    },
+                    colors: { brand: { 500: '#2563eb', 600: '#1d4ed8' }, accent: { 500: '#10b981' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media print {
+            @page { size: A4; margin: 1cm; }
+            body { background-color: white !important; }
+            .print-hide { display: none !important; }
+            .print-text-black { color: #000000 !important; }
+            .print-border-black { border-color: #000000 !important; }
+            .print-bg-transparent { background-color: transparent !important; }
+            .print-table th { background-color: #f3f4f6 !important; color: #000 !important; border-bottom: 2px solid #000 !important; }
+            .print-table td { border-bottom: 1px solid #e5e7eb !important; }
+            
+            #documento-wrapper {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen font-sans pb-20 print:pb-0">
+
+    <div class="print-hide sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex justify-between items-center shadow-lg shadow-black/20">
+        <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white font-medium transition-colors">
+            <i class="ph ph-arrow-left text-xl"></i> 
+            <span>Voltar</span>
+        </a>
+        <div class="flex gap-3">
+            <button onclick="alterarResponsavel()" class="px-3 py-2 rounded-xl bg-slate-800 flex items-center gap-2 text-brand-400 hover:bg-slate-700 transition-colors text-sm font-semibold">
+                <i class="ph ph-user text-lg"></i> <span class="hidden sm:inline">Responsável</span>
+            </button>
+            <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-brand-600 flex items-center gap-2 text-white hover:bg-brand-500 transition-colors text-sm font-bold shadow-lg shadow-brand-500/30">
+                <i class="ph ph-printer text-lg"></i> Imprimir
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-8 mt-4 print:p-0 print:mt-0">
+        
+        <div id="documento-wrapper" class="bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-12 shadow-2xl print-bg-transparent">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-6 mb-8 print:pb-2 print:mb-3 print-border-black">
+                <div class="flex items-center gap-4 mb-4 sm:mb-0">
+                    <div class="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center print-hide">
+                        <i class="ph-fill ph-hard-hat text-3xl text-slate-400"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black text-white tracking-tight print-text-black print:text-xl">CONSTRUTOR PRO</h1>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest print-text-black">Sistema de Orçamentos</p>
+                    </div>
+                </div>
+                <div class="text-left sm:text-right">
+                    <h2 class="text-lg font-bold text-brand-400 print-text-black print:text-base">PROPOSTA TÉCNICA</h2>
+                    <span id="moduloTitulo" class="text-sm font-medium text-slate-300 print-text-black">---</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 print:gap-2 print:mb-3">
+                <div>
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 print-text-black print:mb-0">Cliente / Obra</h3>
+                    <div id="clienteNome" class="text-lg font-semibold text-white print-text-black print:text-base">---</div>
+                </div>
+                <div class="sm:text-right">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 print-text-black print:mb-0">Data de Emissão</h3>
+                    <div id="dataOrcamento" class="text-lg font-semibold text-white print-text-black print:text-base">---</div>
+                </div>
+            </div>
+
+            <div class="mb-8 print:mb-3">
+                <h3 class="text-sm font-bold text-brand-400 uppercase tracking-widest mb-4 print:mb-1 print-text-black flex items-center gap-2">
+                    <i class="ph-fill ph-list-numbers print-hide"></i> Lista de Materiais
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left print-table">
+                        <thead>
+                            <tr>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 print-text-black">Descrição</th>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 text-center w-24 print-text-black">Unid.</th>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 text-center w-28 print-text-black">Qtd.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoMateriais" class="text-sm text-slate-300 print-text-black">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mb-8 print:mb-3">
+                <h3 class="text-sm font-bold text-accent-500 uppercase tracking-widest mb-4 print:mb-1 print-text-black flex items-center gap-2">
+                    <i class="ph-fill ph-chart-pie-slice print-hide"></i> Resumo Consolidado
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left print-table">
+                        <thead>
+                            <tr>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 print-text-black">Categoria</th>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 text-center w-32 print-text-black">Volume Total</th>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 text-center w-24 print-text-black">Unid.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoResumo" class="text-sm text-slate-300 print-text-black">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mb-8 print:mb-3">
+                <h3 class="text-sm font-bold text-orange-400 uppercase tracking-widest mb-4 print:mb-1 print-text-black flex items-center gap-2">
+                    <i class="ph-fill ph-users print-hide"></i> Serviços e Mão de Obra
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left print-table">
+                        <thead>
+                            <tr>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 print-text-black">Descrição do Serviço</th>
+                                <th class="pb-3 print:py-1 text-xs font-bold text-slate-400 uppercase border-b border-slate-700 text-right w-40 print-text-black">Valor (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoServicos" class="text-sm text-slate-300 print-text-black">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 mt-10 print:mt-2 print:p-2 flex flex-col sm:flex-row justify-between items-center print-bg-transparent print-border-black">
+                <div class="text-center sm:text-left mb-2 sm:mb-0">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest print-text-black">Investimento Total Estimado</div>
+                    <div class="text-xs text-slate-400 print-hide">Soma de materiais e mão de obra</div>
+                </div>
+                <div id="valorTotal" class="text-3xl sm:text-4xl font-black text-white print-text-black print:text-2xl">R$ 0,00</div>
+            </div>
+
+            <div class="mt-16 pt-10 print:mt-6 print:pt-2 border-t border-slate-700 print-border-black text-center">
+                <div id="assinaturaNome" class="font-assinatura text-5xl text-brand-400 mb-2 print-text-black print:text-3xl"></div>
+                <div class="w-64 h-px bg-slate-600 mx-auto mb-2 print-border-black print-bg-transparent print:border-t"></div>
+                <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider print-text-black">Responsável Técnico</div>
+                <div class="text-[10px] text-slate-500 print-text-black mt-1">Construtor PRO · Validade da proposta: 15 dias</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function obterNomeResponsavel() {
+            let nome = localStorage.getItem("responsavelTecnico");
+            if (!nome) {
+                nome = prompt("Informe o nome do Responsável pela assinatura:", "Eng. Ulisses Junior");
+                if (nome && nome.trim() !== "") {
+                    localStorage.setItem("responsavelTecnico", nome.trim());
+                } else {
+                    nome = "Ulisses Junior";
+                    localStorage.setItem("responsavelTecnico", nome);
+                }
+            }
+            return nome;
+        }
+
+        function atualizarAssinatura() {
+            document.getElementById("assinaturaNome").innerText = obterNomeResponsavel();
+        }
+
+        function alterarResponsavel() {
+            const nomeAtual = localStorage.getItem("responsavelTecnico") || "Ulisses Junior";
+            const novoNome = prompt("Digite o nome do Responsável Técnico:", nomeAtual);
+            if (novoNome && novoNome.trim() !== "") {
+                localStorage.setItem("responsavelTecnico", novoNome.trim());
+                atualizarAssinatura();
+            }
+        }
+
+        // Tabela de categorias expandida e inteligente
+        const categoriaPalavras = {
+            'Areia Fina': ['areia fina'], 
+            'Areia Grossa': ['areia grossa'], 
+            'Areia Média': ['areia média', 'areia media'],
+            'Areia': ['areia'], // Captura outras areias
+            'Argamassa': ['argamassa', 'ac1', 'ac2', 'ac3'],
+            'Rejunte': ['rejunte'],
+            'Tijolo': ['tijolo'], 'Bloco': ['bloco'], 'Cimento': ['cimento'],
+            'Brita': ['brita', 'pedra'], 'Cal': ['cal'],
+            'Ferro/Aço': ['ferro', 'aço'], 'Madeira': ['madeira'], 'Telha': ['telha'],
+            'Tinta/Acabamento': ['tinta', 'massa corrida', 'selador'], 
+            'Tubo/Conexão': ['tubo', 'conexão', 'cano', 'joelho', 'tê'],
+            'Fio/Cabo': ['fio', 'cabo', 'disjuntor'], 'Outros': []
+        };
+
+        function identificarCategoria(descricao) {
+            const d = descricao.toLowerCase();
+            for (let [cat, palavras] of Object.entries(categoriaPalavras)) {
+                for (let p of palavras) {
+                    if (d.includes(p)) return cat;
+                }
+            }
+            return 'Outros';
+        }
+
+        function formatarQtd(valor) {
+            let numero = typeof valor === 'string' ? parseFloat(valor.replace(',', '.')) : parseFloat(valor);
+            if (isNaN(numero)) return valor; 
+            return numero.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+        }
+
+        function renderizar(){
+            const modulo = new URLSearchParams(window.location.search).get('modulo') || 'alvenaria';
+            document.getElementById('moduloTitulo').innerText = "Módulo: " + modulo.toUpperCase();
+            document.getElementById('dataOrcamento').innerText = new Date().toLocaleDateString('pt-BR');
+
+            const dadosRaw = localStorage.getItem('orcamento_' + modulo.toLowerCase());
+            const mat = document.getElementById('corpoMateriais');
+            const serv = document.getElementById('corpoServicos');
+            const corpoResumo = document.getElementById('corpoResumo');
+
+            mat.innerHTML = ''; serv.innerHTML = ''; corpoResumo.innerHTML = '';
+
+            if(!dadosRaw){
+                mat.innerHTML='<tr><td colspan="3" class="py-3 print:py-1 text-center text-slate-500 italic">Nenhum material cadastrado</td></tr>';
+                serv.innerHTML='<tr><td colspan="2" class="py-3 print:py-1 text-center text-slate-500 italic">Nenhum serviço cadastrado</td></tr>';
+                corpoResumo.innerHTML='<tr><td colspan="3" class="py-3 print:py-1 text-center text-slate-500 italic">Sem materiais para resumo</td></tr>';
+                document.getElementById('clienteNome').innerText = "Não informado";
+                return;
+            }
+
+            const dados = JSON.parse(dadosRaw);
+            document.getElementById('clienteNome').innerText = dados.cliente || "Obra Principal";
+
+            let total = 0;
+            const resumo = {};
+
+            if(dados.materials && dados.materials.length > 0){
+                dados.materials.forEach(m => {
+                    mat.innerHTML += `
+                    <tr>
+                        <td class="py-3 print:py-1 border-b border-slate-700/50 print-border-black">${m.description || '-'}</td>
+                        <td class="py-3 print:py-1 border-b border-slate-700/50 text-center print-border-black">${m.unit || '-'}</td>
+                        <td class="py-3 print:py-1 border-b border-slate-700/50 text-center font-semibold print-border-black">${formatarQtd(m.quantity)}</td>
+                    </tr>`;
+
+                    const cat = identificarCategoria(m.description || '');
+                    let qtd = typeof m.quantity === 'string' ? parseFloat(m.quantity.replace(',', '.')) : parseFloat(m.quantity);
+                    if(isNaN(qtd)) qtd = 0;
+                    const unid = m.unit || '';
+
+                    if (!resumo[cat]) resumo[cat] = { quantidade: 0, unidades: new Set() };
+                    resumo[cat].quantidade += qtd;
+                    if (unid) resumo[cat].unidades.add(unid);
+                });
+            } else {
+                mat.innerHTML='<tr><td colspan="3" class="py-3 print:py-1 text-center text-slate-500 italic">Nenhum material listado</td></tr>';
+            }
+
+            if (Object.keys(resumo).length > 0) {
+                for (let [categoria, dadosCat] of Object.entries(resumo)) {
+                    let unidadeExibida = dadosCat.unidades.size === 1 ? Array.from(dadosCat.unidades)[0] : 'mix';
+                    
+                    // Colunas invertidas: Categoria -> Volume Total -> Unid.
+                    corpoResumo.innerHTML += `
+                    <tr>
+                        <td class="py-3 print:py-1 border-b border-slate-700/50 font-medium print-border-black">${categoria}</td>
+                        <td class="py-3 print:py-1 border-b border-slate-700/50 text-center font-bold print-border-black">${formatarQtd(dadosCat.quantidade)}</td>
+                        <td class="py-3 print:py-1 border-b border-slate-700/50 text-center print-border-black">${unidadeExibida}</td>
+                    </tr>`;
+                }
+            } else {
+                corpoResumo.innerHTML='<tr><td colspan="3" class="py-3 print:py-1 text-center text-slate-500 italic">Vazio</td></tr>';
+            }
+
+            let valorServico = dados.total || (dados.financial && dados.financial.total) || 0;
+            serv.innerHTML = `
+                <tr>
+                    <td class="py-3 print:py-1 font-medium print-border-black">Execução técnica de ${modulo.toUpperCase()}</td>
+                    <td class="py-3 print:py-1 text-right font-black text-white print-text-black text-lg print-border-black">${Number(valorServico).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</td>
+                </tr>
+            `;
+
+            document.getElementById('valorTotal').innerText = Number(valorServico).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        }
+
+        window.onload = () => {
+            atualizarAssinatura();
+            renderizar();
+        };
+    </script>
+</body>
+</html>
