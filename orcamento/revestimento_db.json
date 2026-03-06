@@ -2,7 +2,10 @@
   "configuracoes_obra": {
     "perda_material": 1.15,
     "consumo_argamassa_simples_kg_m2": 5,
-    "consumo_argamassa_dupla_kg_m2": 10
+    "consumo_argamassa_dupla_kg_m2": 10,
+    "estimativa_caixa_revestimento_m2": 2.0, 
+    "embalagem_espacador_unidades": 100,
+    "embalagem_cunha_unidades": 50
   },
   "tipos_revestimento": {
     "ceramica": { "nome": "Cerâmica Padrão", "base_mo": 35.00 },
@@ -11,10 +14,10 @@
     "pedra_natural": { "nome": "Pedra Natural (Mármore/Granito)", "base_mo": 90.00 }
   },
   "tamanhos_revestimento": {
-    "pequeno": { "nome": "Até 45x45 cm (Colagem Simples)", "exige_dupla_colagem": false, "fator_mo": 1.0, "consumo_rejunte_kg_m2": 0.4 },
-    "medio": { "nome": "De 46x46 até 60x60 cm (Dupla Colagem)", "exige_dupla_colagem": true, "fator_mo": 1.1, "consumo_rejunte_kg_m2": 0.3 },
-    "grande": { "nome": "Grandes Formatos (Ex: 80x80 a 120x120)", "exige_dupla_colagem": true, "fator_mo": 1.3, "consumo_rejunte_kg_m2": 0.2 },
-    "pastilha": { "nome": "Pastilhas (Telas)", "exige_dupla_colagem": false, "fator_mo": 1.5, "consumo_rejunte_kg_m2": 1.2 }
+    "pequeno": { "nome": "Até 45x45 cm (Colagem Simples)", "exige_dupla_colagem": false, "fator_mo": 1.0, "consumo_rejunte_kg_m2": 0.4, "consumo_espacador_m2": 25 },
+    "medio": { "nome": "De 46x46 até 60x60 cm (Dupla Colagem)", "exige_dupla_colagem": true, "fator_mo": 1.1, "consumo_rejunte_kg_m2": 0.3, "consumo_espacador_m2": 15 },
+    "grande": { "nome": "Grandes Formatos (Ex: 80x80 a 120x120)", "exige_dupla_colagem": true, "fator_mo": 1.3, "consumo_rejunte_kg_m2": 0.2, "consumo_espacador_m2": 8 },
+    "pastilha": { "nome": "Pastilhas (Telas)", "exige_dupla_colagem": false, "fator_mo": 1.5, "consumo_rejunte_kg_m2": 1.2, "consumo_espacador_m2": 0 }
   },
   "preparacao_base": {
     "pronta": { "nome": "Base Pronta / Nivelada", "acrescimo_mo": 0, "materiais": [] },
@@ -48,5 +51,10 @@
     "andaime": { "nome": "Uso de Andaime (Fachada Baixa)", "multiplicador": 1.3, "taxa": 150.00 },
     "balancim": { "nome": "Balancim (Fachada Alta)", "multiplicador": 1.8, "taxa": 400.00 },
     "rapel": { "nome": "Acesso por Cordas (Rapel)", "multiplicador": 2.5, "taxa": 800.00 }
+  },
+  "termos_condicoes": {
+    "validade_metragem": "Orçamento técnico elaborado EXCLUSIVAMENTE para a área total estimada de {METRAGEM_TOTAL} m².",
+    "revisao_orcamentaria": "Quaisquer alterações na metragem total, mudança no tamanho/formato do revestimento escolhido ou aumento na complexidade do serviço (ex: recortes imprevistos, nichos não orçados) estarão sujeitos a revisão orçamentária prévia.",
+    "aviso_compra_materiais": "O quantitativo de materiais é uma ESTIMATIVA. Como o cliente ainda não adquiriu o revestimento, o número exato de caixas deve ser conferido na loja com base na metragem real (m²) que cada caixa da marca escolhida cobre, sempre considerando os 15% de margem de perda orçados."
   }
 }
