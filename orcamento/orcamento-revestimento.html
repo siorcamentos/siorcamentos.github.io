@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -54,7 +54,7 @@
     </header>
 
     <main class="flex-1 p-4 max-w-md mx-auto w-full pb-32 space-y-5">
-        
+
         <section class="bg-indigo-900/20 border border-indigo-500/30 rounded-2xl p-4 flex justify-between items-center">
             <div>
                 <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-widest block">Modo de Orçamento</h2>
@@ -96,7 +96,7 @@
             <h2 class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
                 <i class="ph-fill ph-squares-four"></i> 2. Detalhes do Revestimento
             </h2>
-            
+
             <div class="grid grid-cols-2 gap-3">
                 <div class="col-span-2">
                     <label class="text-xs font-semibold text-slate-300 mb-1 block">Tipo de Revestimento</label>
@@ -147,11 +147,11 @@
 
         <section class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 space-y-4 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -z-10"></div>
-            
+
             <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-700/50 pb-2">
                 <i class="ph-fill ph-chart-line-up"></i> 3. Gestão de Equipe e Lucro
             </h2>
-            
+
             <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50 space-y-3">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-700/50">
                     <div>
@@ -163,7 +163,7 @@
                     </div>
                     <input type="number" id="prazo" class="input-field !w-20 !py-1.5 text-center font-bold text-lg text-emerald-400 border-emerald-500/30" oninput="document.getElementById('prazo_auto').checked = false; calcular()">
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-3 pt-1">
                     <div>
                         <label class="text-[10px] text-slate-400 uppercase font-bold ml-1">Qtd. Pedreiros</label>
@@ -182,7 +182,7 @@
                         <input type="number" id="diaria_ajudante" value="90" class="input-field !py-1.5" oninput="calcular()">
                     </div>
                 </div>
-                
+
                 <div class="flex justify-between items-center pt-2 border-t border-slate-700/50">
                     <span class="text-[10px] text-slate-400 uppercase font-bold">Custo Diário da Equipe</span>
                     <span id="custo_diario_equipe" class="text-sm font-bold text-red-400">R$ 0,00</span>
@@ -210,9 +210,9 @@
                 <span id="lucro_titulo" class="text-[10px] uppercase font-bold tracking-widest mb-1">Lucro Líquido Estimado</span>
                 <span id="lucro_valor" class="text-3xl font-black">R$ 0,00</span>
                 <span id="lucro_margem" class="text-xs font-bold px-2 py-0.5 rounded-full mt-2">0% de margem</span>
-                
+
                 <div class="w-full h-px bg-slate-700/50 my-3"></div>
-                
+
                 <div class="text-center">
                     <span class="text-[10px] text-slate-400 uppercase font-bold block">Meta de Produção Diária</span>
                     <span id="meta_producao" class="text-sm font-bold text-slate-200">0 m² / dia</span>
@@ -254,15 +254,25 @@
             } catch (error) {
                 console.warn("Usando banco de dados de fallback interno...");
                 dbRevestimento = {
-                    "configuracoes_obra": { "perda_material": 1.15, "consumo_argamassa_simples_kg_m2": 5, "consumo_argamassa_dupla_kg_m2": 10 },
-                    "tipos_revestimento": { "ceramica": { "nome": "Cerâmica Padrão", "base_mo": 35.00 }, "porcelanato": { "nome": "Porcelanato", "base_mo": 55.00 }, "pastilha": { "nome": "Pastilha / Mosaico", "base_mo": 80.00 }, "pedra_natural": { "nome": "Pedra Natural (Mármore)", "base_mo": 90.00 } },
-                    "tamanhos_revestimento": { "pequeno": { "nome": "Até 45x45 cm (Simples)", "exige_dupla_colagem": false, "fator_mo": 1.0, "consumo_rejunte_kg_m2": 0.4 }, "medio": { "nome": "De 46x46 a 60x60 (Dupla)", "exige_dupla_colagem": true, "fator_mo": 1.1, "consumo_rejunte_kg_m2": 0.3 }, "grande": { "nome": "Grandes Formatos", "exige_dupla_colagem": true, "fator_mo": 1.3, "consumo_rejunte_kg_m2": 0.2 }, "pastilha": { "nome": "Pastilhas (Telas)", "exige_dupla_colagem": false, "fator_mo": 1.5, "consumo_rejunte_kg_m2": 1.2 } },
-                    "preparacao_base": { "pronta": { "nome": "Base Pronta / Nivelada", "acrescimo_mo": 0 }, "contrapiso": { "nome": "Fazer Contrapiso", "acrescimo_mo": 25.00 }, "reboco": { "nome": "Fazer Emboço (Parede)", "acrescimo_mo": 28.00 }, "regularizacao": { "nome": "Regularização Fina", "acrescimo_mo": 12.00 } },
-                    "argamassas": { "aci": { "nome": "Argamassa ACI", "peso_saco_kg": 20 }, "acii": { "nome": "Argamassa ACII", "peso_saco_kg": 20 }, "aciii": { "nome": "Argamassa ACIII (Piso s/ Piso)", "peso_saco_kg": 20 }, "piscina": { "nome": "Argamassa Piscinas", "peso_saco_kg": 20 } },
-                    "rejuntes": { "cimenticio": { "nome": "Rejunte Cimentício" }, "acrilico": { "nome": "Rejunte Acrílico" }, "epoxi": { "nome": "Rejunte Epóxi (Piscinas)" } },
-                    "juntas_espessura": { "junta_seca": { "nome": "Retificado (1 a 1.5mm)", "fator_consumo": 0.7 }, "padrao": { "nome": "Padrão (2 a 3mm)", "fator_consumo": 1.0 }, "larga": { "nome": "Larga (Acima 4mm)", "fator_consumo": 1.5 } },
-                    "complexidade_paginacao": { "esquadrejado": { "nome": "Reto / Esquadrejado", "fator_producao": 1.0, "acrescimo_mo": 0.00 }, "diagonal": { "nome": "Assentamento Diagonal", "fator_producao": 0.7, "acrescimo_mo": 15.00 }, "paginacao_projeto": { "nome": "Projeto Paginação Específico", "fator_producao": 0.6, "acrescimo_mo": 25.00 } },
-                    "risco_logistica": { "terreo": { "nome": "Térreo / Interno Livre", "multiplicador": 1.0, "taxa": 0 }, "andaime": { "nome": "Uso de Andaime", "multiplicador": 1.3, "taxa": 150.00 }, "balancim": { "nome": "Balancim", "multiplicador": 1.8, "taxa": 400.00 }, "rapel": { "nome": "Rapel / Cordas", "multiplicador": 2.5, "taxa": 800.00 } }
+                    "configuracoes_obra": { "perda_material": 1.15, "consumo_argamassa_simples_kg_m2": 5, "consumo_argamassa_dupla_kg_m2": 10, "estimativa_caixa_revestimento_m2": 2.0, "embalagem_espacador_unidades": 100, "embalagem_cunha_unidades": 50 },
+                    "tipos_revestimento": { "ceramica": { "nome": "Cerâmica Padrão", "base_mo": 35.00 }, "porcelanato": { "nome": "Porcelanato", "base_mo": 55.00 }, "pastilha": { "nome": "Pastilha / Mosaico", "base_mo": 80.00 }, "pedra_natural": { "nome": "Pedra Natural (Mármore/Granito)", "base_mo": 90.00 } },
+                    "tamanhos_revestimento": {
+                        "pequeno": { "nome": "Até 45x45 cm (Colagem Simples)", "exige_dupla_colagem": false, "fator_mo": 1.0, "consumo_rejunte_kg_m2": 0.4, "consumo_espacador_m2": 25 },
+                        "medio": { "nome": "De 46x46 até 60x60 cm (Dupla)", "exige_dupla_colagem": true, "fator_mo": 1.1, "consumo_rejunte_kg_m2": 0.3, "consumo_espacador_m2": 15 },
+                        "grande": { "nome": "Grandes Formatos (Ex: 80x80 a 120x120)", "exige_dupla_colagem": true, "fator_mo": 1.3, "consumo_rejunte_kg_m2": 0.2, "consumo_espacador_m2": 8 },
+                        "pastilha": { "nome": "Pastilhas (Telas)", "exige_dupla_colagem": false, "fator_mo": 1.5, "consumo_rejunte_kg_m2": 1.2, "consumo_espacador_m2": 0 }
+                    },
+                    "preparacao_base": { "pronta": { "nome": "Base Pronta / Nivelada", "acrescimo_mo": 0, "materiais": [] }, "contrapiso": { "nome": "Fazer Contrapiso (Piso)", "acrescimo_mo": 25.00, "materiais": ["cimento", "areia"] }, "reboco": { "nome": "Fazer Emboço/Reboco (Parede)", "acrescimo_mo": 28.00, "materiais": ["cimento", "areia"] }, "regularizacao": { "nome": "Apenas Regularização Fina", "acrescimo_mo": 12.00, "materiais": ["argamassa_regularizacao"] } },
+                    "argamassas": { "aci": { "nome": "Argamassa ACI (Interno/Seco)", "peso_saco_kg": 20, "preco_saco": 15.00 }, "acii": { "nome": "Argamassa ACII (Externo/Úmido)", "peso_saco_kg": 20, "preco_saco": 25.00 }, "aciii": { "nome": "Argamassa ACIII (Piso s/ Piso)", "peso_saco_kg": 20, "preco_saco": 45.00 }, "piscina": { "nome": "Argamassa Especial Piscinas", "peso_saco_kg": 20, "preco_saco": 65.00 } },
+                    "rejuntes": { "cimenticio": { "nome": "Rejunte Cimentício Padrão", "preco_kg": 8.00 }, "acrilico": { "nome": "Rejunte Acrílico", "preco_kg": 25.00 }, "epoxi": { "nome": "Rejunte Epóxi - Piscinas", "preco_kg": 55.00 } },
+                    "juntas_espessura": { "junta_seca": { "nome": "Junta Seca / Retificado", "fator_consumo": 0.7 }, "padrao": { "nome": "Junta Padrão", "fator_consumo": 1.0 }, "larga": { "nome": "Junta Larga", "fator_consumo": 1.5 } },
+                    "complexidade_paginacao": { "esquadrejado": { "nome": "Reto / Esquadrejado (Padrão)", "fator_producao": 1.0, "acrescimo_mo": 0.00 }, "diagonal": { "nome": "Assentamento na Diagonal", "fator_producao": 0.7, "acrescimo_mo": 15.00 }, "paginacao_projeto": { "nome": "Projeto de Paginação Específico", "fator_producao": 0.6, "acrescimo_mo": 25.00 } },
+                    "risco_logistica": { "terreo": { "nome": "Térreo / Interno Livre", "multiplicador": 1.0, "taxa": 0 }, "andaime": { "nome": "Uso de Andaime", "multiplicador": 1.3, "taxa": 150.00 }, "balancim": { "nome": "Balancim", "multiplicador": 1.8, "taxa": 400.00 }, "rapel": { "nome": "Acesso por Cordas (Rapel)", "multiplicador": 2.5, "taxa": 800.00 } },
+                    "termos_condicoes": {
+                        "validade_metragem": "Orçamento técnico elaborado EXCLUSIVAMENTE para a área total estimada de {METRAGEM_TOTAL} m².",
+                        "revisao_orcamentaria": "Quaisquer alterações na metragem total, mudança no tamanho/formato do revestimento escolhido ou aumento na complexidade do serviço (ex: recortes imprevistos, nichos não orçados) estarão sujeitos a revisão orçamentária prévia.",
+                        "aviso_compra_materiais": "O quantitativo de materiais é uma ESTIMATIVA. Como o cliente ainda não adquiriu o revestimento, o número exato de caixas deve ser conferido na loja com base na metragem real (m²) que cada caixa da marca escolhida cobre, sempre considerando os 15% de margem de perda orçados."
+                    }
                 };
             }
 
@@ -276,7 +286,7 @@
                     document.getElementById('cliente').value = dados.cliente || '';
                     if (dados.parametros) {
                         document.getElementById('area').value = dados.parametros.area;
-                        
+
                         if(dados.parametros.isQuantificar === false) {
                             document.getElementById('modo_quantificar').checked = false;
                             toggleModo();
@@ -287,7 +297,7 @@
                         document.getElementById('preparacao_base').value = dados.parametros.preparacao_base;
                         document.getElementById('complexidade').value = dados.parametros.complexidade;
                         document.getElementById('risco').value = dados.parametros.risco;
-                        
+
                         if(dados.parametros.isQuantificar) {
                             document.getElementById('argamassa').value = dados.parametros.argamassa;
                             document.getElementById('rejunte').value = dados.parametros.rejunte;
@@ -325,7 +335,7 @@
             isQuantificar = document.getElementById('modo_quantificar').checked;
             const blocoMateriais = document.getElementById('bloco_materiais');
             const modoTexto = document.getElementById('modo_texto');
-            
+
             if (isQuantificar) {
                 blocoMateriais.classList.remove('hidden');
                 modoTexto.innerText = "Quantificar Materiais + Mão de Obra";
@@ -351,7 +361,7 @@
             const checkbox = document.getElementById('mo_manual');
             const inputMo = document.getElementById('mo_cobrada');
             const aviso = document.getElementById('mo_sugerida_aviso');
-            
+
             if (checkbox.checked) {
                 inputMo.disabled = false;
                 inputMo.focus();
@@ -377,7 +387,7 @@
                 return;
             }
 
-            // Exibir/Ocultar caixa de materiais na base (Se não quantificar, não mostra materiais)
+            // Exibir/Ocultar caixa de materiais na base
             if(isQuantificar) boxResultado.classList.remove('hidden');
             else boxResultado.classList.add('hidden');
 
@@ -386,7 +396,7 @@
             const idPrep = document.getElementById('preparacao_base').value;
             const idComplexidade = document.getElementById('complexidade').value;
             const idRisco = document.getElementById('risco').value;
-            
+
             const tipo = dbRevestimento.tipos_revestimento[idTipo];
             const tamanho = dbRevestimento.tamanhos_revestimento[idTamanho];
             const prep = dbRevestimento.preparacao_base[idPrep];
@@ -404,20 +414,20 @@
             const diariaAjudante = parseFloat(document.getElementById('diaria_ajudante').value) || 0;
             const isPrazoAuto = document.getElementById('prazo_auto').checked;
 
-            // ==== LÓGICA DE PRAZO (Revestimento) ====
+            // ==== LÓGICA DE PRAZO ====
             if (isPrazoAuto) {
-                let producaoBase = 20; // Pedreiro faz 20m2 dia normal
+                let producaoBase = 20; 
                 if (idTipo === 'porcelanato' || idTipo === 'pedra_natural') producaoBase = 15;
                 if (idTipo === 'pastilha') producaoBase = 8;
-                if (idPrep !== 'pronta') producaoBase *= 0.6; // Preparar base atrasa 40%
+                if (idPrep !== 'pronta') producaoBase *= 0.6; 
 
-                producaoBase *= tamanho.fator_mo; // Formatos grandes rendem menos m2 as vezes, ou mais, depende. No DB fator alto = mais caro = menos prod
-                producaoBase *= complexidade.fator_producao; // Diagonal ou paginação reduz prod
+                producaoBase *= tamanho.fator_mo; 
+                producaoBase *= complexidade.fator_producao; 
                 if (idRisco === 'andaime') producaoBase *= 0.8; 
                 if (idRisco === 'balancim' || idRisco === 'rapel') producaoBase *= 0.5; 
 
-                let forcaTrabalho = Math.max(0.1, qtdPedreiro + (qtdAjudante * 0.4)); // Ajudante de pedreiro ajuda mais no rendimento que pintor
-                
+                let forcaTrabalho = Math.max(0.1, qtdPedreiro + (qtdAjudante * 0.4)); 
+
                 let diasCalculados = Math.ceil(area / (producaoBase * forcaTrabalho));
                 document.getElementById('prazo').value = Math.max(1, diasCalculados);
             }
@@ -425,12 +435,12 @@
 
             let materiaisCalculados = [];
 
-            // ==== CÁLCULO DE MATERIAIS (Só se isQuantificar = true) ====
+            // ==== CÁLCULO DE MATERIAIS ====
             if (isQuantificar) {
                 const idArg = document.getElementById('argamassa').value;
                 const idRej = document.getElementById('rejunte').value;
                 const idJunta = document.getElementById('junta').value;
-                
+
                 const arg = dbRevestimento.argamassas[idArg];
                 const rej = dbRevestimento.rejuntes[idRej];
                 const junta = dbRevestimento.juntas_espessura[idJunta];
@@ -438,8 +448,11 @@
                 const fatorPerda = dbRevestimento.configuracoes_obra.perda_material || 1.15;
                 const areaComPerda = area * fatorPerda;
 
-                // 1. Revestimento em si
-                materiaisCalculados.push({ description: `${tipo.nome} (${tamanho.nome})`, unit: 'm²', quantity: Math.ceil(areaComPerda).toString() });
+                // 1. Revestimento (Calculado em Caixas estimadas)
+                let estimativaCaixa = dbRevestimento.configuracoes_obra.estimativa_caixa_revestimento_m2 || 2.0;
+                let qtdCaixas = Math.ceil(areaComPerda / estimativaCaixa);
+                materiaisCalculados.push({ description: `Caixas de ${tipo.nome} (Aprox. 2m²/cx)`, unit: 'cx', quantity: qtdCaixas.toString() });
+                materiaisCalculados.push({ description: `Metragem total (com 15% de perda)`, unit: 'm²', quantity: areaComPerda.toFixed(2).toString() });
 
                 // 2. Argamassa
                 let consumoArgPorM2 = tamanho.exige_dupla_colagem ? dbRevestimento.configuracoes_obra.consumo_argamassa_dupla_kg_m2 : dbRevestimento.configuracoes_obra.consumo_argamassa_simples_kg_m2;
@@ -452,16 +465,23 @@
                 let kgRejunteTotal = Math.ceil(areaComPerda * consumoRejuntePorM2);
                 materiaisCalculados.push({ description: rej.nome, unit: 'kg', quantity: kgRejunteTotal.toString() });
 
-                // 4. Espaçadores / Niveladores
-                let qtdEspacadores = Math.ceil(areaComPerda * 10); // Media generica
-                materiaisCalculados.push({ description: "Espaçadores / Niveladores", unit: 'un', quantity: qtdEspacadores.toString() });
+                // 4. Espaçadores / Niveladores (Calculados em Pacotes)
+                let consumoEspacador = tamanho.consumo_espacador_m2 || 0;
+                if (consumoEspacador > 0) {
+                    let totalEspacadores = Math.ceil(areaComPerda * consumoEspacador);
+                    let pctEspacadores = Math.ceil(totalEspacadores / dbRevestimento.configuracoes_obra.embalagem_espacador_unidades);
+                    let pctCunhas = Math.ceil(totalEspacadores / dbRevestimento.configuracoes_obra.embalagem_cunha_unidades);
+                    
+                    materiaisCalculados.push({ description: "Clipes Niveladores (Pacotes)", unit: 'pct 100un', quantity: pctEspacadores.toString() });
+                    materiaisCalculados.push({ description: "Cunhas Reutilizáveis (Pacotes)", unit: 'pct 50un', quantity: pctCunhas.toString() });
+                }
             }
 
             // ==== MÃO DE OBRA SUGERIDA ====
-            let baseMo = tipo.base_mo; // Ex: Cerâmica R$ 35
-            baseMo *= tamanho.fator_mo; // Ex: Grande 1.3x = R$ 45,50
-            baseMo += prep.acrescimo_mo; // Ex: Contrapiso + R$ 25,00
-            baseMo += complexidade.acrescimo_mo; // Ex: Diagonal + R$ 15,00
+            let baseMo = tipo.base_mo; 
+            baseMo *= tamanho.fator_mo; 
+            baseMo += prep.acrescimo_mo; 
+            baseMo += complexidade.acrescimo_mo; 
 
             let moSugerida = ((area * baseMo) * risco.multiplicador) + risco.taxa;
             document.getElementById('mo_sugerida_texto').innerText = formatarValor(moSugerida);
@@ -486,7 +506,7 @@
 
             const painelLucro = document.getElementById('painel_lucro');
             const margemBadge = document.getElementById('lucro_margem');
-            
+
             painelLucro.classList.remove('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-400', 'bg-red-500/10', 'border-red-500/30', 'text-red-400');
             margemBadge.classList.remove('bg-emerald-500/20', 'text-emerald-300', 'bg-red-500/20', 'text-red-300');
 
@@ -522,7 +542,8 @@
                 materials: materiaisCalculados,
                 schedule: { dias: prazo },
                 total: receitaMo,
-                financial: { total: receitaMo }
+                financial: { total: receitaMo },
+                termos: dbRevestimento.termos_condicoes
             };
 
             // Adiciona as seleções de materiais no save só se for modo quantificar
