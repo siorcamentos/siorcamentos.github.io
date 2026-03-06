@@ -29,10 +29,10 @@
             background-image: radial-gradient(circle at top, rgba(37, 99, 235, 0.15), transparent 50%), 
                               radial-gradient(circle at bottom, rgba(15, 23, 42, 1), #0f172a);
             background-attachment: fixed;
-            -webkit-tap-highlight-color: transparent; /* Remove brilho azul ao tocar no celular */
+            -webkit-tap-highlight-color: transparent;
         }
         .app-container {
-            min-height: 100dvh; /* Usa a altura real da tela no mobile */
+            min-height: 100dvh;
         }
         .input-group { position: relative; }
         .input-icon {
@@ -69,22 +69,28 @@
         <p id="subtitulo" class="text-slate-400 text-sm font-medium">Faça login para continuar</p>
     </div>
 
+    <!-- TELA DE LOGIN -->
     <div id="view-login" class="w-full fade-in">
         <form id="loginForm" class="space-y-4">
             <div class="input-group">
                 <i class="ph ph-user input-icon"></i>
-                <input id="nome" type="text" placeholder="Seu nome" required class="input-field">
+                <input id="nome" type="text" name="username" placeholder="Seu nome" autocomplete="username" required class="input-field">
             </div>
             <div class="input-group">
                 <i class="ph ph-phone input-icon"></i>
-                <input id="telefone" type="tel" placeholder="Seu telefone" required class="input-field">
+                <input id="telefone" type="tel" name="tel" placeholder="Seu telefone" autocomplete="tel" required class="input-field">
             </div>
             <div class="input-group">
                 <i class="ph ph-lock-key input-icon"></i>
-                <input id="senha" type="password" placeholder="Sua senha" required class="input-field">
+                <input id="senha" type="password" name="current-password" placeholder="Sua senha" autocomplete="current-password" required class="input-field">
             </div>
             
-            <div class="flex justify-end pt-1">
+            <!-- Checkbox "Manter-me conectado" -->
+            <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 text-sm text-slate-300">
+                    <input type="checkbox" id="manterConectado" class="rounded bg-slate-700 border-slate-600 text-brand-500 focus:ring-brand-500/25">
+                    <span>Manter‑me conectado</span>
+                </label>
                 <button type="button" onclick="mudarTela('recuperar')" class="text-sm font-medium text-brand-400 hover:text-brand-300">Esqueceu a senha?</button>
             </div>
 
@@ -102,6 +108,7 @@
         </div>
     </div>
 
+    <!-- TELA DE CADASTRO -->
     <div id="view-cadastro" class="w-full fade-in hidden">
         <form id="cadastroForm" class="space-y-4">
             <div class="input-group">
@@ -130,6 +137,7 @@
         </div>
     </div>
 
+    <!-- TELA DE RECUPERAÇÃO DE SENHA -->
     <div id="view-recuperar" class="w-full fade-in hidden">
         <div class="bg-slate-800/50 p-5 rounded-2xl border border-slate-700/50 mb-6 text-center">
             <i class="ph ph-whatsapp-logo text-4xl text-green-500 mb-2"></i>
@@ -158,6 +166,7 @@
         </div>
     </div>
 
+    <!-- MENSAGEM DE ERRO FLUTUANTE -->
     <div id="msg-container" class="absolute bottom-6 left-6 right-6 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm text-center flex items-center justify-center gap-2 hidden fade-in">
         <i class="ph ph-warning-circle text-lg"></i>
         <span id="msg"></span>
@@ -166,11 +175,12 @@
 </div>
 
 <script>
+    // ========== FUNÇÕES AUXILIARES ==========
     function mostrarErro(mensagem) {
         const container = document.getElementById('msg-container');
         document.getElementById('msg').innerText = mensagem;
         container.classList.remove('hidden');
-        setTimeout(() => container.classList.add('hidden'), 5000); // Esconde após 5s
+        setTimeout(() => container.classList.add('hidden'), 5000);
     }
 
     window.mudarTela = function(tela) {
@@ -192,6 +202,7 @@
         }
     };
 
+    // ========== CONFIGURAÇÃO SUPABASE ==========
     const SUPABASE_URL = "https://jbrkmuduyaibduwopxqn.supabase.co"; 
     const SUPABASE_ANON_KEY = "sb_publishable_TUL_4vjHuNL6O4KBUpOGrA_kh8ZmJJ4"; 
 
@@ -202,6 +213,7 @@
         mostrarErro('Erro de conexão com o servidor.');
     }
 
+    // ========== HASH DE SENHA (SHA-256) ==========
     async function hashSenha(senha) {
         const encoder = new TextEncoder();
         const data = encoder.encode(senha);
@@ -209,6 +221,31 @@
         return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
+    // ========== VERIFICAÇÃO DE SESSÃO ATIVA (LOGIN AUTOMÁTICO) ==========
+    (async function verificarSessao() {
+        // Aguarda o supabaseClient estar disponível
+        if (!supabaseClient) return;
+
+        const userId = localStorage.getItem("user_id");
+        if (userId) {
+            // Valida se o ID ainda existe no banco (opcional, mas recomendado)
+            const { data, error } = await supabaseClient
+                .from("usuarios")
+                .select("id")
+                .eq("id", userId)
+                .maybeSingle();
+
+            if (data) {
+                // Usuário válido: redireciona para a área logada
+                window.location.href = "orcamento/index.html";
+            } else {
+                // ID inválido ou expirado: limpa o localStorage
+                localStorage.removeItem("user_id");
+            }
+        }
+    })();
+
+    // ========== LOGIN ==========
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
         e.preventDefault();
         const btn = this.querySelector('button[type="submit"]');
@@ -230,7 +267,7 @@
             .from("usuarios")
             .select("*")
             .eq("nome", nome)
-            .eq("telefone", telefone) // Correção aplicada aqui! (Faltava o ponto)
+            .eq("telefone", telefone)
             .maybeSingle();
 
         if (error || !usuario) {
@@ -244,10 +281,20 @@
             return;
         }
 
-        localStorage.setItem("user_id", usuario.id);
+        // Verifica se o usuário marcou "Manter-me conectado"
+        const manter = document.getElementById("manterConectado").checked;
+        if (manter) {
+            localStorage.setItem("user_id", usuario.id);
+        } else {
+            // Se não quiser manter, armazena apenas na sessão (expira ao fechar o navegador)
+            sessionStorage.setItem("user_id", usuario.id);
+        }
+
+        // Redireciona para a área logada
         window.location.href = "orcamento/index.html";
     });
 
+    // ========== CADASTRO ==========
     document.getElementById("cadastroForm").addEventListener("submit", async function (e) {
         e.preventDefault();
         const btn = this.querySelector('button[type="submit"]');
@@ -265,6 +312,7 @@
         const telefone = document.getElementById("cad_telefone").value.trim();
         const senhaHash = await hashSenha(document.getElementById("cad_senha").value);
 
+        // Verifica se já existe
         const { data: existente, error: erroConsulta } = await supabaseClient
             .from("usuarios")
             .select("id")
@@ -278,6 +326,7 @@
             return;
         }
 
+        // Insere novo usuário
         const { data, error } = await supabaseClient
             .from("usuarios")
             .insert([{ nome, telefone: telefone, senha: senhaHash, created_at: new Date() }])
@@ -290,10 +339,12 @@
             return;
         }
 
+        // Após cadastro, já faz login automático (salva no localStorage por padrão)
         localStorage.setItem("user_id", data.id);
         window.location.href = "orcamento/index.html";
     });
 
+    // ========== RECUPERAÇÃO VIA WHATSAPP ==========
     function enviarSolicitacaoWhats() {
         const nome = document.getElementById("rec_nome").value.trim() || "Não informado";
         const telefone = document.getElementById("rec_telefone").value.trim() || "Não informado";
@@ -301,6 +352,13 @@
         const numeroWhatsApp = "5581989895620";
         window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`, "_blank");
     }
+
+    // ========== FUNÇÃO DE LOGOUT (para usar na área logada) ==========
+    window.logout = function() {
+        localStorage.removeItem("user_id");
+        sessionStorage.removeItem("user_id");
+        window.location.href = "index.html"; // ajuste o caminho se necessário
+    };
 </script>
 </body>
 </html>
