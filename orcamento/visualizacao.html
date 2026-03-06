@@ -27,7 +27,7 @@
             background-color: #0f172a;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         @media print {
             @page { size: A4; margin: 1cm; }
             body { background-color: white !important; }
@@ -37,7 +37,7 @@
             .print-bg-transparent { background-color: transparent !important; }
             .print-table th { background-color: #f3f4f6 !important; color: #000 !important; border-bottom: 2px solid #000 !important; }
             .print-table td { border-bottom: 1px solid #e5e7eb !important; }
-            
+
             #documento-wrapper {
                 border: none !important;
                 box-shadow: none !important;
@@ -65,9 +65,9 @@
     </div>
 
     <div class="max-w-4xl mx-auto p-4 sm:p-8 mt-4 print:p-0 print:mt-0">
-        
+
         <div id="documento-wrapper" class="bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-12 shadow-2xl print-bg-transparent">
-            
+
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-6 mb-8 print:pb-2 print:mb-3 print-border-black">
                 <div class="flex items-center gap-4 mb-4 sm:mb-0">
                     <div class="w-14 h-14 bg-slate-700 rounded-xl flex items-center justify-center print-hide">
@@ -159,7 +159,14 @@
                 <div id="valorTotal" class="text-3xl sm:text-4xl font-black text-white print-text-black print:text-2xl">R$ 0,00</div>
             </div>
 
-            <div class="mt-16 pt-10 print:mt-6 print:pt-2 border-t border-slate-700 print-border-black text-center">
+            <div id="blocoTermos" class="mt-8 hidden print:mt-4">
+                <h3 class="text-xs font-bold text-red-400 uppercase tracking-widest mb-3 print:mb-1 print-text-black flex items-center gap-2">
+                    <i class="ph-fill ph-warning-circle print-hide"></i> Termos e Condições do Orçamento
+                </h3>
+                <div id="corpoTermos" class="bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-xs text-slate-400 space-y-3 print-bg-transparent print-border-black print-text-black print:p-2 print:space-y-1">
+                    </div>
+            </div>
+            <div class="mt-16 pt-10 print:mt-8 print:pt-4 border-t border-slate-700 print-border-black text-center">
                 <div id="assinaturaNome" class="font-assinatura text-5xl text-brand-400 mb-2 print-text-black print:text-3xl"></div>
                 <div class="w-64 h-px bg-slate-600 mx-auto mb-2 print-border-black print-bg-transparent print:border-t"></div>
                 <div class="text-xs font-semibold text-slate-300 uppercase tracking-wider print-text-black">Responsável Técnico</div>
@@ -197,12 +204,11 @@
             }
         }
 
-        // Tabela de categorias expandida e inteligente
         const categoriaPalavras = {
             'Areia Fina': ['areia fina'], 
             'Areia Grossa': ['areia grossa'], 
             'Areia Média': ['areia média', 'areia media'],
-            'Areia': ['areia'], // Captura outras areias
+            'Areia': ['areia'], 
             'Argamassa': ['argamassa', 'ac1', 'ac2', 'ac3'],
             'Rejunte': ['rejunte'],
             'Tijolo': ['tijolo'], 'Bloco': ['bloco'], 'Cimento': ['cimento'],
@@ -238,14 +244,17 @@
             const mat = document.getElementById('corpoMateriais');
             const serv = document.getElementById('corpoServicos');
             const corpoResumo = document.getElementById('corpoResumo');
+            const blocoTermos = document.getElementById('blocoTermos');
+            const corpoTermos = document.getElementById('corpoTermos');
 
-            mat.innerHTML = ''; serv.innerHTML = ''; corpoResumo.innerHTML = '';
+            mat.innerHTML = ''; serv.innerHTML = ''; corpoResumo.innerHTML = ''; corpoTermos.innerHTML = '';
 
             if(!dadosRaw){
                 mat.innerHTML='<tr><td colspan="3" class="py-3 print:py-1 text-center text-slate-500 italic">Nenhum material cadastrado</td></tr>';
                 serv.innerHTML='<tr><td colspan="2" class="py-3 print:py-1 text-center text-slate-500 italic">Nenhum serviço cadastrado</td></tr>';
                 corpoResumo.innerHTML='<tr><td colspan="3" class="py-3 print:py-1 text-center text-slate-500 italic">Sem materiais para resumo</td></tr>';
                 document.getElementById('clienteNome').innerText = "Não informado";
+                blocoTermos.classList.add('hidden');
                 return;
             }
 
@@ -280,8 +289,6 @@
             if (Object.keys(resumo).length > 0) {
                 for (let [categoria, dadosCat] of Object.entries(resumo)) {
                     let unidadeExibida = dadosCat.unidades.size === 1 ? Array.from(dadosCat.unidades)[0] : 'mix';
-                    
-                    // Colunas invertidas: Categoria -> Volume Total -> Unid.
                     corpoResumo.innerHTML += `
                     <tr>
                         <td class="py-3 print:py-1 border-b border-slate-700/50 font-medium print-border-black">${categoria}</td>
@@ -302,6 +309,28 @@
             `;
 
             document.getElementById('valorTotal').innerText = Number(valorServico).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+            // LOGICA PARA EXIBIR OS TERMOS E CONDIÇÕES
+            if (dados.termos && Object.keys(dados.termos).length > 0) {
+                blocoTermos.classList.remove('hidden');
+                
+                // Resgata a área se existir nos parâmetros, senão usa "X"
+                let areaProjeto = dados.parametros && dados.parametros.area ? dados.parametros.area : "X";
+
+                for (const [chave, texto] of Object.entries(dados.termos)) {
+                    // Substitui a tag {METRAGEM_TOTAL} pela área real
+                    let textoTratado = texto.replace('{METRAGEM_TOTAL}', areaProjeto);
+                    
+                    corpoTermos.innerHTML += `
+                        <p class="flex items-start gap-2">
+                            <i class="ph-fill ph-caret-right text-brand-500 mt-0.5 print-hide"></i>
+                            <span class="font-medium">- ${textoTratado}</span>
+                        </p>
+                    `;
+                }
+            } else {
+                blocoTermos.classList.add('hidden');
+            }
         }
 
         window.onload = () => {
