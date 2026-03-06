@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Construtor PRO · Painel</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -21,298 +19,251 @@
         }
     </script>
     <style>
-        body { background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
+        body { background: #0f172a; -webkit-tap-highlight-color: transparent; }
         .card { background: #1e293b; border: 1px solid #334155; border-radius: 1.25rem; }
-        .action-btn { transition: all 0.2s; }
-        .action-btn:active { transform: scale(0.95); }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .action-btn { transition: .2s; }
+        .action-btn:active { transform: scale(.95); }
+        ::-webkit-scrollbar { width: 0; background: transparent; }
     </style>
 </head>
 <body class="text-slate-200 antialiased min-h-screen pb-20">
 
-    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-tr from-brand-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/30">
-                <i class="ph-fill ph-hard-hat text-xl text-white"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-white leading-tight">Construtor PRO</h1>
-                <div class="flex items-center gap-2 mt-0.5">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Painel</p>
-                    <span class="text-slate-600">•</span>
-                    <span id="sync-status" class="text-[10px] font-semibold text-brand-400 flex items-center gap-1">
-                        <i class="ph ph-arrows-clockwise animate-spin"></i> Conectando...
-                    </span>
-                </div>
+<header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-tr from-brand-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/30">
+            <i class="ph-fill ph-hard-hat text-xl text-white"></i>
+        </div>
+        <div>
+            <h1 class="font-bold text-white leading-tight">Construtor PRO</h1>
+            <div class="flex items-center gap-2 mt-0.5">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Painel</p>
+                <span class="text-slate-600">•</span>
+                <span id="sync-status" class="text-[10px] font-semibold text-brand-400 flex items-center gap-1">
+                    <i class="ph ph-arrows-clockwise animate-spin"></i> Conectando...
+                </span>
             </div>
         </div>
-        <button onclick="sair()" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-            <i class="ph ph-sign-out text-xl"></i>
-        </button>
-    </header>
+    </div>
+    <button onclick="sair()" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">
+        <i class="ph ph-sign-out text-xl"></i>
+    </button>
+</header>
 
-    <main class="p-5 max-w-md mx-auto space-y-8">
+<main class="p-5 max-w-md mx-auto space-y-8">
 
-        <section>
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Ações Rápidas</h2>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <a href="orcamento-alvenaria.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800">
-                            <div class="w-14 h-14 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center"><i class="ph-fill ph-wall text-3xl"></i></div>
-                            <span class="font-semibold text-sm text-slate-200">Alvenaria</span>
-                        </a>
-                        
-                        <a href="orcamento-pintura.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800">
-                            <div class="w-14 h-14 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center"><i class="ph-fill ph-paint-roller text-3xl"></i></div>
-                            <span class="font-semibold text-sm text-slate-200">Pintura</span>
-                        </a>
-                        
-                        <a href="orcamento-revestimento.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800">
-                            <div class="w-14 h-14 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><i class="ph-fill ph-squares-four text-3xl"></i></div>
-                            <span class="font-semibold text-sm text-slate-200">Revestimento</span>
-                        </a>
-                        
-                        <a href="orcamento-modelo.html" class="action-btn card p-4 flex flex-col items-center justify-center text-center gap-3 hover:bg-slate-800 border-dashed border-slate-600 bg-slate-800/50">
-                            <div class="w-14 h-14 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="ph-fill ph-file-text text-3xl"></i></div>
-                            <span class="font-semibold text-sm text-emerald-400">Modelo Livre</span>
-                        </a>
-                    </div>
-                </section>
+    <!-- Ações Rápidas (inalterado) -->
+    <section>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Ações Rápidas</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <a href="orcamento-alvenaria.html" class="action-btn card p-4 flex flex-col items-center gap-3 hover:bg-slate-800">
+                <div class="w-14 h-14 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center"><i class="ph-fill ph-wall text-3xl"></i></div>
+                <span class="font-semibold text-sm">Alvenaria</span>
+            </a>
+            <a href="orcamento-pintura.html" class="action-btn card p-4 flex flex-col items-center gap-3 hover:bg-slate-800">
+                <div class="w-14 h-14 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center"><i class="ph-fill ph-paint-roller text-3xl"></i></div>
+                <span class="font-semibold text-sm">Pintura</span>
+            </a>
+            <a href="orcamento-revestimento.html" class="action-btn card p-4 flex flex-col items-center gap-3 hover:bg-slate-800">
+                <div class="w-14 h-14 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><i class="ph-fill ph-squares-four text-3xl"></i></div>
+                <span class="font-semibold text-sm">Revestimento</span>
+            </a>
+            <a href="orcamento-modelo.html" class="action-btn card p-4 flex flex-col items-center gap-3 hover:bg-slate-800">
+                <div class="w-14 h-14 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="ph-fill ph-file-text text-3xl"></i></div>
+                <span class="font-semibold text-sm text-emerald-400">Modelo Livre</span>
+            </a>
+            <a href="assistente.html" class="action-btn card p-4 flex flex-col items-center gap-3 hover:bg-slate-800 border border-purple-500/30 bg-purple-500/5">
+                <div class="w-14 h-14 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center"><i class="ph-fill ph-robot text-3xl"></i></div>
+                <span class="font-semibold text-sm text-purple-400">Assistente</span>
+            </a>
+        </div>
+    </section>
 
-        <section>
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Resumo Financeiro</h2>
-            <div class="card overflow-hidden">
-                
-                <div id="lista-resumo">
-                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center"><i class="ph-fill ph-wall"></i></div>
-                                <div><p class="text-sm font-semibold text-slate-200">Alvenaria</p><span id="status-alvenaria" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
-                            </div>
-                            <div class="text-right"><p id="valor-alvenaria" class="font-bold text-slate-200">R$ 0,00</p></div>
-                        </div>
-                        <div id="acoes-alvenaria" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
-                            <button onclick="excluirOrcamento('alvenaria')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
-                            <a href="visualizacao.html?modulo=alvenaria" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
-                        </div>
-                    </div>
-
-                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center"><i class="ph-fill ph-paint-roller"></i></div>
-                                <div><p class="text-sm font-semibold text-slate-200">Pintura</p><span id="status-pintura" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
-                            </div>
-                            <div class="text-right"><p id="valor-pintura" class="font-bold text-slate-200">R$ 0,00</p></div>
-                        </div>
-                        <div id="acoes-pintura" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
-                            <button onclick="excluirOrcamento('pintura')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
-                            <a href="visualizacao.html?modulo=pintura" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
-                        </div>
-                    </div>
-
-                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center"><i class="ph-fill ph-squares-four"></i></div>
-                                <div><p class="text-sm font-semibold text-slate-200">Revestimento</p><span id="status-revestimento" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
-                            </div>
-                            <div class="text-right"><p id="valor-revestimento" class="font-bold text-slate-200">R$ 0,00</p></div>
-                        </div>
-                        <div id="acoes-revestimento" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
-                            <button onclick="excluirOrcamento('revestimento')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
-                            <a href="visualizacao.html?modulo=revestimento" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
-                        </div>
-                    </div>
-
-                    <div class="p-4 border-b border-slate-700/50 bg-slate-800/30 flex flex-col gap-3">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><i class="ph-fill ph-file-text"></i></div>
-                                <div><p class="text-sm font-semibold text-slate-200">Modelo Livre</p><span id="status-modelo" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-slate-400">Pendente</span></div>
-                            </div>
-                            <div class="text-right"><p id="valor-modelo" class="font-bold text-slate-200">R$ 0,00</p></div>
-                        </div>
-                        <div id="acoes-modelo" class="hidden flex justify-end gap-2 border-t border-slate-700/50 pt-3">
-                            <button onclick="excluirOrcamento('modelo')" class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-trash"></i> Excluir</button>
-                            <a href="visualizacao.html?modulo=modelo" class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold flex items-center gap-1"><i class="ph ph-eye"></i> Ver Relatório</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-5 bg-gradient-to-r from-brand-600/20 to-transparent flex justify-between items-center">
-                    <div>
-                        <p class="text-xs font-bold text-brand-400 uppercase tracking-widest">Total Geral</p>
-                        <p class="text-xs text-slate-400 mt-1">Soma de todos os módulos</p>
-                    </div>
-                    <div class="text-right">
-                        <p id="valor-geral" class="text-2xl font-black text-white">R$ 0,00</p>
-                    </div>
-                </div>
+    <!-- Resumo Financeiro com lista de orçamentos -->
+    <section>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Resumo Financeiro</h2>
+        <div class="card overflow-hidden">
+            <div id="lista-resumo"></div> <!-- Itens serão inseridos aqui -->
+            <div class="p-5 bg-gradient-to-r from-brand-600/20 to-transparent flex justify-between items-center">
+                <div><p class="text-xs font-bold text-brand-400 uppercase tracking-widest">Total Geral</p></div>
+                <div class="text-right"><p id="valor-geral" class="text-2xl font-black text-white">R$ 0,00</p></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
+    <!-- Link para Termos e botão Seja PRO -->
+    <div class="text-center mt-8">
+        <a href="termos.html" class="text-xs text-slate-500 hover:text-brand-400 underline">Termos e Condições</a>
+    </div>
+    <div class="text-center mt-4">
+        <button onclick="contatarWhatsApp()" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-green-600/30 transition-all active:scale-95">
+            Seja PRO
+        </button>
+    </div>
 
-    <script>
-        // ==================== CONEXÃO SUPABASE ====================
-        const SUPABASE_URL = "https://jbrkmuduyaibduwopxqn.supabase.co"; 
-        const SUPABASE_ANON_KEY = "sb_publishable_TUL_4vjHuNL6O4KBUpOGrA_kh8ZmJJ4"; 
-        let supabaseClient;
-        
-        try {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch(e) { console.error("Erro ao inicializar Supabase"); }
+</main>
 
-        const userId = localStorage.getItem("user_id");
-        if (!userId) {
-            window.location.href = "../index.html"; // Força login se não tiver ID
+<script>
+    const SUPABASE_URL = "https://jbrkmuduyaibduwopxqn.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_TUL_4vjHuNL6O4KBUpOGrA_kh8ZmJJ4";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const userId = localStorage.getItem("user_id");
+    const planoUsuario = localStorage.getItem("plano") || "free";
+
+    if (!userId) {
+        window.location.href = "../index.html";
+    }
+
+    let usuarioNome = '';
+    let usuarioTelefone = '';
+
+    async function carregarDadosUsuario() {
+        if (!userId) return;
+        const { data, error } = await supabaseClient
+            .from('usuarios')
+            .select('nome, telefone')
+            .eq('id', userId)
+            .single();
+        if (!error && data) {
+            usuarioNome = data.nome || '';
+            usuarioTelefone = data.telefone || '';
         }
+    }
 
-        // ==================== SINCRONIZAÇÃO COM A NUVEM ====================
-        async function sincronizarNuvem() {
-            if (!userId || !supabaseClient) return;
-            const modulos = ['alvenaria', 'revestimento', 'pintura', 'modelo'];
-            const syncStatus = document.getElementById('sync-status');
+    async function verificarLimite(modulo) {
+        const { count } = await supabaseClient
+            .from("orcamentos")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", userId)
+            .eq("tipo", modulo);
+        if (planoUsuario === "free" && count >= 1) {
+            alert("Plano FREE permite apenas 1 orçamento por módulo.");
+            return false;
+        }
+        if (planoUsuario === "pro" && count >= 4) {
+            alert("Plano PRO permite até 4 orçamentos por módulo.");
+            return false;
+        }
+        return true;
+    }
 
-            try {
-                // 1. PUSH: Envia o que está no celular para o Banco de Dados
-                for (const modulo of modulos) {
-                    const dadosRaw = localStorage.getItem('orcamento_' + modulo);
-                    if (dadosRaw) {
-                        const dados = JSON.parse(dadosRaw);
-                        const titulo = dados.cliente || `Orçamento de ${modulo.toUpperCase()}`;
-
-                        // Verifica se o orçamento já existe no BD
-                        const { data: existente } = await supabaseClient
-                            .from('orcamentos')
-                            .select('id')
-                            .eq('user_id', userId)
-                            .eq('tipo', modulo)
-                            .maybeSingle();
-
-                        if (existente) {
-                            await supabaseClient.from('orcamentos').update({
-                                titulo: titulo,
-                                dados: dados,
-                                updated_at: new Date()
-                            }).eq('id', existente.id);
-                        } else {
-                            await supabaseClient.from('orcamentos').insert([{
-                                user_id: userId,
-                                tipo: modulo,
-                                titulo: titulo,
-                                dados: dados,
-                                created_at: new Date()
-                            }]);
-                        }
-                    }
-                }
-
-                // 2. PULL: Baixa orçamentos da Nuvem que podem estar faltando no celular
-                const { data: orcamentosNuvem, error } = await supabaseClient
-                    .from('orcamentos')
-                    .select('*')
-                    .eq('user_id', userId);
-
-                if (orcamentosNuvem && !error) {
-                    orcamentosNuvem.forEach(orc => {
-                        localStorage.setItem('orcamento_' + orc.tipo, JSON.stringify(orc.dados));
-                    });
-                }
-
-                // ✅ PROTEÇÃO ADICIONADA AQUI (Sucesso)
-                if (syncStatus) {
-                    syncStatus.innerHTML = '<i class="ph ph-cloud-check text-emerald-400 text-sm"></i> <span class="text-emerald-400">Sincronizado</span>';
-                }
-                
-            } catch (e) {
-                console.error("Erro na sincronização:", e);
-                // ✅ PROTEÇÃO ADICIONADA AQUI (Erro / Offline)
-                if (syncStatus) {
-                    syncStatus.innerHTML = '<i class="ph ph-cloud-warning text-orange-400 text-sm"></i> <span class="text-orange-400">Offline</span>';
+    async function sincronizarNuvem() {
+        const modulos = ['alvenaria', 'revestimento', 'pintura', 'modelo'];
+        for (const modulo of modulos) {
+            const dadosRaw = localStorage.getItem("orcamento_" + modulo);
+            if (!dadosRaw) continue;
+            const dados = JSON.parse(dadosRaw);
+            if (!dados || Object.keys(dados).length === 0) continue;
+            const titulo = dados.cliente || "Orçamento " + modulo;
+            const idLocal = localStorage.getItem("orcamento_id_" + modulo);
+            if (idLocal) {
+                await supabaseClient
+                    .from("orcamentos")
+                    .update({ titulo, dados, updated_at: new Date() })
+                    .eq("id", idLocal);
+            } else {
+                if (!(await verificarLimite(modulo))) continue;
+                const { data } = await supabaseClient
+                    .from("orcamentos")
+                    .insert([{ user_id: userId, tipo: modulo, titulo, dados }])
+                    .select()
+                    .single();
+                if (data) {
+                    localStorage.setItem("orcamento_id_" + modulo, data.id);
                 }
             }
-
-            // Após sincronizar, monta a tela com os dados atualizados
-            carregarEMontar();
         }
 
-        // ==================== RENDERIZAÇÃO DA TELA ====================
-// ==================== RENDERIZAÇÃO DA TELA ====================
-        function carregarEMontar() {
-            const modulos = ['alvenaria', 'revestimento', 'pintura', 'modelo'];
-            let totalGeral = 0;
-
-            modulos.forEach(modulo => {
-                const dadosRaw = localStorage.getItem('orcamento_' + modulo);
-                if (!dadosRaw) return;
-
-                try {
-                    const dados = JSON.parse(dadosRaw);
-                    
-                    const statusBadge = document.getElementById(`status-${modulo}`);
-                    if (statusBadge) {
-                        statusBadge.innerText = "Salvo";
-                        statusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400";
-                    }
-
-                    const acoesDiv = document.getElementById(`acoes-${modulo}`);
-                    if (acoesDiv) acoesDiv.classList.remove('hidden');
-
-                    let total = dados?.financial?.total || dados?.total || 0;
-                    totalGeral += Number(total);
-
-                    const valorModulo = document.getElementById(`valor-${modulo}`);
-                    if (valorModulo) {
-                        valorModulo.innerText = 
-                            "R$ " + Number(total).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    }
-                } catch(e) { console.error("Erro ao carregar o módulo:", modulo, e); }
+        const { data: orcamentosNuvem } = await supabaseClient
+            .from("orcamentos")
+            .select("*")
+            .eq("user_id", userId);
+        if (orcamentosNuvem) {
+            orcamentosNuvem.forEach(orc => {
+                if (!localStorage.getItem("orcamento_" + orc.tipo)) {
+                    localStorage.setItem("orcamento_" + orc.tipo, JSON.stringify(orc.dados));
+                    localStorage.setItem("orcamento_id_" + orc.tipo, orc.id);
+                }
             });
-
-            // ✅ PROTEÇÃO ADICIONADA AQUI (Evita o erro "Cannot set properties of null")
-            const textoValorGeral = document.getElementById('valor-geral');
-            if (textoValorGeral) {
-                textoValorGeral.innerText = 
-                    "R$ " + totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
         }
 
-        // ==================== DELETAR ORÇAMENTO ====================
-        async function excluirOrcamento(modulo) {
-            const nomeFormatado = modulo.charAt(0).toUpperCase() + modulo.slice(1);
-            
-            if (confirm(`Tem certeza que deseja excluir o orçamento de ${nomeFormatado}?`)) {
-                
-                // 1. Apaga localmente
-                localStorage.removeItem('orcamento_' + modulo);
-                
-                // 2. Apaga do Banco de Dados Supabase
-                if (userId && supabaseClient) {
-                    await supabaseClient
-                        .from('orcamentos')
-                        .delete()
-                        .eq('user_id', userId)
-                        .eq('tipo', modulo);
-                }
+        carregarEMontar();
 
-                location.reload(); 
-            }
+        const syncStatus = document.getElementById("sync-status");
+        if (syncStatus) {
+            syncStatus.innerHTML = '<i class="ph ph-cloud-check text-emerald-400"></i> Sincronizado';
         }
+    }
 
-        // ==================== SAIR DO SISTEMA ====================
-        function sair() {
-            if (confirm("Deseja realmente sair do sistema?")) {
-                localStorage.removeItem("user_id");
-                window.location.href = "../index.html"; 
+    function carregarEMontar() {
+        const modulos = ['alvenaria', 'revestimento', 'pintura', 'modelo'];
+        let totalGeral = 0;
+        const listaResumo = document.getElementById('lista-resumo');
+        if (listaResumo) listaResumo.innerHTML = '';
+
+        modulos.forEach(modulo => {
+            const dadosRaw = localStorage.getItem("orcamento_" + modulo);
+            if (!dadosRaw) return;
+            const dados = JSON.parse(dadosRaw);
+            let total = dados?.financial?.total || dados?.total || 0;
+            totalGeral += Number(total);
+
+            if (listaResumo) {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-4 border-b border-slate-800';
+                item.innerHTML = `
+                    <div>
+                        <p class="font-bold text-white capitalize">${modulo}</p>
+                        <p class="text-xs text-slate-400">R$ ${Number(total).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="verOrcamento('${modulo}')" class="px-3 py-1 bg-brand-600/20 text-brand-400 rounded-lg text-xs font-bold">Ver</button>
+                        <button onclick="excluirOrcamento('${modulo}')" class="px-3 py-1 bg-red-600/20 text-red-400 rounded-lg text-xs font-bold">Excluir</button>
+                    </div>
+                `;
+                listaResumo.appendChild(item);
             }
-        }
+        });
 
-        // ==================== INÍCIO AUTOMÁTICO ====================
-        // Quando a página abre, ela já inicia a sincronização e depois renderiza
-        window.onload = sincronizarNuvem;
-    </script>
+        const valorGeralEl = document.getElementById("valor-geral");
+        if (valorGeralEl) {
+            valorGeralEl.innerText = "R$ " + totalGeral.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        }
+    }
+
+    function verOrcamento(modulo) {
+        window.location.href = `orcamento-${modulo}.html`;
+    }
+
+    async function excluirOrcamento(modulo) {
+        if (!confirm("Excluir orçamento?")) return;
+        localStorage.removeItem("orcamento_" + modulo);
+        const id = localStorage.getItem("orcamento_id_" + modulo);
+        if (id) {
+            await supabaseClient.from("orcamentos").delete().eq("id", id);
+        }
+        location.reload(); // recarrega para atualizar lista
+    }
+
+    function sair() {
+        if (confirm("Deseja sair do sistema?")) {
+            localStorage.removeItem("user_id");
+            window.location.href = "../index.html";
+        }
+    }
+
+    function contatarWhatsApp() {
+        const nome = encodeURIComponent(usuarioNome || 'Cliente');
+        const telefone = encodeURIComponent(usuarioTelefone || '');
+        const mensagem = encodeURIComponent(`Olá, gostaria de adquirir o plano PRO do sistema Construtor PRO. Meu nome: ${usuarioNome || ''}, telefone: ${usuarioTelefone || ''}.`);
+        const url = `https://wa.me/5581989825613?text=${mensagem}`;
+        window.open(url, '_blank');
+    }
+
+    window.onload = async function() {
+        await carregarDadosUsuario();
+        await sincronizarNuvem();
+    };
+</script>
 </body>
 </html>

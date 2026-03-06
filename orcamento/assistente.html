@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Construtor PRO · Assistente Técnico</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        brand: { 500: '#6366f1', 600: '#4f46e5' },
+                        slate: { 850: '#1e293b', 950: '#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        .chat-bubble-ai { background: #1e293b; border-radius: 1.2rem 1.2rem 1.2rem 0.2rem; align-self: flex-start; border: 1px solid rgba(255,255,255,0.05); }
+        .chat-bubble-user { background: #4f46e5; border-radius: 1.2rem 1.2rem 0.2rem 1.2rem; align-self: flex-end; }
+        .typing-dot { width: 4px; height: 4px; background: #94a3b8; border-radius: 50%; animation: blink 1.4s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen flex flex-col">
+
+    <header class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i class="ph-fill ph-robot text-xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-black text-white uppercase tracking-tighter">Assistente PRO</h1>
+                <span id="badge-plano" class="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">Carregando...</span>
+            </div>
+        </div>
+        <button onclick="window.location.href='../index.html'" class="text-slate-500"><i class="ph ph-house text-2xl"></i></button>
+    </header>
+
+    <main id="chat-container" class="flex-1 p-4 overflow-y-auto flex flex-col gap-4 pb-10">
+        
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 mb-2">
+            <div class="flex gap-3">
+                <i class="ph-fill ph-flask text-amber-500 text-xl"></i>
+                <p class="text-[9px] text-amber-200/80 font-bold leading-tight uppercase">
+                    Fase Experimental: Sua ajuda é fundamental para melhorarmos a experiência!
+                </p>
+            </div>
+        </div>
+
+        <div class="chat-bubble-ai p-4 max-w-[85%] shadow-lg">
+            <p class="text-sm leading-relaxed">Olá, mestre! Sou o assistente do **Construtor PRO**. O que vamos planejar hoje? Me conte o serviço (ex: muro, reboco, pintura).</p>
+        </div>
+    </main>
+
+    <div id="modal-pro" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-6 hidden">
+        <div class="bg-slate-800 border border-indigo-500/30 rounded-3xl p-8 text-center max-w-xs shadow-2xl">
+            <div class="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-400">
+                <i class="ph ph-crown text-4xl"></i>
+            </div>
+            <h2 class="text-xl font-black text-white mb-2 text-center">Limite Atingido</h2>
+            <p class="text-[11px] text-slate-400 mb-2 leading-relaxed">Você já realizou seus **3 orçamentos gratuitos**.</p>
+            <p id="countdown-text" class="text-xs font-bold text-amber-500 mb-6 italic">Aguarde 24h para resetar ou libere agora:</p>
+            
+            <button onclick="obterProZap()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-sm mb-4 transition-all active:scale-95 shadow-lg shadow-indigo-600/30">
+                LIBERAR ACESSO PRO
+            </button>
+            <button onclick="fecharModal()" class="text-slate-500 text-[10px] font-bold uppercase tracking-widest underline">Voltar para o Início</button>
+        </div>
+    </div>
+
+    <section class="p-4 bg-slate-900/50 border-t border-slate-800">
+        <textarea id="feedback-msg" rows="1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-[10px] text-slate-300 outline-none focus:border-indigo-500 transition-all resize-none mb-2" placeholder="Sua sugestão ou erro encontrado..."></textarea>
+        <button onclick="enviarFeedback()" class="w-full py-2 bg-slate-700 text-[9px] font-black uppercase text-slate-400 rounded-lg">Enviar Feedback ao Suporte</button>
+    </section>
+
+    <footer class="p-4 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-md mx-auto flex gap-2">
+            <input type="text" id="user-input" placeholder="O que vai fazer na obra?" class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
+            <button onclick="processarMensagem()" id="btn-send" class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white active:scale-90">
+                <i class="ph-fill ph-paper-plane-right text-xl"></i>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const supabaseUrl = 'https://jbrkmuduyaibduwopxqn.supabase.co';
+        const supabaseKey = 'sb_publishable_TUL_4vjHuNL6O4KBUpOGrA_kh8ZmJJ4';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let userProfile = null;
+        let dbConversa, dbServicos, dbMaoObra, dbProdutividade;
+
+        window.onload = async () => {
+            const userId = localStorage.getItem("user_id");
+            if (!userId) { window.location.href = "../index.html"; return; }
+
+            // 1. Carregar perfil e verificar reset de 24h
+            await carregarPerfilEReset(userId);
+
+            // 2. Carregar Inteligência (Caminho corrigido para pasta /json)
+            try {
+                dbConversa = await fetch('json/conversa_db.json').then(r => r.json());
+                dbServicos = await fetch('json/servicos_db.json').then(r => r.json());
+                dbMaoObra = await fetch('json/mao_obra_db.json').then(r => r.json());
+                dbProdutividade = await fetch('json/produtividade_db.json').then(r => r.json());
+            } catch (error) {
+                console.error("Erro ao carregar arquivos JSON da pasta /json:", error);
+            }
+        };
+
+        async function carregarPerfilEReset(userId) {
+            const { data: usuario } = await supabaseClient.from("usuarios").select("*").eq("id", userId).single();
+            userProfile = usuario;
+
+            if (userProfile.plano_status === 0 && userProfile.total_uso_hoje >= 3) {
+                const agora = new Date();
+                const dataBloqueio = new Date(userProfile.data_bloqueio);
+                const diffHoras = (agora - dataBloqueio) / (1000 * 60 * 60);
+
+                if (diffHoras >= 24) {
+                    // Reset Automático após 24h
+                    const { error } = await supabaseClient
+                        .from("usuarios")
+                        .update({ total_uso_hoje: 0, data_bloqueio: null })
+                        .eq("id", userId);
+                    
+                    if(!error) userProfile.total_uso_hoje = 0;
+                } else {
+                    document.getElementById('modal-pro').classList.remove('hidden');
+                    const horasRestantes = Math.ceil(24 - diffHoras);
+                    document.getElementById('countdown-text').innerText = `Reset automático em aprox. ${horasRestantes} horas.`;
+                }
+            }
+            atualizarBadgePlano();
+        }
+
+        function atualizarBadgePlano() {
+            const badge = document.getElementById('badge-plano');
+            if (userProfile.plano_status === 1) {
+                badge.innerText = "PLANO PRO";
+                badge.className = "text-[9px] bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded-full font-black uppercase";
+            } else {
+                badge.innerText = `FREE (${userProfile.total_uso_hoje || 0}/3)`;
+                badge.className = "text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase";
+            }
+        }
+
+        async function processarMensagem() {
+            const input = document.getElementById('user-input');
+            const msg = input.value.trim().toLowerCase();
+            if (!msg) return;
+
+            // Verificação Final de Limite
+            if (userProfile.plano_status === 0 && userProfile.total_uso_hoje >= 3) {
+                document.getElementById('modal-pro').classList.remove('hidden');
+                return;
+            }
+
+            addMessage(input.value, 'user');
+            input.value = '';
+            showTyping();
+
+            setTimeout(async () => {
+                removeTyping();
+                let fluxoEncontrado = null;
+
+                for (let key in dbConversa.fluxos) {
+                    const fluxo = dbConversa.fluxos[key];
+                    if (fluxo.palavras_chave.some(p => msg.includes(p))) {
+                        fluxoEncontrado = fluxo;
+                        break;
+                    }
+                }
+
+                if (fluxoEncontrado) {
+                    addMessage(fluxoEncontrado.saudacao_ia);
+                    setTimeout(() => {
+                        addMessage(`${fluxoEncontrado.confirmacao_servico}\n\n**Perguntas para o cálculo:**\n${fluxoEncontrado.perguntas_sequenciais.join('\n')}`);
+                        addMessage(`💡 **Dica do Mestre:** ${fluxoEncontrado.dica_mestre}`);
+                    }, 800);
+                    
+                    await contabilizarUso();
+                } else {
+                    addMessage("Mestre, não encontrei esse serviço no meu manual técnico. Tente algo como 'fazer baldrame', 'reboco' ou 'pintura'.");
+                }
+            }, 1000);
+        }
+
+        async function contabilizarUso() {
+            if (userProfile.plano_status === 1) return;
+
+            const novoUso = (userProfile.total_uso_hoje || 0) + 1;
+            const updateData = { total_uso_hoje: novoUso };
+            
+            if (novoUso >= 3) updateData.data_bloqueio = new Date().toISOString();
+
+            const { error } = await supabaseClient.from("usuarios").update(updateData).eq("id", userProfile.id);
+            if (!error) {
+                userProfile.total_uso_hoje = novoUso;
+                atualizarBadgePlano();
+            }
+        }
+
+        function addMessage(text, type = 'ai') {
+            const chat = document.getElementById('chat-container');
+            const div = document.createElement('div');
+            div.className = type === 'ai' ? 'chat-bubble-ai p-4 max-w-[85%] shadow-lg' : 'chat-bubble-user p-4 max-w-[85%] text-white shadow-lg';
+            div.innerHTML = `<p class="text-sm leading-relaxed">${text.replace(/\n/g, '<br>')}</p>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function showTyping() {
+            const t = document.createElement('div');
+            t.id = 'typing';
+            t.className = 'chat-bubble-ai p-4 flex gap-1 items-center';
+            t.innerHTML = `<div class="typing-dot"></div><div class="typing-dot" style="animation-delay: 0.2s"></div><div class="typing-dot" style="animation-delay: 0.4s"></div>`;
+            document.getElementById('chat-container').appendChild(t);
+        }
+
+        function removeTyping() { const t = document.getElementById('typing'); if(t) t.remove(); }
+
+        function obterProZap() {
+            const nome = userProfile.nome || "Mestre";
+            const fone = userProfile.telefone || "";
+            const zapMsg = `Olá Ulisses! Meu nome é ${nome} (${fone}). Estou usando o Construtor PRO e gostaria de adquirir o PLANO PRO ILIMITADO.`;
+            window.open(`https://wa.me/5581989825613?text=${encodeURIComponent(zapMsg)}`, '_blank');
+        }
+
+        function fecharModal() { window.location.href = "../index.html"; }
+
+        function enviarFeedback() {
+            const msg = document.getElementById('feedback-msg').value;
+            if (msg.length < 5) return;
+            const mailMsg = `Feedback de: ${userProfile.nome}\nMensagem: ${msg}`;
+            window.location.href = `mailto:suporte.si.orcamentos@gmail.com?subject=Feedback Construtor PRO&body=${encodeURIComponent(mailMsg)}`;
+            document.getElementById('feedback-msg').value = '';
+        }
+    </script>
+</body>
+</html>

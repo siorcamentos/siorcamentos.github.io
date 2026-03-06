@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Construtor PRO · Termos e Privacidade</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { brand: { 500: '#6366f1', 600: '#4f46e5' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen flex flex-col p-6">
+
+    <main class="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+        
+        <header class="mb-8 flex items-center gap-4">
+            <div class="w-12 h-12 bg-indigo-600/20 rounded-2xl flex items-center justify-center text-indigo-400">
+                <i class="ph-fill ph-shield-check text-3xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-white uppercase italic tracking-tighter">Termos e Condições</h1>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Construtor PRO · Versão Legal 1.0</p>
+            </div>
+        </header>
+
+        <div id="conteudo-legal" class="flex-1 space-y-8 overflow-y-auto pr-2 mb-8 text-justify">
+            <div class="animate-pulse space-y-4">
+                <div class="h-4 bg-slate-800 rounded w-3/4"></div>
+                <div class="h-4 bg-slate-800 rounded w-full"></div>
+                <div class="h-4 bg-slate-800 rounded w-5/6"></div>
+            </div>
+        </div>
+
+        <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl mb-6">
+            <p class="text-[10px] text-amber-500 font-black uppercase leading-relaxed text-center">
+                AO CLICAR NO BOTÃO ABAIXO, VOCÊ CONFIRMA QUE LEU E ESTÁ DE ACORDO COM TODAS AS RESPONSABILIDADES TÉCNICAS E JURÍDICAS AQUI DESCRITAS.
+            </p>
+        </div>
+
+        <button onclick="aceitarTermos()" class="w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+            CONCORDO E ACEITO OS TERMOS
+        </button>
+
+    </main>
+
+    <script>
+        const SUPABASE_URL="https://jbrkmuduyaibduwopxqn.supabase.co";
+        const SUPABASE_ANON_KEY="sb_publishable_TUL_4vjHuNL6O4KBUpOGrA_kh8ZmJJ4";
+        const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+        );
+
+        window.onload = carregarConteudo;
+
+        async function carregarConteudo() {
+            const container = document.getElementById('conteudo-legal');
+            
+            // Verifica se o elemento existe
+            if (!container) {
+                console.error('Elemento #conteudo-legal não encontrado no DOM.');
+                // Opcional: exibe uma mensagem amigável para o usuário
+                document.body.insertAdjacentHTML(
+                    'afterbegin',
+                    '<div class="p-4 bg-red-500/20 text-red-500 text-center">Erro interno: área de termos não encontrada.</div>'
+                );
+                return;
+            }
+
+            try {
+                const res = await fetch('json/legal.json');
+                const data = await res.json();
+                
+                container.innerHTML = '';
+
+                const secoes = ['termos', 'privacidade', 'aviso'];
+                
+                secoes.forEach(key => {
+                    const sec = data[key];
+                    if (sec) {
+                        const sectionHtml = `
+                            <section class="space-y-3">
+                                <h2 class="text-sm font-black text-indigo-400 uppercase tracking-widest">${sec.titulo}</h2>
+                                <div class="space-y-2">
+                                    ${sec.conteudo.map(p => `<p class="text-xs text-slate-400 font-medium leading-relaxed uppercase">${p}</p>`).join('')}
+                                </div>
+                            </section>
+                        `;
+                        container.innerHTML += sectionHtml;
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao carregar legal.json:", error);
+                container.innerHTML = "<p class='text-red-500 font-bold'>Erro ao carregar os termos. Verifique o arquivo legal.json na pasta /json.</p>";
+            }
+        }
+        async function aceitarTermos() {
+
+        const userId = localStorage.getItem("user_id");
+
+        if (!userId) {
+        alert("Sessão expirada");
+        window.location.href="../index.html";
+        return;
+        }
+
+        const { error } = await supabaseClient
+        .from("usuarios")
+        .update({ aceitou_termos: true })
+        .eq("id", userId);
+
+        if(!error){
+
+        localStorage.setItem("termos_versao","1.0");
+
+        window.location.href="index.html";
+
+        }else{
+
+        alert("Erro ao registrar aceite");
+
+        }
+
+        }
+    </script>
+</body>
+</html>
