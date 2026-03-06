@@ -1,0 +1,1360 @@
+{
+  "versao": "2.3",
+  "regiao": "Pernambuco - Brasil",
+  "jornada_trabalho_horas": 8,
+  "alertas_gerais": [
+    "Valores são médias de produtividade para obra residencial de pequeno porte.",
+    "Sempre conferir prumo, nível e alinhamento.",
+    "Este sistema gera estimativas, NÃO substitui projeto estrutural.",
+    "Utilizar EPIs obrigatórios: capacete, botas, luvas e óculos.",
+    "Conferir sempre as dimensões no projeto arquitetônico.",
+    "Não executar vigas com vão maior que 6 m sem cálculo estrutural.",
+    "Não executar balanços superiores a 2 m sem cálculo estrutural.",
+    "Verificar sempre a capacidade do solo antes das fundações.",
+    "Edificações com mais de 1 pavimento exigem projeto estrutural.",
+    "As recomendações de armadura são referências para obras simples; consulte sempre um profissional habilitado."
+  ],
+  "observacoes_gerais": "Os índices de produtividade (m²/dia, m/dia, etc.) são referências médias para equipes experientes em obras residenciais em Pernambuco, considerando jornada de 8h. Os consumos de material são aproximados e devem ser acrescidos de perdas de 5% a 10% para orçamento. Para serviços estruturais, as armaduras indicadas são sugestões para vãos e cargas típicas, mas não substituem cálculo. Em caso de dúvida, consulte um engenheiro civil.",
+  "observacoes_estruturais": "Os detalhamentos estruturais fornecidos seguem os critérios da NBR 6118 para edificações de até um pavimento, considerando cargas típicas residenciais (sobrecarga 1,5 kN/m², revestimentos 1 kN/m², peso próprio). Os valores de aço são para aço CA-50 e concreto C20. Para situações diferentes, consulte um engenheiro.",
+  "servicos": [
+    {
+      "id": "baldrame",
+      "nome": "Viga baldrame (20x30 cm)",
+      "descricao": "Execução de viga baldrame moldada in loco, incluindo formas, armação e concreto. Seção 20x30 cm, concreto traço 1:3:5.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 12,
+        "unidade_rendimento": "m/dia",
+        "observacao": "Para vigas contínuas sem muitos cantos."
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.8,
+        "areia_m3": 0.05,
+        "brita_m3": 0.07,
+        "aco_kg": 8
+      },
+      "armadura_referencial": {
+        "secao": "20x30 cm",
+        "barras_longitudinais": "4 Ø 10 mm (2 inferior, 2 superior)",
+        "estribos": "Ø 6.3 mm c/20 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 6,
+        "balanco_maximo_m": 2
+      },
+      "alertas": [
+        "Apoiar em sapatas ou fundações adequadas.",
+        "Verificar nível e alinhamento antes da concretagem."
+      ],
+      "normas": ["NBR 6118", "NBR 14931"],
+      "detalhamento_estrutural": {
+        "tipo": "Viga baldrame (fundação)",
+        "carga_considerada": "Peso da alvenaria + 10 kN/m (típico)",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "formula_momento": "M = q*L²/8 (para vãos, mas em baldrame a armadura é construtiva)",
+        "armadura_minima": "As,min = 0,15% * b * h = 0,9 cm² → 4 Ø 8 mm (2,0 cm²) atende",
+        "tabela_pratica": [
+          {
+            "vao_maximo_m": 3,
+            "secao_cm": "20x30",
+            "inferior": "2 Ø 10",
+            "superior": "2 Ø 10",
+            "estribos": "Ø 6.3 c/20",
+            "aco_kg_m": 8
+          },
+          {
+            "vao_maximo_m": 6,
+            "secao_cm": "20x30",
+            "inferior": "2 Ø 10",
+            "superior": "2 Ø 10",
+            "estribos": "Ø 6.3 c/20",
+            "aco_kg_m": 8
+          }
+        ],
+        "observacoes_nbr": "A armadura de baldrame é principalmente construtiva e para resistir a momentos devidos a recalques diferenciais. Para vãos maiores que 6 m, obrigatório cálculo."
+      }
+    },
+    {
+      "id": "pilar_20x20",
+      "nome": "Pilar 20x20 cm (altura 3 m)",
+      "descricao": "Execução de pilar de concreto armado, incluindo formas, armação e concreto. Seção 20x20 cm, altura até 3 m.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 4,
+        "unidade_rendimento": "un/dia",
+        "observacao": "Para pilares retos sem muitas interrupções."
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.5,
+        "areia_m3": 0.09,
+        "brita_m3": 0.12,
+        "aco_kg": 18
+      },
+      "armadura_referencial": {
+        "secao": "20x20 cm",
+        "barras_longitudinais": "4 Ø 10 mm",
+        "estribos": "Ø 6.3 mm c/15 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "altura_maxima_m": 3
+      },
+      "alertas": [
+        "Conferir prumo e alinhamento.",
+        "Não concretar com altura maior que 3 m sem escoramento lateral."
+      ],
+      "normas": ["NBR 6118", "NBR 14931"],
+      "detalhamento_estrutural": {
+        "tipo": "Pilar intermediário",
+        "carga_considerada": "Até 200 kN (aproximadamente 20 tf) para um pavimento",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "armadura_minima": "As,min = 0,15% * Ac = 0,15% * 400 cm² = 0,6 cm² → 4 Ø 8 mm (2,0 cm²) atende",
+        "armadura_maxima": "As,max = 4% * Ac (para emendas)",
+        "tabela_pratica": [
+          {
+            "altura_m": 3,
+            "secao_cm": "20x20",
+            "longitudinais": "4 Ø 10 mm",
+            "estribos": "Ø 6.3 c/15",
+            "aco_kg_un": 18
+          }
+        ],
+        "observacoes_nbr": "Para altura superior a 3 m, considerar efeitos de flambagem e eventual necessidade de contraventamento. Estribos devem respeitar espaçamento máximo de 20 cm e diâmetro mínimo de 5 mm."
+      }
+    },
+    {
+      "id": "pilar_14x30",
+      "nome": "Pilar 14x30 cm (altura 3 m)",
+      "descricao": "Execução de pilar de concreto armado, seção 14x30 cm, altura até 3 m, com armadura referencial para edificação térrea.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 4,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.4,
+        "areia_m3": 0.08,
+        "brita_m3": 0.11,
+        "aco_kg": 12
+      },
+      "armadura_referencial": {
+        "secao": "14x30 cm",
+        "barras_longitudinais": "4 Ø 10 mm",
+        "estribos": "Ø 6.3 mm c/12 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "altura_maxima_m": 3
+      },
+      "alertas": [
+        "Conferir prumo e alinhamento.",
+        "Verificar se a seção atende às cargas do projeto."
+      ],
+      "normas": ["NBR 6118"],
+      "detalhamento_estrutural": {
+        "tipo": "Pilar de extremidade ou com carga maior",
+        "carga_considerada": "Até 250 kN (aproximadamente 25 tf) para um pavimento",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "armadura_minima": "As,min = 0,15% * Ac = 0,15% * 420 cm² = 0,63 cm² → 4 Ø 8 mm (2,0 cm²) atende",
+        "tabela_pratica": [
+          {
+            "altura_m": 3,
+            "secao_cm": "14x30",
+            "longitudinais": "4 Ø 10 mm",
+            "estribos": "Ø 6.3 c/12",
+            "aco_kg_un": 12
+          }
+        ],
+        "observacoes_nbr": "A seção 14x30 é mais esbelta; o espaçamento dos estribos foi reduzido para 12 cm para melhor confinamento. Verificar momento fletor se for pilar de extremidade."
+      }
+    },
+    {
+      "id": "pilar_muro_15x20",
+      "nome": "Pilar para muro 15x20 cm (altura 2 m)",
+      "descricao": "Pilar para cerca ou muro de divisa, seção 15x20 cm, altura típica 2 m, com armadura simples.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 6,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.9,
+        "areia_m3": 0.05,
+        "brita_m3": 0.07,
+        "aco_kg": 8
+      },
+      "armadura_referencial": {
+        "secao": "15x20 cm",
+        "barras_longitudinais": "4 Ø 10 mm",
+        "estribos": "Ø 6.3 mm c/15 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "altura_maxima_m": 2.5
+      },
+      "alertas": [
+        "Fundação adequada para o peso do muro.",
+        "Verificar ventos locais."
+      ],
+      "normas": ["NBR 6120"],
+      "detalhamento_estrutural": {
+        "tipo": "Pilar de muro",
+        "carga_considerada": "Vento e peso próprio do muro (cerca de 2 kN/m²)",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "armadura_minima": "As,min = 0,15% * Ac = 0,15% * 300 cm² = 0,45 cm² → 4 Ø 8 mm (2,0 cm²) atende",
+        "tabela_pratica": [
+          {
+            "altura_m": 2,
+            "secao_cm": "15x20",
+            "longitudinais": "4 Ø 10 mm",
+            "estribos": "Ø 6.3 c/15",
+            "aco_kg_un": 8
+          }
+        ],
+        "observacoes_nbr": "Para muros com altura superior a 2,5 m, reforçar a armadura ou aumentar a seção. Considerar a ação do vento conforme NBR 6123."
+      }
+    },
+    {
+      "id": "viga_3m",
+      "nome": "Viga para vão até 3 m (12x30 cm)",
+      "descricao": "Viga de concreto armado para vão simples de até 3 m, seção 12x30 cm, armadura conforme referência.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 8,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.0,
+        "areia_m3": 0.06,
+        "brita_m3": 0.08,
+        "aco_kg": 3.0
+      },
+      "armadura_referencial": {
+        "secao": "12x30 cm",
+        "barras_inferiores": "2 Ø 10 mm",
+        "barras_superiores": "2 Ø 8 mm",
+        "estribos": "Ø 6.3 mm c/20 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 3
+      },
+      "alertas": [
+        "Apoio mínimo de 20 cm em cada lado.",
+        "Não ultrapassar o vão indicado sem cálculo."
+      ],
+      "normas": ["NBR 6118"],
+      "detalhamento_estrutural": {
+        "tipo": "Viga biapoiada",
+        "carga_considerada": "10 kN/m (uso residencial, incluindo peso próprio e alvenaria)",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "formula_momento": "M = q*L²/8",
+        "formula_armadura": "As = M/(0,9*d*fyd) com d ≈ h - 4 cm",
+        "tabela_pratica": [
+          {
+            "vao_m": 3,
+            "secao_cm": "12x30",
+            "inferior": "2 Ø 10",
+            "superior": "2 Ø 8",
+            "estribos": "Ø 6.3 c/20",
+            "aco_kg_m": 3.0
+          }
+        ],
+        "observacoes_nbr": "Armadura inferior atende momento fletor. Armadura superior construtiva. Estribos espaçados a cada 20 cm (menor que 0,6*d ou 30 cm)."
+      }
+    },
+    {
+      "id": "viga_4m",
+      "nome": "Viga para vão até 4 m (14x40 cm)",
+      "descricao": "Viga de concreto armado para vão simples de até 4 m, seção 14x40 cm.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 7,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.6,
+        "areia_m3": 0.1,
+        "brita_m3": 0.13,
+        "aco_kg": 4.5
+      },
+      "armadura_referencial": {
+        "secao": "14x40 cm",
+        "barras_inferiores": "2 Ø 12 mm",
+        "barras_superiores": "2 Ø 10 mm",
+        "estribos": "Ø 6.3 mm c/15 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 4
+      },
+      "normas": ["NBR 6118"],
+      "detalhamento_estrutural": {
+        "tipo": "Viga biapoiada",
+        "carga_considerada": "10 kN/m",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "tabela_pratica": [
+          {
+            "vao_m": 4,
+            "secao_cm": "14x40",
+            "inferior": "2 Ø 12",
+            "superior": "2 Ø 10",
+            "estribos": "Ø 6.3 c/15",
+            "aco_kg_m": 4.5
+          }
+        ]
+      }
+    },
+    {
+      "id": "viga_5m",
+      "nome": "Viga para vão até 5 m (14x40 cm)",
+      "descricao": "Viga de concreto armado para vão simples de até 5 m, seção 14x40 cm, com armadura reforçada.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 6,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.6,
+        "areia_m3": 0.1,
+        "brita_m3": 0.13,
+        "aco_kg": 5.8
+      },
+      "armadura_referencial": {
+        "secao": "14x40 cm",
+        "barras_inferiores": "3 Ø 12 mm",
+        "barras_superiores": "2 Ø 10 mm",
+        "estribos": "Ø 6.3 mm c/12 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 5
+      },
+      "normas": ["NBR 6118"],
+      "detalhamento_estrutural": {
+        "tipo": "Viga biapoiada",
+        "carga_considerada": "10 kN/m",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "tabela_pratica": [
+          {
+            "vao_m": 5,
+            "secao_cm": "14x40",
+            "inferior": "3 Ø 12",
+            "superior": "2 Ø 10",
+            "estribos": "Ø 6.3 c/12",
+            "aco_kg_m": 5.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "viga_6m",
+      "nome": "Viga para vão até 6 m (14x45 cm)",
+      "descricao": "Viga de concreto armado para vão simples de até 6 m, seção 14x45 cm, armadura reforçada. Limite recomendado sem cálculo.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 5,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.8,
+        "areia_m3": 0.11,
+        "brita_m3": 0.15,
+        "aco_kg": 7.5
+      },
+      "armadura_referencial": {
+        "secao": "14x45 cm",
+        "barras_inferiores": "3 Ø 12 mm",
+        "barras_superiores": "2 Ø 12 mm",
+        "reforco_lateral": "2 Ø 10 mm (opcional)",
+        "estribos": "Ø 6.3 mm c/12 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 6
+      },
+      "alertas": [
+        "Vãos acima de 6 m exigem cálculo estrutural obrigatório.",
+        "Balanços acima de 2 m também exigem cálculo."
+      ],
+      "normas": ["NBR 6118"],
+      "detalhamento_estrutural": {
+        "tipo": "Viga biapoiada",
+        "carga_considerada": "10 kN/m",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "2.5 cm",
+        "tabela_pratica": [
+          {
+            "vao_m": 6,
+            "secao_cm": "14x45",
+            "inferior": "3 Ø 12",
+            "superior": "2 Ø 12",
+            "estribos": "Ø 6.3 c/12",
+            "aco_kg_m": 7.5
+          }
+        ],
+        "observacoes_nbr": "Para vão de 6 m, a altura de 45 cm é necessária para rigidez. O reforço lateral ajuda a controlar fissuração. Verificar flecha."
+      }
+    },
+    {
+      "id": "cinta_amarracao",
+      "nome": "Cinta de amarração (12x20 cm)",
+      "descricao": "Cinta de concreto armado para amarração de alvenaria, seção 12x20 cm, com armadura mínima.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 10,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.5,
+        "areia_m3": 0.03,
+        "brita_m3": 0.04,
+        "aco_kg": 2.0
+      },
+      "armadura_referencial": {
+        "secao": "12x20 cm",
+        "barras_longitudinais": "4 Ø 8 mm",
+        "estribos": "Ø 5 mm c/20 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "alertas": [
+        "Executar sobre a alvenaria após a elevação.",
+        "Garantir ancoragem nos pilares."
+      ],
+      "normas": ["NBR 15961"]
+    },
+    {
+      "id": "verga_contraverga",
+      "nome": "Verga e contraverga (12x20 cm)",
+      "descricao": "Execução de vergas sobre vãos de portas/janelas e contravergas sob o vão, seção 12x20 cm.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 10,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.6,
+        "areia_m3": 0.04,
+        "brita_m3": 0.05,
+        "aco_kg": 1.8
+      },
+      "armadura_referencial": {
+        "secao": "12x20 cm",
+        "barras_longitudinais": "2 Ø 10 mm (inferior)",
+        "barras_superiores": "2 Ø 8 mm",
+        "estribos": "Ø 5 mm c/15 cm",
+        "cobrimento": "2.5 cm"
+      },
+      "alertas": [
+        "Apoio mínimo de 20 cm em cada lado do vão.",
+        "Para vãos maiores que 1,5 m, reforçar."
+      ],
+      "normas": ["NBR 13749"]
+    },
+    {
+      "id": "laje_trelicada",
+      "nome": "Laje treliçada (com lajotas)",
+      "descricao": "Montagem de laje treliçada com vigotas e lajotas cerâmicas, incluindo concreto de capeamento.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 pedreiros + 1 ajudante",
+        "rendimento_medio": 30,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "concreto_m3": 0.08,
+        "aco_kg": 6,
+        "lajotas_un": 8
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 5
+      },
+      "alertas": [
+        "Escorar a laje corretamente.",
+        "Não retirar escoras antes de 14 dias.",
+        "Verificar nível e contra-flecha."
+      ],
+      "normas": ["NBR 14859"]
+    },
+    {
+      "id": "laje_macica_10cm",
+      "nome": "Laje maciça (10 cm)",
+      "descricao": "Execução de laje maciça de concreto armado com espessura 10 cm, incluindo formas, armação e concreto.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 pedreiros + 2 ajudantes",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.2,
+        "areia_m3": 0.07,
+        "brita_m3": 0.1,
+        "aco_kg": 8
+      },
+      "armadura_referencial": {
+        "malha": "Ø 6.3 mm c/15 cm dupla direção",
+        "cobrimento": "2.0 cm"
+      },
+      "limites_seguros": {
+        "vao_maximo_m": 4
+      },
+      "alertas": [
+        "Escoramento rigoroso.",
+        "Concretagem contínua e cura adequada."
+      ],
+      "normas": ["NBR 6118"]
+    },
+    {
+      "id": "forma_madeira",
+      "nome": "Forma de madeira para concreto",
+      "descricao": "Confecção e montagem de formas de madeira para estruturas de concreto (vigas, pilares, lajes).",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 carpinteiro + 1 ajudante",
+        "rendimento_medio": 12,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "madeira_tabuas_m": 2.5,
+        "pontaletes_un": 0.5,
+        "pregos_kg": 0.2
+      },
+      "alertas": [
+        "Utilizar madeira de qualidade.",
+        "Aplicar desmoldante.",
+        "Verificar prumo e nível."
+      ],
+      "normas": ["NBR 14931"]
+    },
+    {
+      "id": "armacao_aco",
+      "nome": "Armação de aço CA-50 (corte e dobra)",
+      "descricao": "Corte, dobra e montagem de armadura de aço CA-50 para elementos estruturais.",
+      "unidade": "kg",
+      "produtividade": {
+        "equipe": "1 armador",
+        "rendimento_medio": 80,
+        "unidade_rendimento": "kg/dia"
+      },
+      "consumo_material": {
+        "aco_kg": 1.05,
+        "arame_cozido_kg": 0.02
+      },
+      "alertas": [
+        "Respeitar raios de dobramento.",
+        "Garantir cobrimento com espaçadores."
+      ],
+      "normas": ["NBR 14931"]
+    },
+    {
+      "id": "concreto_obra",
+      "nome": "Concreto preparado em obra (traço 1:2:3)",
+      "descricao": "Preparo de concreto com betoneira, traço 1:2:3 em volume (cimento:areia:brita), para estruturas simples.",
+      "unidade": "m³",
+      "produtividade": {
+        "equipe": "2 serventes",
+        "rendimento_medio": 2,
+        "unidade_rendimento": "m³/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 7,
+        "areia_m3": 0.5,
+        "brita_m3": 0.7
+      },
+      "alertas": [
+        "Controlar o abatimento (slump).",
+        "Não adicionar água em excesso."
+      ],
+      "normas": ["NBR 12655"]
+    },
+    {
+      "id": "alvenaria_tijolo_8f",
+      "nome": "Alvenaria de tijolo cerâmico 8 furos (9x19x19)",
+      "descricao": "Elevação de parede com tijolo cerâmico de 8 furos, dimensões 9x19x19 cm, juntas de 1 cm.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 15,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "tijolos_unidade": 25,
+        "cimento_sacos_50kg": 0.3,
+        "areia_m3": 0.02
+      },
+      "alertas": [
+        "Umedecer os tijolos antes do assentamento.",
+        "Manter prumo e nível."
+      ],
+      "normas": ["NBR 8545"]
+    },
+    {
+      "id": "alvenaria_bloco_concreto",
+      "nome": "Alvenaria de bloco de concreto (14x19x39)",
+      "descricao": "Elevação de parede com bloco de concreto de vedação, dimensões 14x19x39 cm.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "blocos_unidade": 12.5,
+        "cimento_sacos_50kg": 0.25,
+        "areia_m3": 0.018
+      },
+      "normas": ["NBR 15961"]
+    },
+    {
+      "id": "chapisco",
+      "nome": "Chapisco (traço 1:3)",
+      "descricao": "Aplicação de chapisco em paredes para preparação para reboco, traço 1:3 (cimento e areia grossa).",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro",
+        "rendimento_medio": 35,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.18,
+        "areia_m3": 0.015
+      },
+      "normas": ["NBR 7200"]
+    },
+    {
+      "id": "reboco_interno",
+      "nome": "Reboco interno (2 cm)",
+      "descricao": "Reboco manual em paredes internas, espessura média 2 cm, traço 1:2:8 (cimento:cal:areia).",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 18,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.35,
+        "areia_m3": 0.025,
+        "cal_kg": 4
+      },
+      "normas": ["NBR 7200"]
+    },
+    {
+      "id": "reboco_externo",
+      "nome": "Reboco externo (2,5 cm)",
+      "descricao": "Reboco manual em fachadas, espessura média 2,5 cm, traço 1:1:6 (cimento:cal:areia).",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 14,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.45,
+        "areia_m3": 0.03,
+        "cal_kg": 5
+      },
+      "alertas": [
+        "Executar juntas de dilatação.",
+        "Cuidado com intempéries."
+      ],
+      "normas": ["NBR 7200"]
+    },
+    {
+      "id": "contrapiso",
+      "nome": "Contrapiso (5 cm)",
+      "descricao": "Execução de contrapiso para regularização, espessura 5 cm, traço 1:4 (cimento e areia).",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 25,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.45,
+        "areia_m3": 0.03
+      },
+      "normas": ["NBR 13724"]
+    },
+    {
+      "id": "piso_ceramico_45x45",
+      "nome": "Assentamento de piso cerâmico (45x45 cm)",
+      "descricao": "Assentamento de placas cerâmicas 45x45 cm com argamassa colante, incluindo rejunte e uso de niveladores.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 12,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "argamassa_colante_kg": 5,
+        "rejunte_kg": 0.3,
+        "espacadores_un": 6
+      },
+      "normas": ["NBR 13753"]
+    },
+    {
+      "id": "porcelanato",
+      "nome": "Assentamento de porcelanato (grandes formatos)",
+      "descricao": "Assentamento de porcelanato retificado (ex: 60x60, 80x80) com argamassa AC-III e niveladores específicos.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro especializado + 1 ajudante",
+        "rendimento_medio": 8,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "argamassa_colante_kg": 6,
+        "rejunte_epoxi_kg": 0.4,
+        "niveladores_un": 10
+      },
+      "normas": ["NBR 15757"]
+    },
+    {
+      "id": "azulejo_area_molhada",
+      "nome": "Revestimento de azulejo em áreas molhadas",
+      "descricao": "Aplicação de azulejos em paredes de banheiros, cozinhas, com impermeabilização prévia e rejunte impermeável.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 10,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "argamassa_colante_kg": 5,
+        "rejunte_acrilico_kg": 0.3
+      },
+      "normas": ["NBR 13753", "NBR 9575"]
+    },
+    {
+      "id": "rodape_ceramico",
+      "nome": "Rodapé cerâmico (altura 10 cm)",
+      "descricao": "Instalação de rodapé cerâmico ou de porcelanato, com argamassa colante e rejunte.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro",
+        "rendimento_medio": 40,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "argamassa_colante_kg": 0.2,
+        "rejunte_kg": 0.03
+      },
+      "normas": ["NBR 13753"]
+    },
+    {
+      "id": "soleira_granito",
+      "nome": "Assentamento de soleira em granito",
+      "descricao": "Assentamento de soleira de granito (ou mármore) para portas e janelas, com argamassa e rejunte.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro",
+        "rendimento_medio": 15,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "argamassa_colante_kg": 2,
+        "rejunte_epoxi_kg": 0.1
+      },
+      "alertas": [
+        "Verificar nível e caimento.",
+        "Utilizar cunhas para nivelamento."
+      ]
+    },
+    {
+      "id": "massa_corrida",
+      "nome": "Massa corrida (duas demãos)",
+      "descricao": "Aplicação de massa corrida em paredes internas, incluindo lixamento entre demãos.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pintor + 1 ajudante",
+        "rendimento_medio": 25,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "massa_corrida_kg": 1.2,
+        "lixa_un": 0.2
+      },
+      "normas": ["NBR 11706"]
+    },
+    {
+      "id": "pintura_pva",
+      "nome": "Pintura PVA interna (lixa + selador + 2 demãos)",
+      "descricao": "Pintura de paredes internas com tinta PVA, incluindo lixamento, aplicação de selador e duas demãos.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pintor + 1 ajudante",
+        "rendimento_medio": 50,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "tinta_pva_l": 0.18,
+        "selador_l": 0.1,
+        "lixa_un": 0.1
+      },
+      "normas": ["NBR 13245"]
+    },
+    {
+      "id": "pintura_acrilica",
+      "nome": "Pintura acrílica externa (lixa + fundo + 2 demãos)",
+      "descricao": "Pintura de fachadas com tinta acrílica, resistente a intempéries.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pintor + 1 ajudante",
+        "rendimento_medio": 40,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "tinta_acrilica_l": 0.2,
+        "fundo_preparador_l": 0.1,
+        "lixa_un": 0.1
+      },
+      "normas": ["NBR 13245"]
+    },
+    {
+      "id": "pintura_esquadrias",
+      "nome": "Pintura de esquadrias (esmalte sintético)",
+      "descricao": "Pintura de portas, janelas e grades metálicas ou de madeira com esmalte sintético, incluindo preparo e fundo anticorrosivo.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pintor",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "tinta_esmalte_l": 0.25,
+        "fundo_anticorrosivo_l": 0.1,
+        "lixa_un": 0.3
+      },
+      "normas": ["NBR 13245"]
+    },
+    {
+      "id": "textura_acrilica",
+      "nome": "Revestimento texturizado acrílico (rolo)",
+      "descricao": "Aplicação de textura acrílica em fachadas ou paredes internas, com rolo texturizado.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pintor",
+        "rendimento_medio": 30,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "textura_kg": 1.5
+      }
+    },
+    {
+      "id": "piso_intertravado",
+      "nome": "Piso intertravado de concreto",
+      "descricao": "Assentamento de blocos de concreto para piso intertravado sobre base de areia.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 pedreiros + 1 ajudante",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "blocos_un": 40,
+        "areia_m3": 0.05
+      },
+      "normas": ["NBR 15953"]
+    },
+    {
+      "id": "estrutura_telhado",
+      "nome": "Estrutura de madeira para telhado (tesoura)",
+      "descricao": "Confecção e montagem de tesouras, caibros e ripas para telhado de até 2 águas.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 carpinteiros",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "madeira_serrada_m3": 0.03,
+        "pregos_kg": 0.2
+      },
+      "normas": ["NBR 15575"]
+    },
+    {
+      "id": "telha_ceramica",
+      "nome": "Telhado com telha cerâmica",
+      "descricao": "Cobertura com telhas cerâmicas tipo colonial ou plan, incluindo encaixe e fixação.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 telhadistas",
+        "rendimento_medio": 25,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "telhas_un": 17,
+        "cumeira_un": 0.5
+      }
+    },
+    {
+      "id": "telha_fibrocimento",
+      "nome": "Telhado com telha de fibrocimento (6 mm)",
+      "descricao": "Cobertura com telhas de fibrocimento, incluindo fixação e acessórios.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 telhadistas",
+        "rendimento_medio": 40,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "telha_m2": 1.05,
+        "parafusos_un": 4
+      }
+    },
+    {
+      "id": "calha_rufo",
+      "nome": "Calha e rufo em chapa galvanizada",
+      "descricao": "Instalação de calhas e rufos de chapa galvanizada, desenvolvimento médio 30 cm.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 calheteiro",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "chapa_galvanizada_m": 1.05,
+        "suportes_un": 2
+      }
+    },
+    {
+      "id": "forro_pvc",
+      "nome": "Forro de PVC (régua)",
+      "descricao": "Instalação de forro de PVC em réguas, com estrutura de madeira ou metal.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 montador",
+        "rendimento_medio": 15,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "pvc_m2": 1.05,
+        "perfis_m": 2
+      }
+    },
+    {
+      "id": "forro_gesso",
+      "nome": "Forro de gesso (placas 60x60)",
+      "descricao": "Instalação de forro de gesso comum em placas 60x60 cm sobre estrutura metálica.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 gesseiro + 1 ajudante",
+        "rendimento_medio": 12,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "placas_gesso_un": 2.8,
+        "massa_gesso_kg": 0.5
+      },
+      "normas": ["NBR 13277"]
+    },
+    {
+      "id": "ponto_luz",
+      "nome": "Ponto de luz (com eletroduto e fio)",
+      "descricao": "Instalação de ponto de luz no teto ou parede, incluindo eletroduto, caixa e fiação 1,5 mm².",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 eletricista",
+        "rendimento_medio": 6,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "eletroduto_20mm_m": 3,
+        "fio_1_5_m": 10,
+        "caixa_octogonal_un": 1,
+        "conector_un": 2
+      },
+      "normas": ["NBR 5410"]
+    },
+    {
+      "id": "ponto_tomada",
+      "nome": "Ponto de tomada (com eletroduto e fio)",
+      "descricao": "Instalação de ponto de tomada baixa, incluindo eletroduto, caixa e fiação 2,5 mm².",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 eletricista",
+        "rendimento_medio": 8,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "eletroduto_20mm_m": 2,
+        "fio_2_5_m": 8,
+        "caixa_4x2_un": 1,
+        "conector_un": 2
+      },
+      "normas": ["NBR 5410"]
+    },
+    {
+      "id": "quadro_distribuicao",
+      "nome": "Quadro de distribuição (instalação)",
+      "descricao": "Montagem e instalação de quadro de distribuição com disjuntores e barramento.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 eletricista",
+        "rendimento_medio": 2,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "quadro_un": 1,
+        "disjuntor_un": 4,
+        "barramento_un": 1
+      },
+      "normas": ["NBR 5410"]
+    },
+    {
+      "id": "ponto_agua",
+      "nome": "Ponto de água fria (PVC)",
+      "descricao": "Instalação de ponto de água fria com tubo PVC soldável 25 mm, incluindo conexões e registro.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 encanador",
+        "rendimento_medio": 4,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "tubo_pvc_25mm_m": 2,
+        "conexoes": 3,
+        "registro_25mm_un": 1
+      },
+      "normas": ["NBR 5626"]
+    },
+    {
+      "id": "ponto_esgoto",
+      "nome": "Ponto de esgoto (PVC 100 mm)",
+      "descricao": "Instalação de ponto de esgoto com tubo PVC 100 mm, incluindo conexões e caixa sifonada.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 encanador",
+        "rendimento_medio": 3,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "tubo_pvc_100mm_m": 1.5,
+        "conexoes": 2,
+        "caixa_sifonada_un": 1
+      },
+      "normas": ["NBR 8160"]
+    },
+    {
+      "id": "caixa_dagua",
+      "nome": "Instalação de caixa d'água (500L)",
+      "descricao": "Instalação de caixa d'água de polietileno 500L, incluindo base e conexões.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "2 pedreiros + 1 ajudante",
+        "rendimento_medio": 2,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "caixa_dagua_un": 1,
+        "tampa_un": 1,
+        "conexoes": 4,
+        "base_alvenaria": 0.2
+      }
+    },
+    {
+      "id": "impermeabilizacao_baldrame",
+      "nome": "Impermeabilização de baldrame (tinta asfáltica)",
+      "descricao": "Aplicação de tinta asfáltica em vigas baldrame e alicerces, duas demãos.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 servente",
+        "rendimento_medio": 30,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "tinta_asfaltica_l": 0.6
+      },
+      "normas": ["NBR 9575"]
+    },
+    {
+      "id": "impermeabilizacao_area_molhada",
+      "nome": "Impermeabilização de áreas molhadas (manta líquida)",
+      "descricao": "Aplicação de impermeabilizante cimentício ou manta líquida polimérica em áreas molhadas como banheiros, cozinhas e áreas de serviço antes do revestimento.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 pedreiro",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "manta_liquida_kg": 1.5,
+        "tela_reforco_m2": 0.2
+      },
+      "alertas": [
+        "Aplicar sobre superfície limpa e regularizada.",
+        "Respeitar tempo de cura entre demãos.",
+        "Subir impermeabilização pelo menos 20 cm nas paredes."
+      ],
+      "normas": ["NBR 9575", "NBR 9574"]
+    },
+    {
+      "id": "demolicao_alvenaria",
+      "nome": "Demolição manual de alvenaria (sem reaproveitamento)",
+      "descricao": "Demolição de paredes de tijolo ou bloco, com empilhamento do entulho.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 demolidor + 1 ajudante",
+        "rendimento_medio": 10,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "sacos_entulho_un": 2
+      },
+      "alertas": [
+        "Uso obrigatório de EPIs: máscara, óculos e luvas.",
+        "Isolar a área de trabalho e controlar poeira."
+      ],
+      "normas": ["NBR 5682"]
+    },
+    {
+      "id": "retirada_piso",
+      "nome": "Retirada de piso antigo (cerâmico)",
+      "descricao": "Remoção de piso cerâmico ou porcelanato, incluindo argamassa colante.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 demolidor",
+        "rendimento_medio": 20,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "sacos_entulho_un": 2
+      },
+      "normas": ["NBR 15112"]
+    },
+    {
+      "id": "abertura_vao",
+      "nome": "Abertura de vão em alvenaria (porta ou janela)",
+      "descricao": "Abertura controlada de vão em parede de tijolo, incluindo execução de verga e contraverga.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 1.5,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "verga_metalica_m": 1.2,
+        "argamassa_kg": 10
+      },
+      "alertas": [
+        "Verificar instalações elétricas e hidráulicas antes da demolição.",
+        "Caso seja parede estrutural, exigir avaliação técnica ou projeto estrutural."
+      ],
+      "normas": ["NBR 8545"]
+    },
+    {
+      "id": "limpeza_obra",
+      "nome": "Limpeza de obra (final)",
+      "descricao": "Limpeza fina para entrega da obra, incluindo remoção de respingos, varrição e lavagem.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 serventes",
+        "rendimento_medio": 80,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "sacos_lixo_un": 0.5,
+        "detergente_l": 0.1
+      }
+    },
+    {
+      "id": "sapata_isolada",
+      "nome": "Sapata isolada (80x80x30 cm)",
+      "descricao": "Execução de sapata isolada de concreto armado para pilar, dimensões 80x80 cm e altura 30 cm, incluindo formas, armação e concreto.",
+      "unidade": "un",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 2,
+        "unidade_rendimento": "un/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.2,
+        "areia_m3": 0.08,
+        "brita_m3": 0.1,
+        "aco_kg": 15
+      },
+      "armadura_referencial": {
+        "malha": "Ø 10 mm c/15 cm dupla direção",
+        "cobrimento": "3 cm"
+      },
+      "alertas": [
+        "Verificar a capacidade de suporte do solo.",
+        "A sapata deve estar centralizada sob o pilar."
+      ],
+      "normas": ["NBR 6118", "NBR 6122"],
+      "detalhamento_estrutural": {
+        "tipo": "Sapata rígida",
+        "carga_considerada": "Até 200 kN (pilar 20x20) com solo σ_adm = 0,2 MPa",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "3 cm",
+        "formula_dimensionamento": "A = P/σ_adm, h ≥ (A - ap)/3 para sapata rígida",
+        "tabela_pratica": [
+          {
+            "carga_kN": 200,
+            "dimensoes_cm": "80x80x30",
+            "armadura": "Ø 10 c/15 dupla direção",
+            "aco_kg_un": 15
+          },
+          {
+            "carga_kN": 300,
+            "dimensoes_cm": "100x100x35",
+            "armadura": "Ø 10 c/15 dupla direção",
+            "aco_kg_un": 24
+          }
+        ],
+        "observacoes_nbr": "A armadura deve ser calculada para os momentos fletores. A malha indicada é suficiente para cargas típicas. Para solos fracos, aumentar a base."
+      }
+    },
+    {
+      "id": "sapata_corrida",
+      "nome": "Sapata corrida (40x20 cm)",
+      "descricao": "Execução de sapata corrida de concreto armado para parede, seção 40x20 cm, incluindo formas, armação e concreto.",
+      "unidade": "m",
+      "produtividade": {
+        "equipe": "1 pedreiro + 1 ajudante",
+        "rendimento_medio": 8,
+        "unidade_rendimento": "m/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.6,
+        "areia_m3": 0.04,
+        "brita_m3": 0.05,
+        "aco_kg": 5
+      },
+      "armadura_referencial": {
+        "barras_longitudinais": "4 Ø 8 mm",
+        "estribos": "Ø 5 mm c/20 cm",
+        "cobrimento": "3 cm"
+      },
+      "alertas": [
+        "Executar sobre lastro de concreto magro.",
+        "Garantir nivelamento e alinhamento."
+      ],
+      "normas": ["NBR 6118", "NBR 6122"],
+      "detalhamento_estrutural": {
+        "tipo": "Sapata corrida para parede",
+        "carga_considerada": "Parede de tijolo com até 3 m de altura (≈ 15 kN/m)",
+        "aco_ca": "CA-50",
+        "concreto": "C20",
+        "cobrimento": "3 cm",
+        "tabela_pratica": [
+          {
+            "largura_cm": 40,
+            "altura_cm": 20,
+            "longitudinais": "4 Ø 8 mm",
+            "estribos": "Ø 5 c/20",
+            "aco_kg_m": 5
+          }
+        ],
+        "observacoes_nbr": "A armadura longitudinal é construtiva; os estribos ajudam a resistir à flexão transversal. Para cargas maiores, aumentar a largura e a armadura."
+      }
+    },
+    {
+      "id": "radier",
+      "nome": "Radier (espessura 12 cm)",
+      "descricao": "Execução de radier de concreto armado para fundação rasa, espessura 12 cm, incluindo tela soldada e concreto.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 pedreiros + 2 ajudantes",
+        "rendimento_medio": 30,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 1.5,
+        "areia_m3": 0.09,
+        "brita_m3": 0.12,
+        "aco_tela_m2": 1.1
+      },
+      "armadura_referencial": {
+        "tela": "Q138 (Ø 6.3 mm c/15 cm) dupla direção",
+        "cobrimento": "3 cm"
+      },
+      "alertas": [
+        "Preparar base compactada e com lastro de brita.",
+        "Concretagem contínua e cura adequada."
+      ],
+      "normas": ["NBR 6118", "NBR 6122"]
+    },
+    {
+      "id": "lastro_brita",
+      "nome": "Lastro de brita (5 cm)",
+      "descricao": "Espalhamento e compactação de camada de brita para base de pisos ou fundações.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "1 servente",
+        "rendimento_medio": 50,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "brita_m3": 0.05
+      }
+    },
+    {
+      "id": "reaterro_compactado",
+      "nome": "Reaterro compactado",
+      "descricao": "Reaterro de valas com solo selecionado, em camadas de 20 cm, compactação manual ou mecânica.",
+      "unidade": "m³",
+      "produtividade": {
+        "equipe": "2 serventes",
+        "rendimento_medio": 5,
+        "unidade_rendimento": "m³/dia"
+      },
+      "consumo_material": {
+        "solo_m3": 1.1
+      },
+      "alertas": [
+        "Compactar em camadas para evitar recalques.",
+        "Umedecer o solo se necessário."
+      ]
+    },
+    {
+      "id": "calcada_concreto",
+      "nome": "Calçada de concreto (8 cm)",
+      "descricao": "Execução de calçada em concreto simples, espessura 8 cm, com juntas de dilatação.",
+      "unidade": "m²",
+      "produtividade": {
+        "equipe": "2 pedreiros + 1 ajudante",
+        "rendimento_medio": 25,
+        "unidade_rendimento": "m²/dia"
+      },
+      "consumo_material": {
+        "cimento_sacos_50kg": 0.8,
+        "areia_m3": 0.05,
+        "brita_m3": 0.07
+      },
+      "alertas": [
+        "Preparar base compactada.",
+        "Executar juntas de dilatação a cada 1,5 m."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "versao": "1.0",
+  "app": "Construtor PRO",
+
+  "termos": {
+    "titulo": "Termos de Uso",
+    "conteudo": [
+      "O Construtor PRO é uma ferramenta de apoio para geração de estimativas de orçamento na construção civil.",
+      "Os cálculos gerados pelo sistema são estimativas e podem conter imprecisões.",
+      "O usuário é responsável por revisar manualmente todos os valores antes de utilizar em propostas comerciais.",
+      "O sistema não substitui a análise técnica de engenheiros, arquitetos ou profissionais habilitados.",
+      "O desenvolvedor não se responsabiliza por prejuízos decorrentes do uso incorreto das informações geradas.",
+      "Ao utilizar o sistema, o usuário concorda em revisar minuciosamente todos os dados antes de enviar qualquer orçamento."
+    ]
+  },
+
+  "privacidade": {
+    "titulo": "Política de Privacidade",
+    "conteudo": [
+      "Os dados inseridos no sistema podem ser armazenados localmente no dispositivo do usuário.",
+      "Alguns dados podem ser sincronizados com servidores utilizando a plataforma Supabase para garantir backup e continuidade de uso.",
+      "O sistema não compartilha dados com terceiros.",
+      "O usuário pode solicitar a exclusão de seus dados a qualquer momento.",
+      "O sistema utiliza apenas informações necessárias para funcionamento da aplicação."
+    ]
+  },
+
+  "aviso": {
+    "titulo": "Aviso Importante",
+    "conteudo": [
+      "Este sistema gera estimativas automáticas de orçamento.",
+      "Sempre revise manualmente todos os cálculos.",
+      "Erros podem ocorrer caso informações incorretas sejam inseridas.",
+      "O uso profissional do sistema requer conferência técnica antes de apresentar propostas."
+    ]
+  }
+
+}

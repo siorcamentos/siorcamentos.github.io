@@ -1,0 +1,114 @@
+{
+  "versao": "1.0",
+  "regiao": "Pernambuco",
+  "jornada_horas": 8,
+
+  "produtividade": {
+
+    "baldrame": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "metro_linear",
+      "rendimento_dia": 12,
+      "observacao": "Inclui armação, forma simples e concretagem manual"
+    },
+
+    "alvenaria_tijolo_8furos": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 18,
+      "observacao": "Tijolo cerâmico 9x19x19 assentado com argamassa cimento e areia"
+    },
+
+    "alvenaria_bloco_concreto": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 22,
+      "observacao": "Bloco estrutural 14x19x39"
+    },
+
+    "chapisco": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 35,
+      "observacao": "Chapisco rolado ou aplicado com colher"
+    },
+
+    "reboco_interno": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 18,
+      "observacao": "Reboco com espessura média de 2 cm"
+    },
+
+    "reboco_externo": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 15,
+      "observacao": "Considerando montagem de andaime simples"
+    },
+
+    "contrapiso": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 25,
+      "observacao": "Espessura média de 5 cm"
+    },
+
+    "assentamento_piso": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 16,
+      "observacao": "Piso cerâmico comum até 60x60"
+    },
+
+    "assentamento_azulejo": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 14,
+      "observacao": "Revestimento parede banheiro/cozinha"
+    },
+
+    "pintura_acrilica": {
+      "equipe": "1 pintor + 1 ajudante",
+      "unidade": "m2",
+      "rendimento_dia": 120,
+      "observacao": "Considerando selador + duas demãos"
+    },
+
+    "impermeabilizacao_area_molhada": {
+      "equipe": "1 pedreiro",
+      "unidade": "m2",
+      "rendimento_dia": 25,
+      "observacao": "Manta líquida polimérica com duas demãos"
+    },
+
+    "demolicao_alvenaria": {
+      "equipe": "1 servente + 1 ajudante",
+      "unidade": "m2",
+      "rendimento_dia": 10,
+      "observacao": "Demolição manual com empilhamento de entulho"
+    },
+
+    "retirada_piso": {
+      "equipe": "1 servente",
+      "unidade": "m2",
+      "rendimento_dia": 20,
+      "observacao": "Remoção de cerâmica com talhadeira ou martelete"
+    },
+
+    "abertura_vao": {
+      "equipe": "1 pedreiro + 1 servente",
+      "unidade": "unidade",
+      "rendimento_dia": 1.5,
+      "observacao": "Abertura de porta ou janela com execução de verga"
+    },
+
+    "limpeza_obra": {
+      "equipe": "2 serventes",
+      "unidade": "m2",
+      "rendimento_dia": 80,
+      "observacao": "Limpeza final de obra"
+    }
+
+  }
+}

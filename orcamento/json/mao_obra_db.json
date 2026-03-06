@@ -1,0 +1,104 @@
+{
+  "versao": "1.0",
+  "regiao": "Pernambuco",
+  "moeda": "BRL",
+
+  "mao_obra": {
+
+    "baldrame": {
+      "unidade": "metro_linear",
+      "valor_unitario": 85,
+      "equipe": "1 pedreiro + 1 servente",
+      "observacao": "Execução completa incluindo armação, forma e concretagem manual"
+    },
+
+    "alvenaria_tijolo_8furos": {
+      "unidade": "m2",
+      "valor_unitario": 65,
+      "equipe": "1 pedreiro + 1 servente",
+      "observacao": "Assentamento de tijolo cerâmico com argamassa preparada na obra"
+    },
+
+    "alvenaria_bloco_concreto": {
+      "unidade": "m2",
+      "valor_unitario": 70,
+      "equipe": "1 pedreiro + 1 servente",
+      "observacao": "Bloco de concreto estrutural"
+    },
+
+    "chapisco": {
+      "unidade": "m2",
+      "valor_unitario": 8,
+      "equipe": "1 pedreiro + 1 servente"
+    },
+
+    "reboco_interno": {
+      "unidade": "m2",
+      "valor_unitario": 35,
+      "equipe": "1 pedreiro + 1 servente"
+    },
+
+    "reboco_externo": {
+      "unidade": "m2",
+      "valor_unitario": 40,
+      "equipe": "1 pedreiro + 1 servente",
+      "observacao": "Inclui maior dificuldade e uso de andaime simples"
+    },
+
+    "contrapiso": {
+      "unidade": "m2",
+      "valor_unitario": 30,
+      "equipe": "1 pedreiro + 1 servente"
+    },
+
+    "assentamento_piso": {
+      "unidade": "m2",
+      "valor_unitario": 40,
+      "equipe": "1 pedreiro + 1 servente"
+    },
+
+    "assentamento_azulejo": {
+      "unidade": "m2",
+      "valor_unitario": 45,
+      "equipe": "1 pedreiro + 1 servente"
+    },
+
+    "pintura_acrilica": {
+      "unidade": "m2",
+      "valor_unitario": 18,
+      "equipe": "1 pintor + 1 ajudante",
+      "observacao": "Inclui lixamento e duas demãos"
+    },
+
+    "impermeabilizacao_area_molhada": {
+      "unidade": "m2",
+      "valor_unitario": 45,
+      "equipe": "1 pedreiro"
+    },
+
+    "demolicao_alvenaria": {
+      "unidade": "m2",
+      "valor_unitario": 25,
+      "equipe": "1 servente"
+    },
+
+    "retirada_piso": {
+      "unidade": "m2",
+      "valor_unitario": 20,
+      "equipe": "1 servente"
+    },
+
+    "abertura_vao": {
+      "unidade": "unidade",
+      "valor_unitario": 180,
+      "equipe": "1 pedreiro + 1 servente"
+    },
+
+    "limpeza_obra": {
+      "unidade": "m2",
+      "valor_unitario": 5,
+      "equipe": "2 serventes"
+    }
+
+  }
+}
