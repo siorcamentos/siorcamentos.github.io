@@ -329,7 +329,7 @@
         // Insere novo usuário
         const { data, error } = await supabaseClient
             .from("usuarios")
-            .insert([{ nome, telefone: telefone, senha: senhaHash, created_at: new Date() }])
+            .insert([{ nome, telefone: telefone, senha: senhaHash, plano_status: 0, created_at: new Date() }])
             .select()
             .single();
 
