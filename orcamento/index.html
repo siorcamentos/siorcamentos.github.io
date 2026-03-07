@@ -231,9 +231,9 @@
         }
     }
 
-    function verOrcamento(modulo) {
-        window.location.href = `orcamento-${modulo}.html`;
-    }
+ function verOrcamento(modulo) {
+    window.location.href = `visualizacao.html?modulo=${modulo}`;
+}
 
     async function excluirOrcamento(modulo) {
         if (!confirm("Excluir orçamento?")) return;
