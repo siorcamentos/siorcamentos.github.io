@@ -86,8 +86,8 @@
 
     <footer class="p-4 bg-slate-900 border-t border-slate-800">
         <div class="max-w-md mx-auto flex gap-2">
-            <input type="text" id="user-input" placeholder="O que vai fazer na obra?" class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-            <button onclick="processarMensagem()" id="btn-send" class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white active:scale-90">
+            <input type="text" id="user-input" placeholder="Digite sua resposta..." class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none" onkeypress="handleKeyPress(event)">
+            <button onclick="processarMensagem()" id="btn-send" class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white active:scale-90 transition-transform">
                 <i class="ph-fill ph-paper-plane-right text-xl"></i>
             </button>
         </div>
@@ -101,6 +101,11 @@
         let userProfile = null;
         let dbConversa, dbServicos, dbMaoObra, dbProdutividade;
 
+        // Variáveis globais de estado para o fluxo conversacional
+        let fluxoAtual = null;
+        let perguntaAtualIndex = 0;
+        let respostas = {};
+
         window.onload = async () => {
             const userId = localStorage.getItem("user_id");
             if (!userId) { window.location.href = "../index.html"; return; }
@@ -108,7 +113,7 @@
             // 1. Carregar perfil e verificar reset de 24h
             await carregarPerfilEReset(userId);
 
-            // 2. Carregar Inteligência (Caminho corrigido para pasta /json)
+            // 2. Carregar Inteligência
             try {
                 dbConversa = await fetch('json/conversa_db.json').then(r => r.json());
                 dbServicos = await fetch('json/servicos_db.json').then(r => r.json());
@@ -129,7 +134,6 @@
                 const diffHoras = (agora - dataBloqueio) / (1000 * 60 * 60);
 
                 if (diffHoras >= 24) {
-                    // Reset Automático após 24h
                     const { error } = await supabaseClient
                         .from("usuarios")
                         .update({ total_uso_hoje: 0, data_bloqueio: null })
@@ -156,45 +160,158 @@
             }
         }
 
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                processarMensagem();
+            }
+        }
+
         async function processarMensagem() {
             const input = document.getElementById('user-input');
-            const msg = input.value.trim().toLowerCase();
+            const msg = input.value.trim();
             if (!msg) return;
 
-            // Verificação Final de Limite
+            // Verificação de Limite antes de iniciar ou continuar
             if (userProfile.plano_status === 0 && userProfile.total_uso_hoje >= 3) {
                 document.getElementById('modal-pro').classList.remove('hidden');
                 return;
             }
 
-            addMessage(input.value, 'user');
+            addMessage(msg, 'user');
             input.value = '';
             showTyping();
 
             setTimeout(async () => {
                 removeTyping();
-                let fluxoEncontrado = null;
 
-                for (let key in dbConversa.fluxos) {
-                    const fluxo = dbConversa.fluxos[key];
-                    if (fluxo.palavras_chave.some(p => msg.includes(p))) {
-                        fluxoEncontrado = fluxo;
-                        break;
+                // Se não estamos em um fluxo ativo, tenta identificar um novo serviço
+                if (!fluxoAtual) {
+                    const servico = identificarServico(msg.toLowerCase());
+                    if (!servico) {
+                        addMessage("Mestre, não encontrei esse serviço no meu manual técnico. Tente algo como 'fazer baldrame', 'reboco' ou 'pintura'.");
+                        return;
                     }
+                    
+                    await contabilizarUso(); // Desconta uso apenas ao iniciar um serviço novo
+                    iniciarFluxo(servico);
+                    return;
                 }
 
-                if (fluxoEncontrado) {
-                    addMessage(fluxoEncontrado.saudacao_ia);
-                    setTimeout(() => {
-                        addMessage(`${fluxoEncontrado.confirmacao_servico}\n\n**Perguntas para o cálculo:**\n${fluxoEncontrado.perguntas_sequenciais.join('\n')}`);
-                        addMessage(`💡 **Dica do Mestre:** ${fluxoEncontrado.dica_mestre}`);
-                    }, 800);
-                    
-                    await contabilizarUso();
+                // Estamos no meio de um fluxo – processa a resposta atual
+                const pergunta = fluxoAtual.perguntas[perguntaAtualIndex];
+                const valor = interpretarResposta(pergunta, msg);
+
+                if (valor === null) {
+                    addMessage("Resposta inválida. Por favor, tente novamente.\n" + pergunta.rotulo);
+                    return;
+                }
+
+                // Armazena a resposta
+                respostas[pergunta.variavel] = valor;
+                perguntaAtualIndex++;
+
+                // Avança para a próxima pergunta ou finaliza
+                if (perguntaAtualIndex < fluxoAtual.perguntas.length) {
+                    exibirPergunta(fluxoAtual.perguntas[perguntaAtualIndex]);
                 } else {
-                    addMessage("Mestre, não encontrei esse serviço no meu manual técnico. Tente algo como 'fazer baldrame', 'reboco' ou 'pintura'.");
+                    finalizarFluxo();
+                }
+            }, 800);
+        }
+
+        function identificarServico(msg) {
+            if (!dbConversa || !dbConversa.fluxos) return null;
+            for (let key in dbConversa.fluxos) {
+                const fluxo = dbConversa.fluxos[key];
+                if (fluxo.palavras_chave && fluxo.palavras_chave.some(p => msg.includes(p))) {
+                    return fluxo;
+                }
+            }
+            return null;
+        }
+
+        function iniciarFluxo(servico) {
+            fluxoAtual = servico;
+            perguntaAtualIndex = 0;
+            respostas = {};
+            
+            addMessage(fluxoAtual.saudacao_ia || "Certo, vamos calcular isso.");
+            showTyping();
+            
+            setTimeout(() => {
+                removeTyping();
+                if(fluxoAtual.perguntas && fluxoAtual.perguntas.length > 0) {
+                    exibirPergunta(fluxoAtual.perguntas[0]);
+                } else {
+                    finalizarFluxo();
                 }
             }, 1000);
+        }
+
+        function exibirPergunta(p) {
+            let texto = p.rotulo;
+            if (p.tipo === 'escolha' && p.opcoes) {
+                texto += '\n' + p.opcoes.map(o => `- ${o.nome}`).join('\n');
+            }
+            addMessage(texto);
+        }
+
+        function interpretarResposta(pergunta, msg) {
+            msg = msg.toLowerCase();
+            switch (pergunta.tipo) {
+                case 'numero':
+                    // Extrai apenas números e converte vírgula para ponto
+                    const numMsg = msg.replace(',', '.').replace(/[^\d.-]/g, '');
+                    const num = parseFloat(numMsg);
+                    return isNaN(num) ? null : num;
+                case 'booleano':
+                    if (/sim|ss|pode|claro|já|ok|positivo/i.test(msg)) return true;
+                    if (/não|nao|nunca|nem|negativo/i.test(msg)) return false;
+                    return null;
+                case 'escolha':
+                    if (!pergunta.opcoes) return null;
+                    const opcao = pergunta.opcoes.find(o => msg.includes(o.nome.toLowerCase()));
+                    return opcao ? opcao.id : null;
+                default:
+                    return msg; // Retorna texto puro para outros casos
+            }
+        }
+
+        function finalizarFluxo() {
+            showTyping();
+            
+            setTimeout(() => {
+                removeTyping();
+                
+                // Executa as ações definidas no JSON
+                if(fluxoAtual.acoes) {
+                    fluxoAtual.acoes.forEach(acao => {
+                        if (acao.tipo === 'calcular') {
+                            try {
+                                // Substitui as variáveis {variavel} na string da fórmula de forma segura
+                                let formulaPronta = acao.formula.replace(/\{(\w+)\}/g, (_, v) => respostas[v] || 0);
+                                // Usando Function ao invés de eval para um pouco mais de segurança
+                                respostas[acao.variavel] = new Function('return ' + formulaPronta)();
+                            } catch (e) {
+                                console.error("Erro ao processar cálculo:", e);
+                            }
+                        }
+                    });
+                }
+
+                // Prepara o texto de resumo
+                let resumoText = "**Orçamento calculado! Resumo:**\n\n";
+                for (const [chave, valor] of Object.entries(respostas)) {
+                    resumoText += `> ${chave}: **${valor}**\n`;
+                }
+
+                if(fluxoAtual.dica_mestre) {
+                    resumoText += `\n💡 **Dica do Mestre:** ${fluxoAtual.dica_mestre}`;
+                }
+
+                addMessage(resumoText);
+                fluxoAtual = null; // encerra o fluxo e permite novo orçamento
+            }, 1200);
         }
 
         async function contabilizarUso() {
@@ -216,6 +333,7 @@
             const chat = document.getElementById('chat-container');
             const div = document.createElement('div');
             div.className = type === 'ai' ? 'chat-bubble-ai p-4 max-w-[85%] shadow-lg' : 'chat-bubble-user p-4 max-w-[85%] text-white shadow-lg';
+            // Converte as quebras de linha para tag <br>
             div.innerHTML = `<p class="text-sm leading-relaxed">${text.replace(/\n/g, '<br>')}</p>`;
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
@@ -227,9 +345,14 @@
             t.className = 'chat-bubble-ai p-4 flex gap-1 items-center';
             t.innerHTML = `<div class="typing-dot"></div><div class="typing-dot" style="animation-delay: 0.2s"></div><div class="typing-dot" style="animation-delay: 0.4s"></div>`;
             document.getElementById('chat-container').appendChild(t);
+            const chat = document.getElementById('chat-container');
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        function removeTyping() { const t = document.getElementById('typing'); if(t) t.remove(); }
+        function removeTyping() { 
+            const t = document.getElementById('typing'); 
+            if(t) t.remove(); 
+        }
 
         function obterProZap() {
             const nome = userProfile.nome || "Mestre";
