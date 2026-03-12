@@ -1,14 +1,12 @@
 {
-  "versao": "1.1",
-  "descricao": "Base de fluxos de conversa para orçamento de obras - Construtor PRO",
+  "versao": "2.0",
+  "descricao": "Fluxos de conversa adaptativos para orçamento de obras - Construtor PRO",
   "fluxos": {
-
     "fundacao_baldrame": {
       "categoria_servico": "fundacao",
       "unidade_base": "metro_linear",
       "complexidade": "media",
       "precisa_projeto": true,
-
       "palavras_chave": [
         "fazer baldrame",
         "viga baldrame",
@@ -16,250 +14,746 @@
         "fundação",
         "base da casa"
       ],
-
       "saudacao_ia": "Beleza, Mestre! Vamos levantar os dados desse baldrame.",
-
       "confirmacao_servico": "Você quer orçar a execução de viga baldrame de fundação, certo?",
-
-      "perguntas_sequenciais": [
-        "Quantos metros lineares de baldrame serão executados?",
-        "Qual a seção aproximada da viga? (15x25, 20x30 ou outra)",
-        "O terreno já está escavado e nivelado?",
-        "O concreto será feito na obra ou usinado?",
-        "Vai precisar de formas de madeira?"
+      "variaveis_iniciais": {
+        "secao_padrao_largura": 20,
+        "secao_padrao_altura": 30
+      },
+      "perguntas": [
+        {
+          "id": "metros_lineares",
+          "tipo": "numero",
+          "rotulo": "Quantos metros lineares de baldrame serão executados?",
+          "variavel": "metros_lineares",
+          "obrigatorio": true,
+          "validacao": ">0"
+        },
+        {
+          "id": "secao",
+          "tipo": "grupo",
+          "rotulo": "Seção da viga",
+          "perguntas": [
+            {
+              "id": "largura",
+              "tipo": "numero",
+              "rotulo": "Largura (cm)",
+              "variavel": "largura_cm",
+              "padrao": 20,
+              "sugestao": "15, 20, 25"
+            },
+            {
+              "id": "altura",
+              "tipo": "numero",
+              "rotulo": "Altura (cm)",
+              "variavel": "altura_cm",
+              "padrao": 30,
+              "sugestao": "25, 30, 35"
+            }
+          ]
+        },
+        {
+          "id": "terreno_escavado",
+          "tipo": "booleano",
+          "rotulo": "O terreno já está escavado e nivelado?",
+          "variavel": "terreno_escavado",
+          "padrao": false
+        },
+        {
+          "id": "concreto_tipo",
+          "tipo": "escolha",
+          "rotulo": "O concreto será feito na obra ou usinado?",
+          "variavel": "concreto_tipo",
+          "opcoes": [
+            { "id": "obra", "nome": "Feito na obra" },
+            { "id": "usinado", "nome": "Usinado" }
+          ],
+          "padrao": "obra"
+        },
+        {
+          "id": "formas",
+          "tipo": "booleano",
+          "rotulo": "Vai precisar de formas de madeira?",
+          "variavel": "precisa_formas",
+          "padrao": true
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "volume_concreto_m3",
+          "formula": "metros_lineares * (largura_cm/100) * (altura_cm/100)"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "cimento_sacos",
+          "formula": "volume_concreto_m3 * 7"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "aco_kg",
+          "formula": "metros_lineares * 8"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "baldrame",
+          "quantidade": "metros_lineares",
+          "unidade": "m",
+          "parametros": {
+            "secao": "{largura_cm}x{altura_cm}",
+            "concreto_tipo": "{concreto_tipo}",
+            "formas_inclusas": "{precisa_formas}"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "terreno_escavado == false",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "escavacao_vala",
+            "quantidade": "metros_lineares",
+            "unidade": "m"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "concreto_tipo == 'obra'",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "concreto_obra",
+            "quantidade": "volume_concreto_m3",
+            "unidade": "m³"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "precisa_formas",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "forma_madeira",
+            "quantidade": "metros_lineares * 2",
+            "unidade": "m²",
+            "observacao": "Área de forma para uma face? Ajustar conforme necessidade."
+          }
+        }
+      ],
       "dica_mestre": "Antes de concretar, confira alinhamento, nível e use espaçadores para garantir cobrimento da ferragem.",
-
       "alerta_tecnico": "A viga baldrame deve apoiar sobre lastro de concreto magro e respeitar cobrimento mínimo da armadura conforme NBR 6118.",
-
       "servicos_relacionados": [
         "escavacao_vala",
         "lastro_concreto",
         "impermeabilizacao_baldrame"
       ],
-
       "servico_id": "baldrame"
     },
-
     "alvenaria_vedacao": {
       "categoria_servico": "alvenaria",
       "unidade_base": "m2",
-      "complexidade": "baixa",
-      "precisa_projeto": false,
-
+      "complexidade": "media",
+      "precisa_projeto": true,
       "palavras_chave": [
         "levantar parede",
         "fazer parede",
         "alvenaria",
         "parede de tijolo",
-        "muro"
+        "muro",
+        "casa",
+        "construir casa"
       ],
-
-      "saudacao_ia": "Tranquilo, parceiro! Vamos montar o orçamento dessa alvenaria.",
-
-      "confirmacao_servico": "Você quer orçar levantamento de parede de alvenaria, certo?",
-
-      "perguntas_sequenciais": [
-        "Qual o comprimento da parede em metros?",
-        "Qual a altura da parede?",
-        "Vai usar tijolo cerâmico 8 furos ou bloco de concreto?",
-        "A parede é interna ou externa?",
-        "Existem portas ou janelas nessa parede?"
+      "saudacao_ia": "Tranquilo, Mestre! Vamos planejar a alvenaria da sua obra.",
+      "confirmacao_servico": "Você quer orçar a elevação das paredes (alvenaria de vedação), certo?",
+      "perguntas": [
+        {
+          "id": "area_construida",
+          "tipo": "numero",
+          "rotulo": "Qual a área total construída (m²)?",
+          "variavel": "area_m2",
+          "obrigatorio": true,
+          "validacao": ">0"
+        },
+        {
+          "id": "pe_direito",
+          "tipo": "numero",
+          "rotulo": "Qual o pé-direito (altura das paredes) em metros? (padrão: 2,70 m)",
+          "variavel": "altura_parede_m",
+          "padrao": 2.7,
+          "validacao": ">0"
+        },
+        {
+          "id": "tipo_bloco",
+          "tipo": "escolha",
+          "rotulo": "Qual o tipo de bloco?",
+          "variavel": "tipo_bloco",
+          "opcoes": [
+            { "id": "ceramico_8f", "nome": "Cerâmico 8 furos (19x19x39)" },
+            { "id": "concreto", "nome": "Bloco de concreto (14x19x39)" }
+          ],
+          "padrao": "ceramico_8f"
+        },
+        {
+          "id": "portas",
+          "tipo": "grupo_repetitivo",
+          "rotulo": "Agora, liste as portas (uma por linha no formato: largura altura). Ex: 0.80 2.10",
+          "variavel": "portas",
+          "subperguntas": [
+            { "id": "largura", "tipo": "numero", "rotulo": "Largura (m)" },
+            { "id": "altura", "tipo": "numero", "rotulo": "Altura (m)" }
+          ]
+        },
+        {
+          "id": "janelas",
+          "tipo": "grupo_repetitivo",
+          "rotulo": "Liste as janelas (largura altura). Ex: 1.20 1.20",
+          "variavel": "janelas",
+          "subperguntas": [
+            { "id": "largura", "tipo": "numero", "rotulo": "Largura (m)" },
+            { "id": "altura", "tipo": "numero", "rotulo": "Altura (m)" }
+          ]
+        },
+        {
+          "id": "pilares",
+          "tipo": "numero",
+          "rotulo": "Quantos pilares intermediários (entre paredes) existem? Se não souber, digite 0 e calcularemos pelo vão máximo.",
+          "variavel": "qtd_pilares",
+          "padrao": 0
+        },
+        {
+          "id": "tipo_coberta",
+          "tipo": "escolha",
+          "rotulo": "A casa terá laje ou telhado?",
+          "variavel": "coberta",
+          "opcoes": [
+            { "id": "laje", "nome": "Laje" },
+            { "id": "telhado", "nome": "Telhado" }
+          ]
+        },
+        {
+          "id": "reboco_duas_faces",
+          "tipo": "booleano",
+          "rotulo": "As paredes serão rebocadas nos dois lados?",
+          "variavel": "reboco_duas_faces",
+          "padrao": true
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "area_paredes_bruta",
+          "formula": "area_m2 * altura_parede_m * 2"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "area_aberturas",
+          "formula": "soma(portas, 'largura*altura') + soma(janelas, 'largura*altura')"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "area_liquida",
+          "formula": "area_paredes_bruta - area_aberturas"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "alvenaria_tijolo_8furos",
+          "quantidade": "area_liquida",
+          "unidade": "m²",
+          "parametros": {
+            "tipo_bloco": "{tipo_bloco}",
+            "altura_parede": "{altura_parede_m}"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "reboco_duas_faces == true",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "reboco_interno",
+            "quantidade": "area_liquida * 2",
+            "unidade": "m²"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "qtd_pilares > 0",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "pilar_concreto",
+            "quantidade": "qtd_pilares * altura_parede_m",
+            "unidade": "m",
+            "parametros": { "secao": "15x25" }
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "coberta == 'laje'",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "laje_macica",
+            "quantidade": "area_m2",
+            "unidade": "m²"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "coberta == 'telhado'",
+          "entao": {
+            "tipo": "iniciar_fluxo",
+            "fluxo_id": "estrutura_telhado",
+            "area": "area_m2"
+          }
+        }
+      ],
       "dica_mestre": "Sempre confira prumo e nível das primeiras fiadas. Isso evita retrabalho e parede torta.",
-
       "alerta_tecnico": "Paredes longas devem possuir pilares e cintas de amarração para evitar fissuras.",
-
       "servicos_relacionados": [
         "chapisco",
         "reboco_interno",
-        "reboco_externo"
+        "reboco_externo",
+        "cinta_amarração"
       ],
-
       "servico_id": "alvenaria_tijolo_8furos"
     },
-
     "reboco_interno": {
       "categoria_servico": "revestimento",
       "unidade_base": "m2",
       "complexidade": "baixa",
       "precisa_projeto": false,
-
       "palavras_chave": [
         "reboco interno",
         "rebocar parede",
         "massa parede",
         "chapisco e reboco"
       ],
-
       "saudacao_ia": "Fala, Mestre! Vamos calcular o reboco interno.",
-
       "confirmacao_servico": "Você quer orçar reboco interno das paredes?",
-
-      "perguntas_sequenciais": [
-        "Qual a área total de paredes para reboco?",
-        "As paredes já receberam chapisco?",
-        "Vai usar argamassa pronta ou fazer na obra?",
-        "O acabamento final será pintura ou revestimento?"
+      "perguntas": [
+        {
+          "id": "area_total",
+          "tipo": "numero",
+          "rotulo": "Qual a área total de paredes para reboco (m²)?",
+          "variavel": "area_reboco_m2",
+          "obrigatorio": true
+        },
+        {
+          "id": "chapisco_pronto",
+          "tipo": "booleano",
+          "rotulo": "As paredes já receberam chapisco?",
+          "variavel": "chapisco_aplicado",
+          "padrao": false
+        },
+        {
+          "id": "argamassa_tipo",
+          "tipo": "escolha",
+          "rotulo": "Vai usar argamassa pronta ou fazer na obra?",
+          "variavel": "argamassa_tipo",
+          "opcoes": [
+            { "id": "pronta", "nome": "Argamassa pronta" },
+            { "id": "obra", "nome": "Fazer na obra (cimento, cal, areia)" }
+          ],
+          "padrao": "obra"
+        },
+        {
+          "id": "espessura",
+          "tipo": "numero",
+          "rotulo": "Espessura média do reboco (cm). Recomendado: 1,5 a 2,0 cm.",
+          "variavel": "espessura_cm",
+          "padrao": 1.5,
+          "validacao": ">0 && <=3"
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "volume_argamassa_m3",
+          "formula": "area_reboco_m2 * (espessura_cm/100)"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "cimento_sacos",
+          "formula": "volume_argamassa_m3 * 6"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "cal_kg",
+          "formula": "volume_argamassa_m3 * 120"
+        },
+        {
+          "tipo": "calcular",
+          "variavel": "areia_m3",
+          "formula": "volume_argamassa_m3 * 1.1"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "reboco_interno",
+          "quantidade": "area_reboco_m2",
+          "unidade": "m²",
+          "parametros": {
+            "argamassa": "{argamassa_tipo}",
+            "espessura": "{espessura_cm}cm"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "chapisco_aplicado == false",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "chapisco",
+            "quantidade": "area_reboco_m2",
+            "unidade": "m²"
+          }
+        }
+      ],
       "dica_mestre": "Use taliscas e mestras para manter o reboco alinhado e com espessura correta.",
-
       "alerta_tecnico": "A argamassa de reboco deve seguir traço adequado e respeitar espessura recomendada conforme NBR 7200.",
-
       "servicos_relacionados": [
         "chapisco",
         "pintura_interna"
       ],
-
       "servico_id": "reboco_interno"
     },
-
     "reboco_externo": {
       "categoria_servico": "revestimento",
       "unidade_base": "m2",
       "complexidade": "media",
       "precisa_projeto": false,
-
       "palavras_chave": [
         "reboco externo",
         "rebocar fachada",
         "reboco fachada",
         "massa externa"
       ],
-
       "saudacao_ia": "Vamos nessa, parceiro! Reboco externo exige capricho.",
-
       "confirmacao_servico": "Você quer orçar reboco externo da fachada ou paredes externas?",
-
-      "perguntas_sequenciais": [
-        "Qual a área das paredes externas?",
-        "A superfície já possui chapisco?",
-        "Vai usar argamassa pronta ou preparar na obra?",
-        "A edificação possui mais de um pavimento?"
+      "perguntas": [
+        {
+          "id": "area_externa",
+          "tipo": "numero",
+          "rotulo": "Qual a área das paredes externas (m²)?",
+          "variavel": "area_externa_m2",
+          "obrigatorio": true
+        },
+        {
+          "id": "chapisco_externo",
+          "tipo": "booleano",
+          "rotulo": "A superfície já possui chapisco?",
+          "variavel": "chapisco_externo_aplicado",
+          "padrao": false
+        },
+        {
+          "id": "argamassa_externa",
+          "tipo": "escolha",
+          "rotulo": "Vai usar argamassa pronta ou preparar na obra?",
+          "variavel": "argamassa_externa_tipo",
+          "opcoes": [
+            { "id": "pronta", "nome": "Argamassa pronta" },
+            { "id": "obra", "nome": "Fazer na obra (cimento, cal, areia)" }
+          ],
+          "padrao": "obra"
+        },
+        {
+          "id": "andares",
+          "tipo": "numero",
+          "rotulo": "A edificação possui mais de um pavimento? Quantos?",
+          "variavel": "pavimentos",
+          "padrao": 1,
+          "validacao": ">=1"
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "argamassa_m3",
+          "formula": "area_externa_m2 * 0.02"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "reboco_externo",
+          "quantidade": "area_externa_m2",
+          "unidade": "m²"
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "chapisco_externo_aplicado == false",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "chapisco",
+            "quantidade": "area_externa_m2",
+            "unidade": "m²"
+          }
+        }
+      ],
       "dica_mestre": "Molhe levemente a parede antes da aplicação para evitar que o reboco perca água rápido.",
-
       "alerta_tecnico": "Em panos grandes devem existir juntas de movimentação para evitar fissuras conforme NBR 7200.",
-
       "servicos_relacionados": [
         "chapisco",
         "pintura_externa"
       ],
-
       "servico_id": "reboco_externo"
     },
-
     "contrapiso": {
       "categoria_servico": "piso",
       "unidade_base": "m2",
       "complexidade": "baixa",
       "precisa_projeto": false,
-
       "palavras_chave": [
         "contrapiso",
         "regularização de piso",
         "piso bruto",
         "fazer contrapiso"
       ],
-
       "saudacao_ia": "Beleza, Mestre! Vamos calcular esse contrapiso.",
-
       "confirmacao_servico": "Você quer orçar execução de contrapiso para regularização do piso?",
-
-      "perguntas_sequenciais": [
-        "Qual a área do contrapiso?",
-        "Qual a espessura média estimada?",
-        "A base já está compactada?",
-        "Vai precisar de caimento para ralo?"
+      "perguntas": [
+        {
+          "id": "area_contrapiso",
+          "tipo": "numero",
+          "rotulo": "Qual a área do contrapiso (m²)?",
+          "variavel": "area_contrapiso_m2",
+          "obrigatorio": true
+        },
+        {
+          "id": "espessura_contrapiso",
+          "tipo": "numero",
+          "rotulo": "Qual a espessura média estimada (cm)? Padrão: 5 cm.",
+          "variavel": "espessura_contrapiso_cm",
+          "padrao": 5,
+          "validacao": ">=3 && <=10"
+        },
+        {
+          "id": "base_compactada",
+          "tipo": "booleano",
+          "rotulo": "A base já está compactada?",
+          "variavel": "base_compactada",
+          "padrao": false
+        },
+        {
+          "id": "caimento",
+          "tipo": "booleano",
+          "rotulo": "Vai precisar de caimento para ralo?",
+          "variavel": "caimento_ralo",
+          "padrao": false
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "volume_concreto_m3",
+          "formula": "area_contrapiso_m2 * (espessura_contrapiso_cm/100)"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "contrapiso",
+          "quantidade": "area_contrapiso_m2",
+          "unidade": "m²",
+          "parametros": {
+            "espessura": "{espessura_contrapiso_cm}cm",
+            "caimento": "{caimento_ralo}"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "base_compactada == false",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "compactacao_base",
+            "quantidade": "area_contrapiso_m2",
+            "unidade": "m²"
+          }
+        }
+      ],
       "dica_mestre": "Utilize mestras e régua de alumínio para garantir planicidade do piso.",
-
       "alerta_tecnico": "Contrapisos devem respeitar espessura adequada e tempo mínimo de cura antes do assentamento do revestimento.",
-
       "servicos_relacionados": [
         "assentamento_piso",
         "impermeabilizacao_area_molhada"
       ],
-
       "servico_id": "contrapiso"
     },
-
     "pintura_completa": {
       "categoria_servico": "acabamento",
       "unidade_base": "m2",
       "complexidade": "baixa",
       "precisa_projeto": false,
-
       "palavras_chave": [
         "pintar parede",
         "pintura casa",
         "pintura interna",
         "pintura externa"
       ],
-
       "saudacao_ia": "Tudo certo, parceiro! Vamos montar o orçamento dessa pintura.",
-
       "confirmacao_servico": "Você quer orçar pintura completa das paredes?",
-
-      "perguntas_sequenciais": [
-        "Qual a área total para pintura?",
-        "A pintura é interna ou externa?",
-        "A parede já possui massa corrida ou reboco pronto?",
-        "Vai usar tinta PVA ou acrílica?"
+      "perguntas": [
+        {
+          "id": "area_pintura",
+          "tipo": "numero",
+          "rotulo": "Qual a área total para pintura (m²)?",
+          "variavel": "area_pintura_m2",
+          "obrigatorio": true
+        },
+        {
+          "id": "local_pintura",
+          "tipo": "escolha",
+          "rotulo": "A pintura é interna ou externa?",
+          "variavel": "local_pintura",
+          "opcoes": [
+            { "id": "interna", "nome": "Interna" },
+            { "id": "externa", "nome": "Externa" }
+          ]
+        },
+        {
+          "id": "massa_corrida",
+          "tipo": "booleano",
+          "rotulo": "A parede já possui massa corrida ou reboco pronto?",
+          "variavel": "massa_corrida_aplicada",
+          "padrao": false
+        },
+        {
+          "id": "tipo_tinta",
+          "tipo": "escolha",
+          "rotulo": "Vai usar tinta PVA ou acrílica?",
+          "variavel": "tipo_tinta",
+          "opcoes": [
+            { "id": "pva", "nome": "PVA (interna)" },
+            { "id": "acrilica", "nome": "Acrílica (externa/interna)" }
+          ],
+          "padrao": "acrilica"
+        },
+        {
+          "id": "textura",
+          "tipo": "booleano",
+          "rotulo": "Vai aplicar textura (grafiato, etc.)?",
+          "variavel": "aplicar_textura",
+          "padrao": false
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "rendimento_tinta",
+          "formula": "area_pintura_m2 / (local_pintura == 'externa' ? 4 : 5)"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "pintura_acrilica",
+          "quantidade": "area_pintura_m2",
+          "unidade": "m²",
+          "parametros": {
+            "local": "{local_pintura}",
+            "tinta": "{tipo_tinta}",
+            "textura": "{aplicar_textura}"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "massa_corrida_aplicada == false",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "massa_corrida",
+            "quantidade": "area_pintura_m2",
+            "unidade": "m²"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "aplicar_textura",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "textura_grafiato",
+            "quantidade": "area_pintura_m2",
+            "unidade": "m²"
+          }
+        }
+      ],
       "dica_mestre": "Use selador antes da tinta para uniformizar absorção e melhorar acabamento.",
-
       "alerta_tecnico": "Evite pintar sob sol forte ou chuva para não comprometer o acabamento.",
-
       "servicos_relacionados": [
         "reboco_interno",
-        "reboco_externo"
+        "reboco_externo",
+        "massa_corrida"
       ],
-
       "servico_id": "pintura_acrilica"
     },
-
     "impermeabilizacao_banheiro": {
       "categoria_servico": "impermeabilizacao",
       "unidade_base": "m2",
       "complexidade": "media",
       "precisa_projeto": false,
-
       "palavras_chave": [
         "impermeabilizar banheiro",
         "manta liquida",
         "impermeabilização banheiro",
         "area molhada"
       ],
-
       "saudacao_ia": "Boa, Mestre! Impermeabilização é etapa crítica da obra.",
-
       "confirmacao_servico": "Você quer orçar impermeabilização de banheiro ou área molhada?",
-
-      "perguntas_sequenciais": [
-        "Qual a área do piso do banheiro?",
-        "Até que altura as paredes serão impermeabilizadas?",
-        "A base já está regularizada?",
-        "Vai usar manta líquida ou outro sistema?"
+      "perguntas": [
+        {
+          "id": "area_piso",
+          "tipo": "numero",
+          "rotulo": "Qual a área do piso do banheiro (m²)?",
+          "variavel": "area_piso_m2",
+          "obrigatorio": true
+        },
+        {
+          "id": "altura_parede",
+          "tipo": "numero",
+          "rotulo": "Até que altura as paredes serão impermeabilizadas (metros)? Padrão: 1,50 m.",
+          "variavel": "altura_impermeabilizacao_m",
+          "padrao": 1.5,
+          "validacao": ">=0.5 && <=2.5"
+        },
+        {
+          "id": "base_regularizada",
+          "tipo": "booleano",
+          "rotulo": "A base já está regularizada (contrapiso pronto)?",
+          "variavel": "base_regularizada",
+          "padrao": false
+        },
+        {
+          "id": "sistema_impermeabilizacao",
+          "tipo": "escolha",
+          "rotulo": "Vai usar manta líquida ou outro sistema?",
+          "variavel": "sistema_impermeabilizacao",
+          "opcoes": [
+            { "id": "manta_liquida", "nome": "Manta líquida" },
+            { "id": "manta_asfaltica", "nome": "Manta asfáltica" }
+          ],
+          "padrao": "manta_liquida"
+        }
       ],
-
+      "acoes": [
+        {
+          "tipo": "calcular",
+          "variavel": "area_total_impermeabilizar",
+          "formula": "area_piso_m2 + (area_piso_m2 * 2 * altura_impermeabilizacao_m)"
+        },
+        {
+          "tipo": "adicionar_servico",
+          "servico_id": "impermeabilizacao_area_molhada",
+          "quantidade": "area_total_impermeabilizar",
+          "unidade": "m²",
+          "parametros": {
+            "sistema": "{sistema_impermeabilizacao}",
+            "altura_parede": "{altura_impermeabilizacao_m}m"
+          }
+        },
+        {
+          "tipo": "condicional",
+          "condicao": "base_regularizada == false",
+          "entao": {
+            "tipo": "adicionar_servico",
+            "servico_id": "regularizacao_base",
+            "quantidade": "area_piso_m2",
+            "unidade": "m²"
+          }
+        }
+      ],
       "dica_mestre": "Reforce cantos e ralos com tela antes da aplicação da manta.",
-
       "alerta_tecnico": "A impermeabilização deve subir nas paredes e passar por teste de estanqueidade conforme NBR 9575.",
-
       "servicos_relacionados": [
         "contrapiso",
         "assentamento_piso"
       ],
-
       "servico_id": "impermeabilizacao_area_molhada"
     }
-
   }
 }
