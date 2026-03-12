@@ -1,5 +1,5 @@
 {
-  "versao": "2.3",
+  "versao": "3.0",
   "regiao": "Pernambuco - Brasil",
   "jornada_trabalho_horas": 8,
   "alertas_gerais": [
@@ -16,6 +16,7 @@
   ],
   "observacoes_gerais": "Os índices de produtividade (m²/dia, m/dia, etc.) são referências médias para equipes experientes em obras residenciais em Pernambuco, considerando jornada de 8h. Os consumos de material são aproximados e devem ser acrescidos de perdas de 5% a 10% para orçamento. Para serviços estruturais, as armaduras indicadas são sugestões para vãos e cargas típicas, mas não substituem cálculo. Em caso de dúvida, consulte um engenheiro civil.",
   "observacoes_estruturais": "Os detalhamentos estruturais fornecidos seguem os critérios da NBR 6118 para edificações de até um pavimento, considerando cargas típicas residenciais (sobrecarga 1,5 kN/m², revestimentos 1 kN/m², peso próprio). Os valores de aço são para aço CA-50 e concreto C20. Para situações diferentes, consulte um engenheiro.",
+  
   "servicos": [
     {
       "id": "baldrame",
@@ -1356,5 +1357,388 @@
         "Executar juntas de dilatação a cada 1,5 m."
       ]
     }
-  ]
+  ],
+
+  "fluxo_orcamento": {
+    "contexto_padrao": {
+      "area_construida": 85,
+      "pe_direito": 2.70
+    },
+    "etapas": [
+      {
+        "id": "dados_iniciais",
+        "descricao": "Informações básicas da obra",
+        "perguntas": [
+          {
+            "tipo": "numero",
+            "rotulo": "Área construída (m²)",
+            "variavel": "area_construida",
+            "padrao": 85
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Pé-direito (m)",
+            "variavel": "pe_direito",
+            "padrao": 2.70
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "calcular",
+            "variavel": "area_bruta_paredes",
+            "formula": "area_construida * pe_direito"
+          }
+        ],
+        "proxima_etapa": "aberturas"
+      },
+      {
+        "id": "aberturas",
+        "descricao": "Levantamento de portas, janelas e vãos",
+        "perguntas": [
+          {
+            "tipo": "lista_portas",
+            "rotulo": "Portas de giro",
+            "campos": ["quantidade", "largura", "altura"],
+            "variavel": "portas"
+          },
+          {
+            "tipo": "lista_janelas",
+            "rotulo": "Janelas",
+            "campos": ["quantidade", "largura", "altura"],
+            "variavel": "janelas"
+          },
+          {
+            "tipo": "lista_vaos",
+            "rotulo": "Passagens sem porta",
+            "campos": ["largura", "altura"],
+            "variavel": "vaos"
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "calcular",
+            "variavel": "area_total_aberturas",
+            "formula": "soma(portas, 'quantidade*largura*altura') + soma(janelas, 'quantidade*largura*altura') + soma(vaos, 'largura*altura')"
+          },
+          {
+            "tipo": "calcular",
+            "variavel": "area_liquida_alvenaria",
+            "formula": "area_bruta_paredes - area_total_aberturas"
+          }
+        ],
+        "proxima_etapa": "fundacao"
+      },
+      {
+        "id": "fundacao",
+        "descricao": "Tipo de fundação",
+        "perguntas": [
+          {
+            "tipo": "escolha",
+            "rotulo": "Tipo de fundação",
+            "variavel": "tipo_fundacao",
+            "opcoes": [
+              {
+                "id": "viga_baldrame",
+                "nome": "Viga baldrame de concreto",
+                "servico": "baldrame",
+                "perguntas_adicionais": [
+                  {
+                    "tipo": "numero",
+                    "rotulo": "Metros lineares de viga",
+                    "variavel": "metros_viga"
+                  }
+                ],
+                "acoes": [
+                  {
+                    "tipo": "adicionar_servico",
+                    "servico_id": "baldrame",
+                    "quantidade": "metros_viga",
+                    "unidade": "m"
+                  }
+                ]
+              },
+              {
+                "id": "alicerce_tijolo",
+                "nome": "Alicerce de tijolo (sem viga)",
+                "servico": "alvenaria_tijolo_8f",
+                "perguntas_adicionais": [
+                  {
+                    "tipo": "numero",
+                    "rotulo": "Metros lineares de alicerce",
+                    "variavel": "metros_alicerce"
+                  },
+                  {
+                    "tipo": "numero",
+                    "rotulo": "Número de fiadas",
+                    "variavel": "fiadas",
+                    "padrao": 4
+                  }
+                ],
+                "acoes": [
+                  {
+                    "tipo": "calcular",
+                    "variavel": "tijolos_alicerce",
+                    "formula": "metros_alicerce * fiadas * 4 * 1.05"
+                  },
+                  {
+                    "tipo": "calcular",
+                    "variavel": "argamassa_alicerce_litros",
+                    "formula": "metros_alicerce * fiadas * 2"
+                  },
+                  {
+                    "tipo": "adicionar_servico_personalizado",
+                    "servico_base": "alvenaria_tijolo_8f",
+                    "quantidade_tijolos": "tijolos_alicerce",
+                    "quantidade_argamassa": "argamassa_alicerce_litros"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "proxima_etapa": "pilares"
+      },
+      {
+        "id": "pilares",
+        "descricao": "Pilares de concreto",
+        "condicao": "usuario_optou_por_pilares",
+        "perguntas": [
+          {
+            "tipo": "numero",
+            "rotulo": "Quantidade de pilares?",
+            "variavel": "qtd_pilares"
+          },
+          {
+            "tipo": "escolha",
+            "rotulo": "Seção dos pilares",
+            "variavel": "secao_pilar",
+            "opcoes": [
+              {"id": "20x20", "nome": "20x20 cm", "servico": "pilar_20x20"},
+              {"id": "14x30", "nome": "14x30 cm", "servico": "pilar_14x30"},
+              {"id": "personalizado", "nome": "Outra seção", "personalizado": true}
+            ]
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "adicionar_servico",
+            "servico_id": "secao_pilar.servico",
+            "quantidade": "qtd_pilares",
+            "unidade": "un"
+          }
+        ],
+        "proxima_etapa": "alvenaria"
+      },
+      {
+        "id": "alvenaria",
+        "descricao": "Paredes de alvenaria",
+        "perguntas": [
+          {
+            "tipo": "escolha",
+            "rotulo": "Tipo de bloco",
+            "variavel": "tipo_bloco",
+            "opcoes": [
+              {"id": "tijolo_8f", "nome": "Tijolo cerâmico 8 furos", "servico": "alvenaria_tijolo_8f"},
+              {"id": "bloco_concreto", "nome": "Bloco de concreto", "servico": "alvenaria_bloco_concreto"}
+            ]
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "adicionar_servico",
+            "servico_id": "tipo_bloco.servico",
+            "quantidade": "area_liquida_alvenaria",
+            "unidade": "m²"
+          }
+        ],
+        "proxima_etapa": "cobertura"
+      },
+      {
+        "id": "cobertura",
+        "descricao": "Cobertura (telhado)",
+        "perguntas": [
+          {
+            "tipo": "escolha",
+            "rotulo": "Tipo de telha",
+            "variavel": "tipo_telha",
+            "opcoes": [
+              {"id": "ceramica", "nome": "Cerâmica", "servico": "telha_ceramica"},
+              {"id": "fibrocimento", "nome": "Fibrocimento", "servico": "telha_fibrocimento"}
+            ]
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Inclinação (%)",
+            "variavel": "inclinacao"
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Área de projeção (m²)",
+            "variavel": "projecao"
+          },
+          {
+            "tipo": "escolha",
+            "rotulo": "Calcular madeiramento?",
+            "variavel": "calcular_madeira",
+            "opcoes": [
+              {"id": "sim", "nome": "Sim"},
+              {"id": "nao", "nome": "Não"}
+            ]
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "calcular",
+            "variavel": "area_inclinada",
+            "formula": "projecao / cos(atan(inclinacao/100))"
+          },
+          {
+            "tipo": "adicionar_servico",
+            "servico_id": "tipo_telha.servico",
+            "quantidade": "area_inclinada",
+            "unidade": "m²"
+          },
+          {
+            "tipo": "condicional",
+            "condicao": "calcular_madeira == 'sim'",
+            "entao": {
+              "tipo": "adicionar_servico",
+              "servico_id": "estrutura_telhado",
+              "quantidade": "area_inclinada",
+              "unidade": "m²"
+            }
+          }
+        ],
+        "proxima_etapa": "reboco"
+      },
+      {
+        "id": "reboco",
+        "descricao": "Reboco e chapisco",
+        "perguntas": [
+          {
+            "tipo": "escolha",
+            "rotulo": "Rebocar duas faces?",
+            "variavel": "reboco_duas_faces",
+            "opcoes": [
+              {"id": "sim", "nome": "Sim", "fator": 2},
+              {"id": "nao", "nome": "Não", "fator": 1}
+            ]
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Espessura do reboco (cm)",
+            "variavel": "espessura_reboco",
+            "padrao": 1.5
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "calcular",
+            "variavel": "area_reboco",
+            "formula": "area_liquida_alvenaria * (reboco_duas_faces == 'sim' ? 2 : 1)"
+          },
+          {
+            "tipo": "adicionar_servico",
+            "servico_id": "reboco_interno",
+            "quantidade": "area_reboco",
+            "unidade": "m²",
+            "observacao": "Usando serviço de reboco interno; se for externo, diferenciar depois."
+          },
+          {
+            "tipo": "adicionar_servico",
+            "servico_id": "chapisco",
+            "quantidade": "area_reboco",
+            "unidade": "m²"
+          }
+        ],
+        "proxima_etapa": "pintura"
+      },
+      {
+        "id": "pintura",
+        "descricao": "Pintura",
+        "perguntas": [
+          {
+            "tipo": "escolha",
+            "rotulo": "Tipo de tinta",
+            "variavel": "tipo_tinta",
+            "opcoes": [
+              {"id": "acrilica", "nome": "Acrílica", "servico": "pintura_acrilica"},
+              {"id": "pva", "nome": "PVA", "servico": "pintura_pva"}
+            ]
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Número de demãos",
+            "variavel": "demaos",
+            "padrao": 2
+          },
+          {
+            "tipo": "confirmacao",
+            "rotulo": "Usar selador?",
+            "variavel": "usar_selador",
+            "padrao": true
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "adicionar_servico",
+            "servico_id": "tipo_tinta.servico",
+            "quantidade": "area_reboco",
+            "unidade": "m²",
+            "parametros": {
+              "demaos": "demaos"
+            }
+          },
+          {
+            "tipo": "condicional",
+            "condicao": "usar_selador",
+            "entao": {
+              "tipo": "adicionar_servico",
+              "servico_id": "pintura_acrilica",
+              "quantidade": "area_reboco",
+              "unidade": "m²",
+              "observacao": "Aplicação de selador (pode ser um serviço específico)"
+            }
+          }
+        ],
+        "proxima_etapa": "mao_de_obra"
+      },
+      {
+        "id": "mao_de_obra",
+        "descricao": "Mão de obra, prazos e rentabilidade",
+        "perguntas": [
+          {
+            "tipo": "numero",
+            "rotulo": "Quantos pedreiros?",
+            "variavel": "pedreiros"
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Quantos serventes?",
+            "variavel": "serventes"
+          },
+          {
+            "tipo": "numero",
+            "rotulo": "Prazo desejado (dias)",
+            "variavel": "prazo_desejado"
+          }
+        ],
+        "acoes": [
+          {
+            "tipo": "calcular_prazo",
+            "servicos_contratados": "todos os serviços adicionados até aqui",
+            "produtividade": "usar dados de produtividade de cada serviço",
+            "equipe": {"pedreiros": "pedreiros", "serventes": "serventes"},
+            "resultado_variavel": "dias_estimados"
+          },
+          {
+            "tipo": "analisar_rentabilidade",
+            "custo_material": "soma dos custos dos serviços",
+            "custo_mao_obra": "calcular com base em diárias",
+            "lucro_sugerido": 0.3
+          }
+        ]
+      }
+    ]
+  }
 }
